@@ -300,6 +300,8 @@
         </li>
         <li class="nav-item"><a onclick="filtrarCategoria('Herramientas')">🛠️ Herramientas</a></li>
         <li class="nav-item"><a onclick="filtrarCategoria('Utilidades')">⚙️ Utilidades</a></li>
+        <!-- NUEVA CATEGORÍA AÑADIDA -->
+        <li class="nav-item"><a onclick="filtrarCategoria('Android')">🤖 Android</a></li>
       </ul>
 
       <div class="header-right">
@@ -311,17 +313,19 @@
   </header>
 
   <main>
+    <!-- PANEL DE ADMINISTRACIÓN -->
     <section id="adminPanel">
       <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3a4150; padding-bottom: 10px;">
         <h3 style="margin: 0; color: #00a2ff;">Panel de Control General</h3>
         <button onclick="cerrarSesionAdmin()" style="background:#dc3545; color:#fff; border:none; padding:6px 12px; border-radius:4px; cursor:pointer;">🚪 Cerrar Sesión</button>
       </div>
 
+      <!-- PARTE 1 ADMIN: AGREGAR APLICACIÓN -->
       <div class="admin-subpanel">
         <h4 style="margin-top:0; color:#28a745;">📦 1. Agregar Nueva Aplicación / Archivo</h4>
         <div class="form-group">
-          <label>Nombre:</label>
-          <input type="text" id="appName" placeholder="Ej: HEN 4.93 Installer">
+          <label>Nombre y Versión:</label>
+          <input type="text" id="appName" placeholder="Ej: HEN 4.93 Installer v1.0">
         </div>
         <div class="form-group">
           <label>Categoría:</label>
@@ -331,6 +335,7 @@
             <option value="PS4">PS4</option>
             <option value="Herramientas">Herramientas</option>
             <option value="Utilidades">Utilidades</option>
+            <option value="Android">Android</option>
           </select>
         </div>
         <div class="form-group">
@@ -338,12 +343,13 @@
           <input type="text" id="appLogo" placeholder="Ej: V2/apps.png o https://...">
         </div>
         <div class="form-group">
-          <label>Ruta o Link de Descarga:</label>
-          <input type="text" id="appLink" placeholder="Ej: Ps3/Hen/4.93/SETUP.P3T">
+          <label>Ruta o Link de Descarga (Oculto para el usuario):</label>
+          <input type="text" id="appLink" placeholder="Ej: Ps3/Hen/4.93/SETUP.P3T o enlace web">
         </div>
         <button onclick="agregarItem()" style="background:#28a745; color:#fff; border:none; padding:10px; width:100%; border-radius:4px; font-weight:bold; cursor:pointer;">＋ Publicar Aplicación</button>
       </div>
 
+      <!-- PARTE 2 ADMIN: AGREGAR NOVEDADES -->
       <div class="admin-subpanel">
         <h4 style="margin-top:0; color:#00a2ff;">📢 2. Publicar Novedad o Noticia</h4>
         <div class="form-group">
@@ -362,20 +368,24 @@
       </div>
     </section>
 
+    <!-- BARRA DE BÚSQUEDA Y LUPITA -->
     <div class="search-box">
       <span>🔍</span>
       <input type="text" id="searchInput" onkeyup="buscarAplicacion()" placeholder="Buscar archivo, herramientas o categorías...">
     </div>
 
+    <!-- SECCIÓN 1: CONTENIDO Y APLICACIONES -->
     <h2 id="tituloSeccion" style="color: #00a2ff;">Contenido Disponible</h2>
     <div id="listaContenido"></div>
 
+    <!-- SECCIÓN 2: NOVEDADES Y ANUNCIOS (CUADRO ABAJO) -->
     <section id="newsSection">
       <h3 class="news-title">📢 Novedades y Anuncios Recientes</h3>
       <div id="newsContainer"></div>
     </section>
   </main>
 
+  <!-- VENTANA FLOTANTE LOGIN -->
   <div id="loginModal">
     <div class="modal-box">
       <h3 style="margin-top:0; color:#00a2ff;">Acceso Administrador</h3>
@@ -516,17 +526,18 @@
 
       lista.forEach(app => {
         let btnDel = esAdmin ? `<button onclick="eliminarItem(${app.id})" style="background:#dc3545; color:#fff; border:none; padding:6px 10px; border-radius:4px; cursor:pointer; margin-left:5px;">🗑️</button>` : '';
+        
+        // AQUÍ SE REMOVIÓ LA LÍNEA DE RUTA PARA QUE SOLO SE VEA CATEGORÍA Y NOMBRE/VERSIÓN
         c.innerHTML += `
           <div class="app-card">
             <div class="app-info">
               <img src="${app.logo}" class="app-logo" onerror="this.src='V2/apps.png'">
               <div>
-                <strong>[${app.categoria}] ${app.nombre}</strong><br>
-                <small style="color:#aaa;">Ruta: ${app.enlace}</small>
+                <strong style="font-size:16px;">[${app.categoria}] ${app.nombre}</strong>
               </div>
             </div>
             <div>
-              <a href="${app.enlace}" download onclick="registrarDescarga()" style="background:#0070d1; color:#fff; padding:6px 12px; text-decoration:none; border-radius:4px; font-size:14px; display:inline-block;">Descargar</a>
+              <a href="${app.enlace}" download onclick="registrarDescarga()" style="background:#0070d1; color:#fff; padding:8px 14px; text-decoration:none; border-radius:4px; font-size:14px; display:inline-block; font-weight:bold;">Descargar</a>
               ${btnDel}
             </div>
           </div>`;
@@ -571,5 +582,4 @@
     }
   </script>
 </body>
-    </html>
-      
+</html>
