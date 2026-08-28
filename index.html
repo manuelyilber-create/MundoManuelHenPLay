@@ -30,13 +30,14 @@
       display: block;
     }
 
-    /* 3. BARRA DE NAVEGACIÓN */
+    /* 3. BARRA DE NAVEGACIÓN Y CONTADORES */
     nav {
       background: #161920;
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 0 20px;
+      flex-wrap: wrap;
     }
 
     .nav-links {
@@ -64,7 +65,6 @@
       background: #0070d1;
     }
 
-    /* Submenú desplegable */
     .dropdown {
       display: none;
       position: absolute;
@@ -97,7 +97,26 @@
       display: block;
     }
 
-    /* 4. BOTÓN ADMIN DISCRETO */
+    /* CONTADORES Y BOTÓN ADMIN EN ESQUINA SUPERIOR */
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .counter-badge {
+      background: #1f232d;
+      border: 1px solid #0070d1;
+      border-radius: 15px;
+      padding: 4px 10px;
+      font-size: 12px;
+      color: #00a2ff;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
     .admin-btn {
       background: transparent;
       border: 1px solid #0070d1;
@@ -113,7 +132,7 @@
       color: #fff;
     }
 
-    /* 5. CONTENEDOR PRINCIPAL */
+    /* 4. CONTENEDOR PRINCIPAL */
     main {
       padding: 30px;
       max-width: 1000px;
@@ -123,7 +142,7 @@
       border-radius: 8px;
     }
 
-    /* BARRA DE BÚSQUEDA (LUPITA) */
+    /* BARRA DE BÚSQUEDA */
     .search-box {
       display: flex;
       align-items: center;
@@ -144,19 +163,81 @@
       font-size: 15px;
     }
 
-    .search-box span {
-      font-size: 18px;
-      margin-right: 5px;
+    /* SECCIÓN DE NOVEDADES Y NOTICIAS */
+    #newsSection {
+      background: #161920;
+      border: 1px solid #0070d1;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 30px;
     }
 
-    /* PANEL ADMIN OCULTO */
+    .news-title {
+      margin-top: 0;
+      color: #00a2ff;
+      border-bottom: 2px solid #0070d1;
+      padding-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .news-card {
+      background: #1f232d;
+      border-radius: 6px;
+      padding: 15px;
+      margin-bottom: 15px;
+      display: flex;
+      gap: 15px;
+      align-items: flex-start;
+      border-left: 4px solid #28a745;
+    }
+
+    .news-img {
+      width: 110px;
+      height: 110px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid #0070d1;
+      background: #0d0f12;
+      flex-shrink: 0;
+    }
+
+    .news-content h4 {
+      margin: 0 0 5px 0;
+      font-size: 18px;
+      color: #fff;
+    }
+
+    .news-date {
+      font-size: 12px;
+      color: #00a2ff;
+      margin-bottom: 8px;
+    }
+
+    .news-desc {
+      margin: 0;
+      font-size: 14px;
+      color: #ccc;
+      line-height: 1.4;
+    }
+
+    /* PANELS DE ADMINISTRACIÓN */
     #adminPanel {
       display: none;
       background: #252a36;
       padding: 20px;
       border-radius: 6px;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
       border: 1px solid #0070d1;
+    }
+
+    .admin-subpanel {
+      background: #1a1e27;
+      padding: 15px;
+      border-radius: 6px;
+      margin-top: 15px;
+      border: 1px dashed #00a2ff;
     }
 
     .admin-header {
@@ -188,7 +269,7 @@
       color: #00a2ff;
     }
 
-    .form-group input, .form-group select {
+    .form-group input, .form-group select, .form-group textarea {
       width: 100%;
       padding: 8px;
       box-sizing: border-box;
@@ -202,7 +283,7 @@
       display: none;
       margin-top: 8px;
       padding: 10px;
-      background: #1a1e27;
+      background: #161920;
       border-radius: 4px;
       border: 1px dashed #0070d1;
     }
@@ -293,71 +374,126 @@
         </li>
       </ul>
 
-      <button class="admin-btn" id="btnAccesoAdmin" onclick="abrirLogin()">🔒 Admin</button>
+      <div class="header-right">
+        <div class="counter-badge" title="Total de visitas a la página">
+          👥 <span id="cntVisitas">0</span>
+        </div>
+        <div class="counter-badge" title="Total de descargas realizadas">
+          📥 <span id="cntDescargas">0</span>
+        </div>
+        <button class="admin-btn" id="btnAccesoAdmin" onclick="abrirLogin()">🔒 Admin</button>
+      </div>
     </nav>
   </header>
 
   <main>
     <div class="search-box">
       <span>🔍</span>
-      <input type="text" id="searchInput" onkeyup="buscarAplicacion()" placeholder="Buscar archivo, herramienta o aplicación...">
+      <input type="text" id="searchInput" onkeyup="buscarAplicacion()" placeholder="Buscar archivo, noticia, herramienta o aplicación...">
     </div>
+
+    <section id="newsSection">
+      <h3 class="news-title">📢 Novedades y Actualizaciones Recientes</h3>
+      <div id="newsContainer">
+        </div>
+    </section>
 
     <section id="adminPanel">
       <div class="admin-header">
-        <h3 style="margin: 0;">Panel de Control (Administrador)</h3>
+        <h3 style="margin: 0; color: #00a2ff;">Panel de Control (Administrador)</h3>
         <button class="logout-btn" onclick="cerrarSesionAdmin()">🚪 Cerrar Sesión</button>
       </div>
 
-      <div class="form-group">
-        <label>Nombre de la Aplicación/Archivo:</label>
-        <input type="text" id="appName" placeholder="Ejemplo: HEN 4.93 Installer">
-      </div>
-
-      <div class="form-group">
-        <label>Sección / Categoría:</label>
-        <select id="appCategory">
-          <option value="PS2">PS2</option>
-          <option value="PS3">PS3</option>
-          <option value="PS4">PS4</option>
-          <option value="Herramientas">Herramientas</option>
-          <option value="Utilidades">Utilidades</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label>Método para agregar Logo/Foto:</label>
-        <select id="logoType" onchange="cambiarTipoLogo()">
-          <option value="url">🌐 Enlace Web (URL de Internet)</option>
-          <option value="file">📁 Subir desde el Escritorio / Equipo</option>
-          <option value="local">📂 Ruta Local del Proyecto (Ej: V2/hen.png)</option>
-        </select>
-
-        <div id="optUrl" class="logo-options" style="display: block;">
-          <input type="text" id="appLogoUrl" placeholder="https://ejemplo.com/imagen.png">
+      <div class="admin-subpanel">
+        <h4 style="margin-top:0; color:#28a745;">📦 Plantilla 1: Publicar Aplicación / Archivo</h4>
+        
+        <div class="form-group">
+          <label>Nombre de la Aplicación/Archivo:</label>
+          <input type="text" id="appName" placeholder="Ejemplo: HEN 4.93 Installer">
         </div>
 
-        <div id="optFile" class="logo-options">
-          <input type="file" id="appLogoFile" accept="image/*" onchange="convertirImagenEscritorio(event)">
+        <div class="form-group">
+          <label>Sección / Categoría:</label>
+          <select id="appCategory">
+            <option value="PS2">PS2</option>
+            <option value="PS3">PS3</option>
+            <option value="PS4">PS4</option>
+            <option value="Herramientas">Herramientas</option>
+            <option value="Utilidades">Utilidades</option>
+          </select>
         </div>
 
-        <div id="optLocal" class="logo-options">
-          <input type="text" id="appLogoLocal" placeholder="Ejemplo: V2/hen.png o V2/apps.png">
+        <div class="form-group">
+          <label>Método para agregar Logo/Foto de la App:</label>
+          <select id="logoType" onchange="cambiarTipoLogo()">
+            <option value="url">🌐 Enlace Web (URL de Internet)</option>
+            <option value="file">📁 Subir desde el Escritorio / Equipo</option>
+            <option value="local">📂 Ruta Local del Proyecto (Ej: V2/hen.png)</option>
+          </select>
+
+          <div id="optUrl" class="logo-options" style="display: block;">
+            <input type="text" id="appLogoUrl" placeholder="https://ejemplo.com/imagen.png">
+          </div>
+          <div id="optFile" class="logo-options">
+            <input type="file" id="appLogoFile" accept="image/*" onchange="convertirImagenEscritorio(event, 'app')">
+          </div>
+          <div id="optLocal" class="logo-options">
+            <input type="text" id="appLogoLocal" placeholder="Ejemplo: V2/hen.png o V2/apps.png">
+          </div>
         </div>
+
+        <div class="form-group">
+          <label>Ruta o Enlace de Descarga:</label>
+          <input type="text" id="appLink" placeholder="Ps3/Hen/4.93/SETUP.P3T o link directo">
+        </div>
+
+        <button onclick="agregarItem()" style="background: #28a745; color:#fff; border:none; padding: 10px 15px; cursor:pointer; width: 100%; border-radius:4px; font-weight:bold;">＋ Agregar Aplicación a la Web</button>
       </div>
 
-      <div class="form-group">
-        <label>Ruta o Enlace de Descarga:</label>
-        <input type="text" id="appLink" placeholder="Ps3/Hen/4.93/SETUP.P3T o link directo">
-      </div>
+      <div class="admin-subpanel">
+        <h4 style="margin-top:0; color:#00a2ff;">📢 Plantilla 2: Publicar Novedad / Noticia (Inicio)</h4>
 
-      <button onclick="agregarItem()" style="background: #28a745; color:#fff; border:none; padding: 10px 15px; cursor:pointer; width: 100%; border-radius:4px; font-weight:bold; margin-top: 10px;">＋ Agregar a la Web</button>
+        <div class="form-group">
+          <label>Título de la Novedad:</label>
+          <input type="text" id="newsTitleInput" placeholder="Ejemplo: ¡Lanzado Nuevo HEN 4.93 Oficial!">
+        </div>
+
+        <div class="form-group">
+          <label>Fecha del Anuncio:</label>
+          <input type="text" id="newsDateInput" placeholder="Ejemplo: 28/08/2026">
+        </div>
+
+        <div class="form-group">
+          <label>Imagen de la Novedad:</label>
+          <select id="newsImgType" onchange="cambiarTipoImgNews()">
+            <option value="url">🌐 Enlace Web (URL de Internet)</option>
+            <option value="file">📁 Subir desde el Escritorio / Equipo</option>
+            <option value="local">📂 Ruta Local (Ej: V2/hen.png)</option>
+          </select>
+
+          <div id="optNewsUrl" class="logo-options" style="display: block;">
+            <input type="text" id="newsImgUrl" placeholder="https://ejemplo.com/noticia.png">
+          </div>
+          <div id="optNewsFile" class="logo-options">
+            <input type="file" id="newsImgFile" accept="image/*" onchange="convertirImagenEscritorio(event, 'news')">
+          </div>
+          <div id="optNewsLocal" class="logo-options">
+            <input type="text" id="newsImgLocal" placeholder="Ejemplo: V2/banner.png">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Descripción / Detalle de la Novedad:</label>
+          <textarea id="newsDescInput" rows="3" placeholder="Escribe aquí los detalles del anuncio, mejoras o instrucciones..."></textarea>
+        </div>
+
+        <button onclick="agregarNovedad()" style="background: #0070d1; color:#fff; border:none; padding: 10px 15px; cursor:pointer; width: 100%; border-radius:4px; font-weight:bold;">📢 Publicar Novedad en Inicio</button>
+      </div>
     </section>
 
     <h2 id="tituloSeccion">Contenido Disponible</h2>
     <div id="listaContenido">
-      <p style="color: #aaa;">No hay archivos guardados aún. Inicia sesión como Admin para agregar contenidos.</p>
-    </div>
+      </div>
   </main>
 
   <div id="loginModal" class="modal">
@@ -371,10 +507,49 @@
   </div>
 
   <script>
-    let listaAplicaciones = [];
-    let esAdmin = false;
-    let logoBase64Temp = '';
+    // Variables de Estado almacenadas en localStorage
+    let listaAplicaciones = JSON.parse(localStorage.getItem('mmhp_apps')) || [];
+    let listaNoticias = JSON.parse(localStorage.getItem('mmhp_news')) || [
+      {
+        id: 1,
+        titulo: "¡Bienvenido a MundoManuelHenPlay!",
+        fecha: "28/08/2026",
+        imagen: "V2/banner.png",
+        descripcion: "Explora todas nuestras secciones de PS2, PS3, PS4, Herramientas y Utilidades. Mantente atento a esta sección para futuras actualizaciones."
+      }
+    ];
 
+    let contadorVisitas = parseInt(localStorage.getItem('mmhp_visitas') || "0") + 1;
+    let contadorDescargas = parseInt(localStorage.getItem('mmhp_descargas') || "0");
+    
+    // Guardar visita actual
+    localStorage.setItem('mmhp_visitas', contadorVisitas);
+
+    let esAdmin = false;
+    let logoBase64App = '';
+    let logoBase64News = '';
+
+    // Inicialización al cargar la pantalla
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById('cntVisitas').innerText = contadorVisitas;
+      document.getElementById('cntDescargas').innerText = contadorDescargas;
+      
+      // Fecha actual por defecto en el campo de novedades
+      const hoy = new Date();
+      document.getElementById('newsDateInput').value = hoy.toLocaleDateString();
+
+      renderizarNoticias(listaNoticias);
+      renderizarAplicaciones(listaAplicaciones);
+    });
+
+    /* FUNCIONES DE CONTADORES */
+    function registrarDescarga() {
+      contadorDescargas++;
+      localStorage.setItem('mmhp_descargas', contadorDescargas);
+      document.getElementById('cntDescargas').innerText = contadorDescargas;
+    }
+
+    /* CAMBIOS EN SELECTORES DE IMÁGENES */
     function cambiarTipoLogo() {
       const tipo = document.getElementById('logoType').value;
       document.getElementById('optUrl').style.display = tipo === 'url' ? 'block' : 'none';
@@ -382,12 +557,20 @@
       document.getElementById('optLocal').style.display = tipo === 'local' ? 'block' : 'none';
     }
 
-    function convertirImagenEscritorio(event) {
+    function cambiarTipoImgNews() {
+      const tipo = document.getElementById('newsImgType').value;
+      document.getElementById('optNewsUrl').style.display = tipo === 'url' ? 'block' : 'none';
+      document.getElementById('optNewsFile').style.display = tipo === 'file' ? 'block' : 'none';
+      document.getElementById('optNewsLocal').style.display = tipo === 'local' ? 'block' : 'none';
+    }
+
+    function convertirImagenEscritorio(event, destino) {
       const archivo = event.target.files[0];
       if (archivo) {
         const reader = new FileReader();
         reader.onload = function(e) {
-          logoBase64Temp = e.target.result;
+          if(destino === 'app') logoBase64App = e.target.result;
+          if(destino === 'news') logoBase64News = e.target.result;
         };
         reader.readAsDataURL(archivo);
       }
@@ -395,22 +578,21 @@
 
     function obtenerLogoSeleccionado() {
       const tipo = document.getElementById('logoType').value;
-      if (tipo === 'url') {
-        return document.getElementById('appLogoUrl').value.trim() || 'V2/apps.png';
-      } else if (tipo === 'file') {
-        return logoBase64Temp || 'V2/apps.png';
-      } else {
-        return document.getElementById('appLogoLocal').value.trim() || 'V2/apps.png';
-      }
+      if (tipo === 'url') return document.getElementById('appLogoUrl').value.trim() || 'V2/apps.png';
+      if (tipo === 'file') return logoBase64App || 'V2/apps.png';
+      return document.getElementById('appLogoLocal').value.trim() || 'V2/apps.png';
     }
 
-    function abrirLogin() {
-      document.getElementById('loginModal').style.display = 'flex';
+    function obtenerImagenNoticiaSeleccionada() {
+      const tipo = document.getElementById('newsImgType').value;
+      if (tipo === 'url') return document.getElementById('newsImgUrl').value.trim() || 'V2/banner.png';
+      if (tipo === 'file') return logoBase64News || 'V2/banner.png';
+      return document.getElementById('newsImgLocal').value.trim() || 'V2/banner.png';
     }
 
-    function cerrarLogin() {
-      document.getElementById('loginModal').style.display = 'none';
-    }
+    /* LOGIN ADMIN */
+    function abrirLogin() { document.getElementById('loginModal').style.display = 'flex'; }
+    function cerrarLogin() { document.getElementById('loginModal').style.display = 'none'; }
 
     function validarAdmin() {
       const user = document.getElementById('userInput').value;
@@ -422,6 +604,7 @@
         document.getElementById('adminPanel').style.display = 'block';
         document.getElementById('btnAccesoAdmin').style.display = 'none';
         cerrarLogin();
+        renderizarNoticias(listaNoticias);
         renderizarAplicaciones(listaAplicaciones);
       } else {
         alert("Usuario o clave incorrectos.");
@@ -434,10 +617,12 @@
       document.getElementById('btnAccesoAdmin').style.display = 'inline-block';
       document.getElementById('userInput').value = '';
       document.getElementById('passInput').value = '';
+      renderizarNoticias(listaNoticias);
       renderizarAplicaciones(listaAplicaciones);
       alert("Sesión cerrada.");
     }
 
+    /* AGREGAR ELEMENTOS */
     function agregarItem() {
       const name = document.getElementById('appName').value.trim();
       const category = document.getElementById('appCategory').value;
@@ -454,74 +639,11 @@
         };
 
         listaAplicaciones.push(nuevaApp);
+        localStorage.setItem('mmhp_apps', JSON.stringify(listaAplicaciones));
         renderizarAplicaciones(listaAplicaciones);
 
-        // Limpiar formulario
         document.getElementById('appName').value = '';
         document.getElementById('appLogoUrl').value = '';
         document.getElementById('appLogoLocal').value = '';
         document.getElementById('appLogoFile').value = '';
-        logoBase64Temp = '';
-        document.getElementById('appLink').value = '';
-      } else {
-        alert("Por favor rellena al menos el Nombre y la Ruta/Enlace de descarga.");
-      }
-    }
-
-    function eliminarItem(id) {
-      listaAplicaciones = listaAplicaciones.filter(app => app.id !== id);
-      renderizarAplicaciones(listaAplicaciones);
-    }
-
-    function renderizarAplicaciones(lista) {
-      const contenedor = document.getElementById('listaContenido');
-      contenedor.innerHTML = '';
-
-      if (lista.length === 0) {
-        contenedor.innerHTML = '<p style="color: #aaa;">No se encontraron elementos en esta categoría o búsqueda.</p>';
-        return;
-      }
-
-      lista.forEach(app => {
-        const btnEliminar = esAdmin ? `<button onclick="eliminarItem(${app.id})" style="background:#dc3545; color:#fff; border:none; padding:6px 10px; border-radius:4px; cursor:pointer; margin-left:5px;">🗑️</button>` : '';
-
-        contenedor.innerHTML += `
-          <div class="app-card">
-            <div class="app-info">
-              <img src="${app.logo}" alt="Logo" class="app-logo" onerror="this.src='V2/apps.png'">
-              <div>
-                <strong>[${app.categoria}] ${app.nombre}</strong><br>
-                <small style="color: #aaa;">Ruta/Enlace: ${app.enlace}</small>
-              </div>
-            </div>
-            <div>
-              <a href="${app.enlace}" download style="background:#0070d1; color:#fff; padding:6px 12px; text-decoration:none; border-radius:4px; font-size:14px; display:inline-block;">Descargar</a>
-              ${btnEliminar}
-            </div>
-          </div>
-        `;
-      });
-    }
-
-    function filtrarCategoria(cat) {
-      document.getElementById('searchInput').value = '';
-      if(cat === 'TODOS') {
-        document.getElementById('tituloSeccion').innerText = 'Contenido Disponible';
-        renderizarAplicaciones(listaAplicaciones);
-      } else {
-        document.getElementById('tituloSeccion').innerText = 'Sección: ' + cat;
-        const filtradas = listaAplicaciones.filter(app => app.categoria === cat);
-        renderizarAplicaciones(filtradas);
-      }
-    }
-
-    function buscarAplicacion() {
-      const texto = document.getElementById('searchInput').value.toLowerCase();
-      const resultado = listaAplicaciones.filter(app => 
-        app.nombre.toLowerCase().includes(texto) || app.categoria.toLowerCase().includes(texto)
-      );
-      renderizarAplicaciones(resultado);
-    }
-  </script>
-</body>
-</html>
+        l
