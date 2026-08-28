@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MundoManuelHenPlay</title>
   <style>
-    /* 1. ESTILOS GENERALES */
+    /* 1. FONDO GLOBAL Y ESTILOS BASE */
     body {
       margin: 0;
       padding: 0;
@@ -15,9 +15,11 @@
       color: #ffffff;
     }
 
+    /* 2. ENCABEZADO Y BANNER */
     header {
+      position: relative;
       width: 100%;
-      background: rgba(0, 0, 0, 0.85);
+      background: rgba(0, 0, 0, 0.8);
       border-bottom: 2px solid #0070d1;
     }
 
@@ -28,13 +30,13 @@
       display: block;
     }
 
+    /* 3. BARRA DE NAVEGACIÓN */
     nav {
       background: #161920;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 20px;
-      flex-wrap: wrap;
+      padding: 0 20px;
     }
 
     .nav-links {
@@ -51,7 +53,7 @@
 
     .nav-item > a {
       display: block;
-      padding: 12px 18px;
+      padding: 15px 20px;
       color: #fff;
       text-decoration: none;
       font-weight: bold;
@@ -62,6 +64,7 @@
       background: #0070d1;
     }
 
+    /* Submenú desplegable */
     .dropdown {
       display: none;
       position: absolute;
@@ -94,47 +97,33 @@
       display: block;
     }
 
-    /* CONTADORES Y BOTÓN ADMIN */
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .counter-badge {
-      background: #1f232d;
+    /* 4. BOTÓN ADMIN DISCRETO */
+    .admin-btn {
+      background: transparent;
       border: 1px solid #0070d1;
-      border-radius: 15px;
-      padding: 5px 12px;
-      font-size: 13px;
-      color: #00a2ff;
-      font-weight: bold;
-    }
-
-    .btn-admin {
-      background: #0070d1;
-      color: #ffffff;
-      border: none;
-      padding: 8px 15px;
-      border-radius: 5px;
-      font-weight: bold;
+      color: #0070d1;
+      padding: 6px 12px;
+      border-radius: 4px;
       cursor: pointer;
-      font-size: 13px;
+      font-size: 12px;
     }
 
-    .btn-admin:hover {
-      background: #0056a3;
+    .admin-btn:hover {
+      background: #0070d1;
+      color: #fff;
     }
 
-    /* CONTENEDOR PRINCIPAL */
+    /* 5. CONTENEDOR PRINCIPAL */
     main {
-      padding: 25px;
+      padding: 30px;
       max-width: 1000px;
-      margin: 20px auto;
-      background: rgba(15, 18, 24, 0.9);
+      margin: 0 auto;
+      background: rgba(15, 18, 24, 0.85);
+      margin-top: 20px;
       border-radius: 8px;
     }
 
+    /* BARRA DE BÚSQUEDA (LUPITA) */
     .search-box {
       display: flex;
       align-items: center;
@@ -155,57 +144,37 @@
       font-size: 15px;
     }
 
-    /* CUADRO DE NOVEDADES EN INICIO */
-    #newsSection {
-      background: #161920;
-      border: 1px solid #0070d1;
-      border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 25px;
+    .search-box span {
+      font-size: 18px;
+      margin-right: 5px;
     }
 
-    .news-title {
-      margin-top: 0;
-      color: #00a2ff;
-      border-bottom: 2px solid #0070d1;
-      padding-bottom: 8px;
-    }
-
-    .news-card {
-      background: #1f232d;
-      border-radius: 6px;
-      padding: 15px;
-      margin-bottom: 12px;
-      display: flex;
-      gap: 15px;
-      border-left: 4px solid #28a745;
-    }
-
-    .news-img {
-      width: 100px;
-      height: 100px;
-      object-fit: cover;
-      border-radius: 6px;
-      border: 1px solid #0070d1;
-      background: #000;
-    }
-
-    /* PANEL DE CONTROL ADMINISTRADOR */
+    /* PANEL ADMIN OCULTO */
     #adminPanel {
       display: none;
       background: #252a36;
       padding: 20px;
-      border-radius: 8px;
-      margin-bottom: 25px;
-      border: 2px solid #0070d1;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      border: 1px solid #0070d1;
     }
 
-    .admin-subpanel {
-      background: #1a1e27;
-      padding: 15px;
-      border-radius: 6px;
-      margin-top: 15px;
-      border: 1px dashed #00a2ff;
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      border-bottom: 1px solid #3a4150;
+      padding-bottom: 10px;
+    }
+
+    .logout-btn {
+      background: #dc3545;
+      color: #fff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
     }
 
     .form-group {
@@ -215,11 +184,11 @@
     .form-group label {
       display: block;
       margin-bottom: 5px;
-      color: #00a2ff;
       font-size: 14px;
+      color: #00a2ff;
     }
 
-    .form-group input, .form-group select, .form-group textarea {
+    .form-group input, .form-group select {
       width: 100%;
       padding: 8px;
       box-sizing: border-box;
@@ -233,36 +202,31 @@
       display: none;
       margin-top: 8px;
       padding: 10px;
-      background: #161920;
-      border: 1px dashed #0070d1;
+      background: #1a1e27;
       border-radius: 4px;
+      border: 1px dashed #0070d1;
     }
 
-    /* VENTANA FLOTANTE DE LOGIN (VENTANA OCULTA) */
-    #loginModal {
-      display: none; /* Se cambia con JavaScript */
+    /* VENTANA EMERGENTE (MODAL LOGIN) */
+    .modal {
+      display: none;
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.85);
-      z-index: 99999;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
       justify-content: center;
       align-items: center;
+      z-index: 2000;
     }
 
-    .modal-box {
+    .modal-content {
       background: #1f232d;
       padding: 25px;
       border-radius: 8px;
       width: 300px;
       text-align: center;
-      border: 2px solid #0070d1;
-      box-shadow: 0 0 15px rgba(0, 112, 209, 0.6);
     }
 
-    /* LISTA DE APLICACIONES */
+    /* TARJETAS DE APLICACIONES */
     .app-card {
       background: #1f232d;
       padding: 15px;
@@ -297,10 +261,14 @@
     
     <nav>
       <ul class="nav-links">
-        <li class="nav-item"><a onclick="filtrarCategoria('TODOS')">🏠 Inicio</a></li>
+        <li class="nav-item">
+          <a onclick="filtrarCategoria('TODOS')">🏠 Inicio</a>
+        </li>
         <li class="nav-item">
           <a onclick="filtrarCategoria('PS2')">PS2</a>
-          <ul class="dropdown"><li><a onclick="filtrarCategoria('PS2')">Ver Todo PS2</a></li></ul>
+          <ul class="dropdown">
+            <li><a onclick="filtrarCategoria('PS2')">Ver Todo PS2</a></li>
+          </ul>
         </li>
         <li class="nav-item">
           <a onclick="filtrarCategoria('PS3')">PS3</a>
@@ -313,90 +281,247 @@
         </li>
         <li class="nav-item">
           <a onclick="filtrarCategoria('PS4')">PS4</a>
-          <ul class="dropdown"><li><a onclick="filtrarCategoria('PS4')">Ver Todo PS4</a></li></ul>
+          <ul class="dropdown">
+            <li><a onclick="filtrarCategoria('PS4')">Ver Todo PS4</a></li>
+          </ul>
         </li>
-        <li class="nav-item"><a onclick="filtrarCategoria('Herramientas')">🛠️ Herramientas</a></li>
-        <li class="nav-item"><a onclick="filtrarCategoria('Utilidades')">⚙️ Utilidades</a></li>
+        <li class="nav-item">
+          <a onclick="filtrarCategoria('Herramientas')">🛠️ Herramientas</a>
+        </li>
+        <li class="nav-item">
+          <a onclick="filtrarCategoria('Utilidades')">⚙️ Utilidades</a>
+        </li>
       </ul>
 
-      <div class="header-right">
-        <div class="counter-badge">👥 <span id="cntVisitas">0</span></div>
-        <div class="counter-badge">📥 <span id="cntDescargas">0</span></div>
-        <button class="btn-admin" id="btnAccesoAdmin" onclick="mostrarLogin()">🔒 Admin</button>
-      </div>
+      <button class="admin-btn" id="btnAccesoAdmin" onclick="abrirLogin()">🔒 Admin</button>
     </nav>
   </header>
 
   <main>
     <div class="search-box">
       <span>🔍</span>
-      <input type="text" id="searchInput" onkeyup="buscarAplicacion()" placeholder="Buscar archivo, noticia o herramientas...">
+      <input type="text" id="searchInput" onkeyup="buscarAplicacion()" placeholder="Buscar archivo, herramienta o aplicación...">
     </div>
 
-    <section id="newsSection">
-      <h3 class="news-title">📢 Novedades y Actualizaciones Recientes</h3>
-      <div id="newsContainer"></div>
+    <section id="adminPanel">
+      <div class="admin-header">
+        <h3 style="margin: 0;">Panel de Control (Administrador)</h3>
+        <button class="logout-btn" onclick="cerrarSesionAdmin()">🚪 Cerrar Sesión</button>
+      </div>
+
+      <div class="form-group">
+        <label>Nombre de la Aplicación/Archivo:</label>
+        <input type="text" id="appName" placeholder="Ejemplo: HEN 4.93 Installer">
+      </div>
+
+      <div class="form-group">
+        <label>Sección / Categoría:</label>
+        <select id="appCategory">
+          <option value="PS2">PS2</option>
+          <option value="PS3">PS3</option>
+          <option value="PS4">PS4</option>
+          <option value="Herramientas">Herramientas</option>
+          <option value="Utilidades">Utilidades</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Método para agregar Logo/Foto:</label>
+        <select id="logoType" onchange="cambiarTipoLogo()">
+          <option value="url">🌐 Enlace Web (URL de Internet)</option>
+          <option value="file">📁 Subir desde el Escritorio / Equipo</option>
+          <option value="local">📂 Ruta Local del Proyecto (Ej: V2/hen.png)</option>
+        </select>
+
+        <div id="optUrl" class="logo-options" style="display: block;">
+          <input type="text" id="appLogoUrl" placeholder="https://ejemplo.com/imagen.png">
+        </div>
+
+        <div id="optFile" class="logo-options">
+          <input type="file" id="appLogoFile" accept="image/*" onchange="convertirImagenEscritorio(event)">
+        </div>
+
+        <div id="optLocal" class="logo-options">
+          <input type="text" id="appLogoLocal" placeholder="Ejemplo: V2/hen.png o V2/apps.png">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Ruta o Enlace de Descarga:</label>
+        <input type="text" id="appLink" placeholder="Ps3/Hen/4.93/SETUP.P3T o link directo">
+      </div>
+
+      <button onclick="agregarItem()" style="background: #28a745; color:#fff; border:none; padding: 10px 15px; cursor:pointer; width: 100%; border-radius:4px; font-weight:bold; margin-top: 10px;">＋ Agregar a la Web</button>
     </section>
 
-    <section id="adminPanel">
-      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3a4150; padding-bottom: 10px;">
-        <h3 style="margin: 0; color: #00a2ff;">Panel de Control (Administrador)</h3>
-        <button onclick="cerrarSesionAdmin()" style="background:#dc3545; color:#fff; border:none; padding:6px 12px; border-radius:4px; cursor:pointer;">🚪 Cerrar Sesión</button>
-      </div>
+    <h2 id="tituloSeccion">Contenido Disponible</h2>
+    <div id="listaContenido">
+      <p style="color: #aaa;">No hay archivos guardados aún. Inicia sesión como Admin para agregar contenidos.</p>
+    </div>
+  </main>
 
-      <div class="admin-subpanel">
-        <h4 style="margin-top:0; color:#28a745;">📦 Agregar Aplicación / Archivo</h4>
-        <div class="form-group">
-          <label>Nombre:</label>
-          <input type="text" id="appName" placeholder="Ej: HEN 4.93 Installer">
-        </div>
-        <div class="form-group">
-          <label>Categoría:</label>
-          <select id="appCategory">
-            <option value="PS2">PS2</option>
-            <option value="PS3">PS3</option>
-            <option value="PS4">PS4</option>
-            <option value="Herramientas">Herramientas</option>
-            <option value="Utilidades">Utilidades</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Método de Logo:</label>
-          <select id="logoType" onchange="cambiarTipoLogo()">
-            <option value="url">🌐 Enlace Web (URL de Internet)</option>
-            <option value="file">📁 Subir del Escritorio / Equipo</option>
-            <option value="local">📂 Ruta Local (Ej: V2/hen.png)</option>
-          </select>
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <h3>Acceso Administrador</h3>
+      <input type="text" id="userInput" placeholder="Usuario" style="width:100%; margin-bottom:10px; padding:8px; box-sizing: border-box;">
+      <input type="password" id="passInput" placeholder="Contraseña" style="width:100%; margin-bottom:15px; padding:8px; box-sizing: border-box;">
+      <button onclick="validarAdmin()" style="background:#0070d1; color:#fff; border:none; padding:8px 15px; cursor:pointer; border-radius:4px;">Entrar</button>
+      <button onclick="cerrarLogin()" style="background:#dc3545; color:#fff; border:none; padding:8px 15px; cursor:pointer; border-radius:4px;">Cancelar</button>
+    </div>
+  </div>
 
-          <div id="optUrl" class="logo-options" style="display: block;">
-            <input type="text" id="appLogoUrl" placeholder="https://ejemplo.com/imagen.png">
-          </div>
-          <div id="optFile" class="logo-options">
-            <input type="file" accept="image/*" onchange="convertirImagenEscritorio(event, 'app')">
-          </div>
-          <div id="optLocal" class="logo-options">
-            <input type="text" id="appLogoLocal" placeholder="Ejemplo: V2/apps.png">
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Ruta o Link de Descarga:</label>
-          <input type="text" id="appLink" placeholder="Ps3/Hen/4.93/SETUP.P3T o enlace de internet">
-        </div>
-        <button onclick="agregarItem()" style="background:#28a745; color:#fff; border:none; padding:10px; width:100%; border-radius:4px; font-weight:bold; cursor:pointer;">＋ Publicar Aplicación</button>
-      </div>
+  <script>
+    let listaAplicaciones = [];
+    let esAdmin = false;
+    let logoBase64Temp = '';
 
-      <div class="admin-subpanel">
-        <h4 style="margin-top:0; color:#00a2ff;">📢 Publicar Novedad en Inicio</h4>
-        <div class="form-group">
-          <label>Título:</label>
-          <input type="text" id="newsTitleInput" placeholder="Ej: ¡Actualización HEN disponible!">
-        </div>
-        <div class="form-group">
-          <label>Fecha:</label>
-          <input type="text" id="newsDateInput">
-        </div>
-        <div class="form-group">
-          <label>Imagen de Novedad:</label>
-          <select id="newsImgType" onchange="cambiarTipoImgNews()">
-            <option value="url">
-              
+    function cambiarTipoLogo() {
+      const tipo = document.getElementById('logoType').value;
+      document.getElementById('optUrl').style.display = tipo === 'url' ? 'block' : 'none';
+      document.getElementById('optFile').style.display = tipo === 'file' ? 'block' : 'none';
+      document.getElementById('optLocal').style.display = tipo === 'local' ? 'block' : 'none';
+    }
+
+    function convertirImagenEscritorio(event) {
+      const archivo = event.target.files[0];
+      if (archivo) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          logoBase64Temp = e.target.result;
+        };
+        reader.readAsDataURL(archivo);
+      }
+    }
+
+    function obtenerLogoSeleccionado() {
+      const tipo = document.getElementById('logoType').value;
+      if (tipo === 'url') {
+        return document.getElementById('appLogoUrl').value.trim() || 'V2/apps.png';
+      } else if (tipo === 'file') {
+        return logoBase64Temp || 'V2/apps.png';
+      } else {
+        return document.getElementById('appLogoLocal').value.trim() || 'V2/apps.png';
+      }
+    }
+
+    function abrirLogin() {
+      document.getElementById('loginModal').style.display = 'flex';
+    }
+
+    function cerrarLogin() {
+      document.getElementById('loginModal').style.display = 'none';
+    }
+
+    function validarAdmin() {
+      const user = document.getElementById('userInput').value;
+      const pass = document.getElementById('passInput').value;
+
+      if (user === "admin" && pass === "1234") {
+        alert("¡Bienvenido Administrador!");
+        esAdmin = true;
+        document.getElementById('adminPanel').style.display = 'block';
+        document.getElementById('btnAccesoAdmin').style.display = 'none';
+        cerrarLogin();
+        renderizarAplicaciones(listaAplicaciones);
+      } else {
+        alert("Usuario o clave incorrectos.");
+      }
+    }
+
+    function cerrarSesionAdmin() {
+      esAdmin = false;
+      document.getElementById('adminPanel').style.display = 'none';
+      document.getElementById('btnAccesoAdmin').style.display = 'inline-block';
+      document.getElementById('userInput').value = '';
+      document.getElementById('passInput').value = '';
+      renderizarAplicaciones(listaAplicaciones);
+      alert("Sesión cerrada.");
+    }
+
+    function agregarItem() {
+      const name = document.getElementById('appName').value.trim();
+      const category = document.getElementById('appCategory').value;
+      const logo = obtenerLogoSeleccionado();
+      const link = document.getElementById('appLink').value.trim();
+
+      if(name && link) {
+        const nuevaApp = {
+          id: Date.now(),
+          nombre: name,
+          categoria: category,
+          logo: logo,
+          enlace: link
+        };
+
+        listaAplicaciones.push(nuevaApp);
+        renderizarAplicaciones(listaAplicaciones);
+
+        // Limpiar formulario
+        document.getElementById('appName').value = '';
+        document.getElementById('appLogoUrl').value = '';
+        document.getElementById('appLogoLocal').value = '';
+        document.getElementById('appLogoFile').value = '';
+        logoBase64Temp = '';
+        document.getElementById('appLink').value = '';
+      } else {
+        alert("Por favor rellena al menos el Nombre y la Ruta/Enlace de descarga.");
+      }
+    }
+
+    function eliminarItem(id) {
+      listaAplicaciones = listaAplicaciones.filter(app => app.id !== id);
+      renderizarAplicaciones(listaAplicaciones);
+    }
+
+    function renderizarAplicaciones(lista) {
+      const contenedor = document.getElementById('listaContenido');
+      contenedor.innerHTML = '';
+
+      if (lista.length === 0) {
+        contenedor.innerHTML = '<p style="color: #aaa;">No se encontraron elementos en esta categoría o búsqueda.</p>';
+        return;
+      }
+
+      lista.forEach(app => {
+        const btnEliminar = esAdmin ? `<button onclick="eliminarItem(${app.id})" style="background:#dc3545; color:#fff; border:none; padding:6px 10px; border-radius:4px; cursor:pointer; margin-left:5px;">🗑️</button>` : '';
+
+        contenedor.innerHTML += `
+          <div class="app-card">
+            <div class="app-info">
+              <img src="${app.logo}" alt="Logo" class="app-logo" onerror="this.src='V2/apps.png'">
+              <div>
+                <strong>[${app.categoria}] ${app.nombre}</strong><br>
+                <small style="color: #aaa;">Ruta/Enlace: ${app.enlace}</small>
+              </div>
+            </div>
+            <div>
+              <a href="${app.enlace}" download style="background:#0070d1; color:#fff; padding:6px 12px; text-decoration:none; border-radius:4px; font-size:14px; display:inline-block;">Descargar</a>
+              ${btnEliminar}
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function filtrarCategoria(cat) {
+      document.getElementById('searchInput').value = '';
+      if(cat === 'TODOS') {
+        document.getElementById('tituloSeccion').innerText = 'Contenido Disponible';
+        renderizarAplicaciones(listaAplicaciones);
+      } else {
+        document.getElementById('tituloSeccion').innerText = 'Sección: ' + cat;
+        const filtradas = listaAplicaciones.filter(app => app.categoria === cat);
+        renderizarAplicaciones(filtradas);
+      }
+    }
+
+    function buscarAplicacion() {
+      const texto = document.getElementById('searchInput').value.toLowerCase();
+      const resultado = listaAplicaciones.filter(app => 
+        app.nombre.toLowerCase().includes(texto) || app.categoria.toLowerCase().includes(texto)
+      );
+      renderizarAplicaciones(resultado);
+    }
+  </script>
+</body>
+</html>
