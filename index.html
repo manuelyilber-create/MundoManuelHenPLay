@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MundoManuelHenPlay</title>
   <style>
-    /* 1. FONDO GLOBAL Y ESTILOS BASE (Ruta apuntando a V2/fondo.jpg) */
+    /* 1. FONDO GLOBAL Y ESTILOS BASE */
     body {
       margin: 0;
       padding: 0;
@@ -30,7 +30,7 @@
       display: block;
     }
 
-    /* 3. BARRA DE NAVEGACIÓN Y MENÚ DESPLEGABLE */
+    /* 3. BARRA DE NAVEGACIÓN */
     nav {
       background: #161920;
       display: flex;
@@ -57,6 +57,7 @@
       color: #fff;
       text-decoration: none;
       font-weight: bold;
+      cursor: pointer;
     }
 
     .nav-item:hover > a {
@@ -84,6 +85,7 @@
       text-decoration: none;
       display: block;
       border-bottom: 1px solid #2a2f3d;
+      cursor: pointer;
     }
 
     .dropdown li a:hover {
@@ -119,6 +121,32 @@
       background: rgba(15, 18, 24, 0.85);
       margin-top: 20px;
       border-radius: 8px;
+    }
+
+    /* BARRA DE BÚSQUEDA (LUPITA) */
+    .search-box {
+      display: flex;
+      align-items: center;
+      background: #1f232d;
+      border: 1px solid #0070d1;
+      border-radius: 25px;
+      padding: 5px 15px;
+      margin-bottom: 20px;
+    }
+
+    .search-box input {
+      background: transparent;
+      border: none;
+      color: #fff;
+      padding: 8px;
+      width: 100%;
+      outline: none;
+      font-size: 15px;
+    }
+
+    .search-box span {
+      font-size: 18px;
+      margin-right: 5px;
     }
 
     /* PANEL ADMIN OCULTO */
@@ -217,61 +245,52 @@
 <body>
 
   <header>
-    <!-- RUTA DIRECTA AL BANNER EN LA CARPETA V2 -->
     <img src="V2/banner.png" alt="Banner MundoManuelHenPlay" class="banner" onerror="this.style.display='none'">
     
     <nav>
       <ul class="nav-links">
-        <!-- BOTÓN INICIO -->
         <li class="nav-item">
-          <a href="index.html">🏠 Inicio</a>
+          <a onclick="filtrarCategoria('TODOS')">🏠 Inicio</a>
         </li>
         <li class="nav-item">
-          <a href="#">PS2</a>
+          <a onclick="filtrarCategoria('PS2')">PS2</a>
           <ul class="dropdown">
-            <li><a href="#">Juegos PS2</a></li>
-            <li><a href="#">Herramientas</a></li>
+            <li><a onclick="filtrarCategoria('PS2')">Ver Todo PS2</a></li>
           </ul>
         </li>
         <li class="nav-item">
-          <a href="#">PS3</a>
+          <a onclick="filtrarCategoria('PS3')">PS3</a>
           <ul class="dropdown">
+            <li><a onclick="filtrarCategoria('PS3')">Ver Todo PS3</a></li>
             <li><a href="Ps3/Hen/4.91/index.html">HEN 4.91</a></li>
             <li><a href="Ps3/Hen/4.92/index.html">HEN 4.92</a></li>
             <li><a href="Ps3/Hen/4.93/index.html">HEN 4.93</a></li>
-            <li><a href="Ps3/Hen/4.93/SETUP.P3T">SETUP.P3T</a></li>
           </ul>
         </li>
         <li class="nav-item">
-          <a href="#">PS4</a>
+          <a onclick="filtrarCategoria('PS4')">PS4</a>
           <ul class="dropdown">
-            <li><a href="#">Payloads</a></li>
-            <li><a href="#">PKGs</a></li>
+            <li><a onclick="filtrarCategoria('PS4')">Ver Todo PS4</a></li>
           </ul>
         </li>
         <li class="nav-item">
-          <a href="#">🛠️ Herramientas</a>
-          <ul class="dropdown">
-            <li><a href="#">Generales</a></li>
-            <li><a href="#">Consolas</a></li>
-          </ul>
+          <a onclick="filtrarCategoria('Herramientas')">🛠️ Herramientas</a>
         </li>
         <li class="nav-item">
-          <a href="#">⚙️ Utilidades</a>
-          <ul class="dropdown">
-            <li><a href="#">Archivos PC</a></li>
-            <li><a href="#">Programas</a></li>
-          </ul>
+          <a onclick="filtrarCategoria('Utilidades')">⚙️ Utilidades</a>
         </li>
       </ul>
 
-      <!-- Botón Admin Esquina -->
       <button class="admin-btn" id="btnAccesoAdmin" onclick="abrirLogin()">🔒 Admin</button>
     </nav>
   </header>
 
   <main>
-    <!-- PANEL DE ADMINISTRACIÓN CON SALIDA Y SUBIDA DE LOGO -->
+    <div class="search-box">
+      <span>🔍</span>
+      <input type="text" id="searchInput" onkeyup="buscarAplicacion()" placeholder="Buscar archivo, herramienta o aplicación...">
+    </div>
+
     <section id="adminPanel">
       <div class="admin-header">
         <h3 style="margin: 0;">Panel de Control (Administrador)</h3>
@@ -283,7 +302,7 @@
         <input type="text" id="appName" placeholder="Ejemplo: HEN 4.93 Installer">
       </div>
       <div class="form-group">
-        <label>Sección:</label>
+        <label>Sección / Categoría:</label>
         <select id="appCategory">
           <option value="PS2">PS2</option>
           <option value="PS3">PS3</option>
@@ -303,13 +322,12 @@
       <button onclick="agregarItem()" style="background: #28a745; color:#fff; border:none; padding: 10px 15px; cursor:pointer; width: 100%; border-radius:4px; font-weight:bold;">＋ Agregar a la Web</button>
     </section>
 
-    <h2>Contenido Disponible</h2>
+    <h2 id="tituloSeccion">Contenido Disponible</h2>
     <div id="listaContenido">
-      <p>Selecciona una categoría en el menú superior para ver o descargar los archivos.</p>
+      <p style="color: #aaa;">No hay archivos guardados aún. Inicia sesión como Admin para agregar contenidos.</p>
     </div>
   </main>
 
-  <!-- MODAL DE LOGIN -->
   <div id="loginModal" class="modal">
     <div class="modal-content">
       <h3>Acceso Administrador</h3>
@@ -321,6 +339,10 @@
   </div>
 
   <script>
+    // Arreglo donde se almacenan las aplicaciones agregadas
+    let listaAplicaciones = [];
+    let esAdmin = false;
+
     function abrirLogin() {
       document.getElementById('loginModal').style.display = 'flex';
     }
@@ -335,57 +357,106 @@
 
       if (user === "admin" && pass === "1234") {
         alert("¡Bienvenido Administrador!");
+        esAdmin = true;
         document.getElementById('adminPanel').style.display = 'block';
         document.getElementById('btnAccesoAdmin').style.display = 'none';
         cerrarLogin();
+        renderizarAplicaciones(listaAplicaciones);
       } else {
         alert("Usuario o clave incorrectos.");
       }
     }
 
     function cerrarSesionAdmin() {
+      esAdmin = false;
       document.getElementById('adminPanel').style.display = 'none';
       document.getElementById('btnAccesoAdmin').style.display = 'inline-block';
       document.getElementById('userInput').value = '';
       document.getElementById('passInput').value = '';
+      renderizarAplicaciones(listaAplicaciones);
       alert("Sesión cerrada.");
     }
 
     function agregarItem() {
-      const name = document.getElementById('appName').value;
+      const name = document.getElementById('appName').value.trim();
       const category = document.getElementById('appCategory').value;
-      const logo = document.getElementById('appLogo').value || 'V2/apps.png';
-      const link = document.getElementById('appLink').value;
+      const logo = document.getElementById('appLogo').value.trim() || 'V2/apps.png';
+      const link = document.getElementById('appLink').value.trim();
 
       if(name && link) {
-        const contenedor = document.getElementById('listaContenido');
-        
-        if (contenedor.innerHTML.includes("Selecciona una categoría")) {
-          contenedor.innerHTML = "";
-        }
+        const nuevaApp = {
+          id: Date.now(),
+          nombre: name,
+          categoria: category,
+          logo: logo,
+          enlace: link
+        };
 
-        contenedor.innerHTML += `
-          <div class="app-card">
-            <div class="app-info">
-              <img src="${logo}" alt="Logo" class="app-logo" onerror="this.src='V2/apps.png'">
-              <div>
-                <strong>[${category}] ${name}</strong><br>
-                <small style="color: #aaa;">Ruta: ${link}</small>
-              </div>
-            </div>
-            <div>
-              <a href="${link}" download style="background:#0070d1; color:#fff; padding:6px 12px; text-decoration:none; border-radius:4px; font-size:14px; display:inline-block;">Descargar</a>
-              <button onclick="this.parentElement.parentElement.remove()" style="background:#dc3545; color:#fff; border:none; padding:6px 10px; border-radius:4px; cursor:pointer; margin-left:5px;">🗑️</button>
-            </div>
-          </div>
-        `;
+        listaAplicaciones.push(nuevaApp);
+        renderizarAplicaciones(listaAplicaciones);
 
+        // Limpiar formulario
         document.getElementById('appName').value = '';
         document.getElementById('appLogo').value = '';
         document.getElementById('appLink').value = '';
       } else {
         alert("Por favor rellena al menos el Nombre y la Ruta de descarga.");
       }
+    }
+
+    function eliminarItem(id) {
+      listaAplicaciones = listaAplicaciones.filter(app => app.id !== id);
+      renderizarAplicaciones(listaAplicaciones);
+    }
+
+    function renderizarAplicaciones(lista) {
+      const contenedor = document.getElementById('listaContenido');
+      contenedor.innerHTML = '';
+
+      if (lista.length === 0) {
+        contenedor.innerHTML = '<p style="color: #aaa;">No se encontraron elementos en esta categoría o búsqueda.</p>';
+        return;
+      }
+
+      lista.forEach(app => {
+        const btnEliminar = esAdmin ? `<button onclick="eliminarItem(${app.id})" style="background:#dc3545; color:#fff; border:none; padding:6px 10px; border-radius:4px; cursor:pointer; margin-left:5px;">🗑️</button>` : '';
+
+        contenedor.innerHTML += `
+          <div class="app-card">
+            <div class="app-info">
+              <img src="${app.logo}" alt="Logo" class="app-logo" onerror="this.src='V2/apps.png'">
+              <div>
+                <strong>[${app.categoria}] ${app.nombre}</strong><br>
+                <small style="color: #aaa;">Ruta: ${app.enlace}</small>
+              </div>
+            </div>
+            <div>
+              <a href="${app.enlace}" download style="background:#0070d1; color:#fff; padding:6px 12px; text-decoration:none; border-radius:4px; font-size:14px; display:inline-block;">Descargar</a>
+              ${btnEliminar}
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function filtrarCategoria(cat) {
+      document.getElementById('searchInput').value = '';
+      if(cat === 'TODOS') {
+        document.getElementById('tituloSeccion').innerText = 'Contenido Disponible';
+        renderizarAplicaciones(listaAplicaciones);
+      } else {
+        document.getElementById('tituloSeccion').innerText = 'Sección: ' + cat;
+        const filtradas = listaAplicaciones.filter(app => app.categoria === cat);
+        renderizarAplicaciones(filtradas);
+      }
+    }
+
+    function buscarAplicacion() {
+      const texto = document.getElementById('searchInput').value.toLowerCase();
+      const resultado = listaAplicaciones.filter(app => 
+        app.nombre.toLowerCase().includes(texto) || app.categoria.toLowerCase().includes(texto)
+      );
+      renderizarAplicaciones(resultado);
     }
   </script>
 </body>
