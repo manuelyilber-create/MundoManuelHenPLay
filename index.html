@@ -421,7 +421,7 @@
   </div>
 
   <script>
-    // VALORES POR DEFECTO ENCRIPTADOS ("admin" y "1234")
+    // VALORES POR DEFECTO ENCRIPTADOS (para "admin" y "1234")
     const DEFAULT_USER_HASH = "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918";
     const DEFAULT_PASS_HASH = "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4";
 
@@ -445,7 +445,6 @@
 
     // AL CARGAR LA PÁGINA
     window.onload = function() {
-      // Verificar e inicializar credenciales encriptadas si no existen
       if (!localStorage.getItem('mmhp_user_hash')) {
         localStorage.setItem('mmhp_user_hash', DEFAULT_USER_HASH);
       }
@@ -468,7 +467,7 @@
       return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
     }
 
-    /* LOGIN ADMIN */
+    /* LOGIN ADMIN CORREGIDO */
     function abrirLogin() {
       document.getElementById('loginModal').style.display = 'flex';
     }
@@ -479,8 +478,8 @@
       document.getElementById('passInput').value = '';
     }
 
-    async function validarAdmin() {
-      let u = document.getElementById('userInput').value.trim();
+    function validarAdmin() {
+      let u = document.getElementById('userInput').value.trim().toLowerCase();
       let p = document.getElementById('passInput').value.trim();
 
       if (!u || !p) {
@@ -488,23 +487,28 @@
         return;
       }
 
-      let userHash = await encriptarTexto(u);
-      let passHash = await encriptarTexto(p);
+      // Procesar encriptación y validar de forma limpia
+      Promise.all([encriptarTexto(u), encriptarTexto(p)]).then(hashes => {
+        let userHash = hashes[0];
+        let passHash = hashes[1];
 
-      let savedUserHash = localStorage.getItem('mmhp_user_hash');
-      let savedPassHash = localStorage.getItem('mmhp_pass_hash');
+        let savedUserHash = localStorage.getItem('mmhp_user_hash');
+        let savedPassHash = localStorage.getItem('mmhp_pass_hash');
 
-      if (userHash === savedUserHash && passHash === savedPassHash) {
-        alert("¡Acceso Correcto!");
-        esAdmin = true;
-        document.getElementById('adminPanel').style.display = 'block';
-        document.getElementById('btnAccesoAdmin').style.display = 'none';
-        cerrarLogin();
-        renderizarAplicaciones(listaAplicaciones);
-        renderizarNoticias(listaNoticias);
-      } else {
-        alert("Usuario o Contraseña incorrectos.");
-      }
+        if (userHash === savedUserHash && passHash === savedPassHash) {
+          alert("¡Acceso Correcto!");
+          esAdmin = true;
+          document.getElementById('adminPanel').style.display = 'block';
+          document.getElementById('btnAccesoAdmin').style.display = 'none';
+          cerrarLogin();
+          renderizarAplicaciones(listaAplicaciones);
+          renderizarNoticias(listaNoticias);
+        } else {
+          alert("Usuario o Contraseña incorrectos.");
+        }
+      }).catch(err => {
+        alert("Error al verificar credenciales.");
+      });
     }
 
     function cerrarSesionAdmin() {
@@ -515,31 +519,33 @@
       renderizarNoticias(listaNoticias);
     }
 
-    /* CAMBIO INDEPENDIENTE DE USUARIO Y CLAVE ENCRIPTADA */
-    async function cambiarUsuarioAdmin() {
-      let nuevoUsuario = document.getElementById('newUsernameInput').value.trim();
+    /* CAMBIO INDEPENDIENTE DE USUARIO Y CLAVE */
+    function cambiarUsuarioAdmin() {
+      let nuevoUsuario = document.getElementById('newUsernameInput').value.trim().toLowerCase();
       if (!nuevoUsuario) {
         alert("Escribe el nuevo nombre de usuario.");
         return;
       }
 
-      let nuevoUserHash = await encriptarTexto(nuevoUsuario);
-      localStorage.setItem('mmhp_user_hash', nuevoUserHash);
-      document.getElementById('newUsernameInput').value = '';
-      alert("¡Usuario actualizado correctamente y guardado de forma encriptada!");
+      encriptarTexto(nuevoUsuario).then(nuevoUserHash => {
+        localStorage.setItem('mmhp_user_hash', nuevoUserHash);
+        document.getElementById('newUsernameInput').value = '';
+        alert("¡Usuario actualizado correctamente!");
+      });
     }
 
-    async function cambiarClaveAdmin() {
+    function cambiarClaveAdmin() {
       let nuevaClave = document.getElementById('newPasswordInput').value.trim();
       if (!nuevaClave) {
         alert("Escribe la nueva contraseña.");
         return;
       }
 
-      let nuevaPassHash = await encriptarTexto(nuevaClave);
-      localStorage.setItem('mmhp_pass_hash', nuevaPassHash);
-      document.getElementById('newPasswordInput').value = '';
-      alert("¡Contraseña actualizada correctamente y guardada de forma encriptada!");
+      encriptarTexto(nuevaClave).then(nuevaPassHash => {
+        localStorage.setItem('mmhp_pass_hash', nuevaPassHash);
+        document.getElementById('newPasswordInput').value = '';
+        alert("¡Contraseña actualizada correctamente!");
+      });
     }
 
     /* CONTADORES Y PUBLICACIONES */
@@ -589,6 +595,4 @@
     }
 
     function eliminarItem(id) {
-      listaAplicaciones = listaAplicaciones.filter(a => a.id !== id);
-      localStorage.setItem('mmhp_apps', JSON.stringify(listaAplicaciones));
-      render
+      listaAplicaciones = listaAp
