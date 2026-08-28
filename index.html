@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MundoManuelHenPlay</title>
   <style>
-    /* 1. FONDO GLOBAL Y ESTILOS BASE */
+    /* 1. ESTILOS GENERALES Y TEMA */
     body {
       margin: 0;
       padding: 0;
@@ -15,11 +15,9 @@
       color: #ffffff;
     }
 
-    /* 2. ENCABEZADO Y BANNER */
     header {
-      position: relative;
       width: 100%;
-      background: rgba(0, 0, 0, 0.8);
+      background: rgba(0, 0, 0, 0.85);
       border-bottom: 2px solid #0070d1;
     }
 
@@ -30,13 +28,13 @@
       display: block;
     }
 
-    /* 3. BARRA DE NAVEGACIÓN */
     nav {
       background: #161920;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0 20px;
+      padding: 10px 20px;
+      flex-wrap: wrap;
     }
 
     .nav-links {
@@ -53,7 +51,7 @@
 
     .nav-item > a {
       display: block;
-      padding: 15px 20px;
+      padding: 12px 18px;
       color: #fff;
       text-decoration: none;
       font-weight: bold;
@@ -64,7 +62,6 @@
       background: #0070d1;
     }
 
-    /* Submenú desplegable */
     .dropdown {
       display: none;
       position: absolute;
@@ -97,29 +94,39 @@
       display: block;
     }
 
-    /* 4. BOTÓN ADMIN DISCRETO */
-    .admin-btn {
-      background: transparent;
+    /* CONTADORES Y BOTÓN ADMIN */
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .counter-badge {
+      background: #1f232d;
       border: 1px solid #0070d1;
-      color: #0070d1;
-      padding: 6px 12px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 12px;
+      border-radius: 15px;
+      padding: 5px 12px;
+      font-size: 13px;
+      color: #00a2ff;
+      font-weight: bold;
     }
 
-    .admin-btn:hover {
+    .btn-admin-nav {
       background: #0070d1;
-      color: #fff;
+      color: #ffffff;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
     }
 
-    /* 5. CONTENEDOR PRINCIPAL */
+    /* CONTENEDOR PRINCIPAL */
     main {
-      padding: 30px;
+      padding: 25px;
       max-width: 1000px;
-      margin: 0 auto;
-      background: rgba(15, 18, 24, 0.85);
-      margin-top: 20px;
+      margin: 20px auto;
+      background: rgba(15, 18, 24, 0.9);
       border-radius: 8px;
     }
 
@@ -142,88 +149,6 @@
       width: 100%;
       outline: none;
       font-size: 15px;
-    }
-
-    .search-box span {
-      font-size: 18px;
-      margin-right: 5px;
-    }
-
-    /* PANEL ADMIN OCULTO */
-    #adminPanel {
-      display: none;
-      background: #252a36;
-      padding: 20px;
-      border-radius: 6px;
-      margin-bottom: 20px;
-      border: 1px solid #0070d1;
-    }
-
-    .admin-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
-      border-bottom: 1px solid #3a4150;
-      padding-bottom: 10px;
-    }
-
-    .logout-btn {
-      background: #dc3545;
-      color: #fff;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    .form-group {
-      margin-bottom: 12px;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 5px;
-      font-size: 14px;
-      color: #00a2ff;
-    }
-
-    .form-group input, .form-group select {
-      width: 100%;
-      padding: 8px;
-      box-sizing: border-box;
-      background: #161920;
-      border: 1px solid #3a4150;
-      color: #fff;
-      border-radius: 4px;
-    }
-
-    .logo-options {
-      display: none;
-      margin-top: 8px;
-      padding: 10px;
-      background: #1a1e27;
-      border-radius: 4px;
-      border: 1px dashed #0070d1;
-    }
-
-    /* VENTANA EMERGENTE (MODAL LOGIN) */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.8);
-      justify-content: center;
-      align-items: center;
-      z-index: 2000;
-    }
-
-    .modal-content {
-      background: #1f232d;
-      padding: 25px;
-      border-radius: 8px;
-      width: 300px;
-      text-align: center;
     }
 
     /* TARJETAS DE APLICACIONES */
@@ -252,6 +177,100 @@
       border: 1px solid #0070d1;
       background: #161920;
     }
+
+    /* CUADRO DE NOVEDADES (ABAJO DE LAS APLICACIONES) */
+    #newsSection {
+      background: #161920;
+      border: 1px solid #00a2ff;
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 35px;
+    }
+
+    .news-title {
+      margin-top: 0;
+      color: #00a2ff;
+      border-bottom: 2px solid #0070d1;
+      padding-bottom: 8px;
+    }
+
+    .news-card {
+      background: #1f232d;
+      border-radius: 6px;
+      padding: 15px;
+      margin-bottom: 15px;
+      display: flex;
+      gap: 15px;
+      border-left: 4px solid #28a745;
+    }
+
+    .news-img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid #0070d1;
+      background: #000;
+    }
+
+    /* PANEL DE CONTROL DE ADMINISTRADOR */
+    #adminPanel {
+      display: none;
+      background: #252a36;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 25px;
+      border: 2px solid #0070d1;
+    }
+
+    .admin-subpanel {
+      background: #1a1e27;
+      padding: 15px;
+      border-radius: 6px;
+      margin-top: 15px;
+      border: 1px dashed #00a2ff;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      color: #00a2ff;
+      font-size: 14px;
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+      background: #161920;
+      border: 1px solid #3a4150;
+      color: #fff;
+      border-radius: 4px;
+    }
+
+    /* MODAL DE LOGIN */
+    #loginModal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 99999;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-box {
+      background: #1f232d;
+      padding: 25px;
+      border-radius: 8px;
+      width: 300px;
+      text-align: center;
+      border: 2px solid #0070d1;
+    }
   </style>
 </head>
 <body>
@@ -261,14 +280,10 @@
     
     <nav>
       <ul class="nav-links">
-        <li class="nav-item">
-          <a onclick="filtrarCategoria('TODOS')">🏠 Inicio</a>
-        </li>
+        <li class="nav-item"><a onclick="filtrarCategoria('TODOS')">🏠 Inicio</a></li>
         <li class="nav-item">
           <a onclick="filtrarCategoria('PS2')">PS2</a>
-          <ul class="dropdown">
-            <li><a onclick="filtrarCategoria('PS2')">Ver Todo PS2</a></li>
-          </ul>
+          <ul class="dropdown"><li><a onclick="filtrarCategoria('PS2')">Ver Todo PS2</a></li></ul>
         </li>
         <li class="nav-item">
           <a onclick="filtrarCategoria('PS3')">PS3</a>
@@ -281,150 +296,149 @@
         </li>
         <li class="nav-item">
           <a onclick="filtrarCategoria('PS4')">PS4</a>
-          <ul class="dropdown">
-            <li><a onclick="filtrarCategoria('PS4')">Ver Todo PS4</a></li>
-          </ul>
+          <ul class="dropdown"><li><a onclick="filtrarCategoria('PS4')">Ver Todo PS4</a></li></ul>
         </li>
-        <li class="nav-item">
-          <a onclick="filtrarCategoria('Herramientas')">🛠️ Herramientas</a>
-        </li>
-        <li class="nav-item">
-          <a onclick="filtrarCategoria('Utilidades')">⚙️ Utilidades</a>
-        </li>
+        <li class="nav-item"><a onclick="filtrarCategoria('Herramientas')">🛠️ Herramientas</a></li>
+        <li class="nav-item"><a onclick="filtrarCategoria('Utilidades')">⚙️ Utilidades</a></li>
       </ul>
 
-      <button class="admin-btn" id="btnAccesoAdmin" onclick="abrirLogin()">🔒 Admin</button>
+      <div class="header-right">
+        <div class="counter-badge">👥 Visitas: <span id="cntVisitas">0</span></div>
+        <div class="counter-badge">📥 Descargas: <span id="cntDescargas">0</span></div>
+        <button class="btn-admin-nav" id="btnAccesoAdmin" onclick="abrirLogin()">🔒 Admin</button>
+      </div>
     </nav>
   </header>
 
   <main>
-    <div class="search-box">
-      <span>🔍</span>
-      <input type="text" id="searchInput" onkeyup="buscarAplicacion()" placeholder="Buscar archivo, herramienta o aplicación...">
-    </div>
-
     <section id="adminPanel">
-      <div class="admin-header">
-        <h3 style="margin: 0;">Panel de Control (Administrador)</h3>
-        <button class="logout-btn" onclick="cerrarSesionAdmin()">🚪 Cerrar Sesión</button>
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3a4150; padding-bottom: 10px;">
+        <h3 style="margin: 0; color: #00a2ff;">Panel de Control General</h3>
+        <button onclick="cerrarSesionAdmin()" style="background:#dc3545; color:#fff; border:none; padding:6px 12px; border-radius:4px; cursor:pointer;">🚪 Cerrar Sesión</button>
       </div>
 
-      <div class="form-group">
-        <label>Nombre de la Aplicación/Archivo:</label>
-        <input type="text" id="appName" placeholder="Ejemplo: HEN 4.93 Installer">
-      </div>
-
-      <div class="form-group">
-        <label>Sección / Categoría:</label>
-        <select id="appCategory">
-          <option value="PS2">PS2</option>
-          <option value="PS3">PS3</option>
-          <option value="PS4">PS4</option>
-          <option value="Herramientas">Herramientas</option>
-          <option value="Utilidades">Utilidades</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label>Método para agregar Logo/Foto:</label>
-        <select id="logoType" onchange="cambiarTipoLogo()">
-          <option value="url">🌐 Enlace Web (URL de Internet)</option>
-          <option value="file">📁 Subir desde el Escritorio / Equipo</option>
-          <option value="local">📂 Ruta Local del Proyecto (Ej: V2/hen.png)</option>
-        </select>
-
-        <div id="optUrl" class="logo-options" style="display: block;">
-          <input type="text" id="appLogoUrl" placeholder="https://ejemplo.com/imagen.png">
+      <div class="admin-subpanel">
+        <h4 style="margin-top:0; color:#28a745;">📦 1. Agregar Nueva Aplicación / Archivo</h4>
+        <div class="form-group">
+          <label>Nombre:</label>
+          <input type="text" id="appName" placeholder="Ej: HEN 4.93 Installer">
         </div>
-
-        <div id="optFile" class="logo-options">
-          <input type="file" id="appLogoFile" accept="image/*" onchange="convertirImagenEscritorio(event)">
+        <div class="form-group">
+          <label>Categoría:</label>
+          <select id="appCategory">
+            <option value="PS2">PS2</option>
+            <option value="PS3">PS3</option>
+            <option value="PS4">PS4</option>
+            <option value="Herramientas">Herramientas</option>
+            <option value="Utilidades">Utilidades</option>
+          </select>
         </div>
-
-        <div id="optLocal" class="logo-options">
-          <input type="text" id="appLogoLocal" placeholder="Ejemplo: V2/hen.png o V2/apps.png">
+        <div class="form-group">
+          <label>Imagen/Logo (Ruta Local o Enlace Web):</label>
+          <input type="text" id="appLogo" placeholder="Ej: V2/apps.png o https://...">
         </div>
+        <div class="form-group">
+          <label>Ruta o Link de Descarga:</label>
+          <input type="text" id="appLink" placeholder="Ej: Ps3/Hen/4.93/SETUP.P3T">
+        </div>
+        <button onclick="agregarItem()" style="background:#28a745; color:#fff; border:none; padding:10px; width:100%; border-radius:4px; font-weight:bold; cursor:pointer;">＋ Publicar Aplicación</button>
       </div>
 
-      <div class="form-group">
-        <label>Ruta o Enlace de Descarga:</label>
-        <input type="text" id="appLink" placeholder="Ps3/Hen/4.93/SETUP.P3T o link directo">
+      <div class="admin-subpanel">
+        <h4 style="margin-top:0; color:#00a2ff;">📢 2. Publicar Novedad o Noticia</h4>
+        <div class="form-group">
+          <label>Título de la Novedad:</label>
+          <input type="text" id="newsTitleInput" placeholder="Ej: ¡Actualización HEN 4.93 disponible!">
+        </div>
+        <div class="form-group">
+          <label>Imagen de Novedad (Ruta o URL):</label>
+          <input type="text" id="newsImgInput" placeholder="Ej: V2/banner.png o https://...">
+        </div>
+        <div class="form-group">
+          <label>Descripción / Detalle del Anuncio:</label>
+          <textarea id="newsDescInput" rows="3" placeholder="Escribe la información aquí..."></textarea>
+        </div>
+        <button onclick="agregarNovedad()" style="background:#0070d1; color:#fff; border:none; padding:10px; width:100%; border-radius:4px; font-weight:bold; cursor:pointer;">📢 Publicar Novedad en el Inicio</button>
       </div>
-
-      <button onclick="agregarItem()" style="background: #28a745; color:#fff; border:none; padding: 10px 15px; cursor:pointer; width: 100%; border-radius:4px; font-weight:bold; margin-top: 10px;">＋ Agregar a la Web</button>
     </section>
 
-    <h2 id="tituloSeccion">Contenido Disponible</h2>
-    <div id="listaContenido">
-      <p style="color: #aaa;">No hay archivos guardados aún. Inicia sesión como Admin para agregar contenidos.</p>
+    <div class="search-box">
+      <span>🔍</span>
+      <input type="text" id="searchInput" onkeyup="buscarAplicacion()" placeholder="Buscar archivo, herramientas o categorías...">
     </div>
+
+    <h2 id="tituloSeccion" style="color: #00a2ff;">Contenido Disponible</h2>
+    <div id="listaContenido"></div>
+
+    <section id="newsSection">
+      <h3 class="news-title">📢 Novedades y Anuncios Recientes</h3>
+      <div id="newsContainer"></div>
+    </section>
   </main>
 
-  <div id="loginModal" class="modal">
-    <div class="modal-content">
-      <h3>Acceso Administrador</h3>
-      <input type="text" id="userInput" placeholder="Usuario" style="width:100%; margin-bottom:10px; padding:8px; box-sizing: border-box;">
-      <input type="password" id="passInput" placeholder="Contraseña" style="width:100%; margin-bottom:15px; padding:8px; box-sizing: border-box;">
-      <button onclick="validarAdmin()" style="background:#0070d1; color:#fff; border:none; padding:8px 15px; cursor:pointer; border-radius:4px;">Entrar</button>
-      <button onclick="cerrarLogin()" style="background:#dc3545; color:#fff; border:none; padding:8px 15px; cursor:pointer; border-radius:4px;">Cancelar</button>
+  <div id="loginModal">
+    <div class="modal-box">
+      <h3 style="margin-top:0; color:#00a2ff;">Acceso Administrador</h3>
+      <input type="text" id="userInput" placeholder="Usuario" style="width:100%; margin-bottom:10px; padding:8px; box-sizing:border-box; background:#161920; border:1px solid #3a4150; color:#fff; border-radius:4px;">
+      <input type="password" id="passInput" placeholder="Contraseña" style="width:100%; margin-bottom:15px; padding:8px; box-sizing:border-box; background:#161920; border:1px solid #3a4150; color:#fff; border-radius:4px;">
+      <button onclick="validarAdmin()" style="background:#0070d1; color:#fff; border:none; padding:8px 15px; cursor:pointer; border-radius:4px; font-weight:bold;">Entrar</button>
+      <button onclick="cerrarLogin()" style="background:#dc3545; color:#fff; border:none; padding:8px 15px; cursor:pointer; border-radius:4px; margin-left:5px;">Cancelar</button>
     </div>
   </div>
 
   <script>
-    let listaAplicaciones = [];
+    // BASE DE DATOS LOCAL
+    let listaAplicaciones = JSON.parse(localStorage.getItem('mmhp_apps')) || [];
+    let listaNoticias = JSON.parse(localStorage.getItem('mmhp_news')) || [
+      {
+        id: 1,
+        titulo: "¡Bienvenido a MundoManuelHenPlay!",
+        fecha: new Date().toLocaleDateString(),
+        imagen: "V2/banner.png",
+        descripcion: "Aquí podrás ver todas las novedades y anuncios importantes de la página."
+      }
+    ];
+
+    let contadorVisitas = parseInt(localStorage.getItem('mmhp_visitas') || "0") + 1;
+    let contadorDescargas = parseInt(localStorage.getItem('mmhp_descargas') || "0");
+    localStorage.setItem('mmhp_visitas', contadorVisitas);
+
     let esAdmin = false;
-    let logoBase64Temp = '';
 
-    function cambiarTipoLogo() {
-      const tipo = document.getElementById('logoType').value;
-      document.getElementById('optUrl').style.display = tipo === 'url' ? 'block' : 'none';
-      document.getElementById('optFile').style.display = tipo === 'file' ? 'block' : 'none';
-      document.getElementById('optLocal').style.display = tipo === 'local' ? 'block' : 'none';
-    }
+    // AL CARGAR LA PÁGINA
+    window.onload = function() {
+      document.getElementById('cntVisitas').innerText = contadorVisitas;
+      document.getElementById('cntDescargas').innerText = contadorDescargas;
 
-    function convertirImagenEscritorio(event) {
-      const archivo = event.target.files[0];
-      if (archivo) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          logoBase64Temp = e.target.result;
-        };
-        reader.readAsDataURL(archivo);
-      }
-    }
+      renderizarAplicaciones(listaAplicaciones);
+      renderizarNoticias(listaNoticias);
+    };
 
-    function obtenerLogoSeleccionado() {
-      const tipo = document.getElementById('logoType').value;
-      if (tipo === 'url') {
-        return document.getElementById('appLogoUrl').value.trim() || 'V2/apps.png';
-      } else if (tipo === 'file') {
-        return logoBase64Temp || 'V2/apps.png';
-      } else {
-        return document.getElementById('appLogoLocal').value.trim() || 'V2/apps.png';
-      }
-    }
-
+    /* LOGIN ADMIN */
     function abrirLogin() {
       document.getElementById('loginModal').style.display = 'flex';
     }
 
     function cerrarLogin() {
       document.getElementById('loginModal').style.display = 'none';
+      document.getElementById('userInput').value = '';
+      document.getElementById('passInput').value = '';
     }
 
     function validarAdmin() {
-      const user = document.getElementById('userInput').value;
-      const pass = document.getElementById('passInput').value;
+      let u = document.getElementById('userInput').value.trim();
+      let p = document.getElementById('passInput').value.trim();
 
-      if (user === "admin" && pass === "1234") {
-        alert("¡Bienvenido Administrador!");
+      if (u === "admin" && p === "1234") {
+        alert("¡Acceso Correcto!");
         esAdmin = true;
         document.getElementById('adminPanel').style.display = 'block';
         document.getElementById('btnAccesoAdmin').style.display = 'none';
         cerrarLogin();
         renderizarAplicaciones(listaAplicaciones);
+        renderizarNoticias(listaNoticias);
       } else {
-        alert("Usuario o clave incorrectos.");
+        alert("Usuario o Contraseña incorrectos.");
       }
     }
 
@@ -432,77 +446,114 @@
       esAdmin = false;
       document.getElementById('adminPanel').style.display = 'none';
       document.getElementById('btnAccesoAdmin').style.display = 'inline-block';
-      document.getElementById('userInput').value = '';
-      document.getElementById('passInput').value = '';
       renderizarAplicaciones(listaAplicaciones);
-      alert("Sesión cerrada.");
+      renderizarNoticias(listaNoticias);
+    }
+
+    /* CONTADORES Y PUBLICACIONES */
+    function registrarDescarga() {
+      contadorDescargas++;
+      localStorage.setItem('mmhp_descargas', contadorDescargas);
+      document.getElementById('cntDescargas').innerText = contadorDescargas;
     }
 
     function agregarItem() {
-      const name = document.getElementById('appName').value.trim();
-      const category = document.getElementById('appCategory').value;
-      const logo = obtenerLogoSeleccionado();
-      const link = document.getElementById('appLink').value.trim();
+      let name = document.getElementById('appName').value.trim();
+      let category = document.getElementById('appCategory').value;
+      let logo = document.getElementById('appLogo').value.trim() || 'V2/apps.png';
+      let link = document.getElementById('appLink').value.trim();
 
       if(name && link) {
-        const nuevaApp = {
-          id: Date.now(),
-          nombre: name,
-          categoria: category,
-          logo: logo,
-          enlace: link
-        };
-
-        listaAplicaciones.push(nuevaApp);
+        listaAplicaciones.push({ id: Date.now(), nombre: name, categoria: category, logo: logo, enlace: link });
+        localStorage.setItem('mmhp_apps', JSON.stringify(listaAplicaciones));
         renderizarAplicaciones(listaAplicaciones);
 
-        // Limpiar formulario
         document.getElementById('appName').value = '';
-        document.getElementById('appLogoUrl').value = '';
-        document.getElementById('appLogoLocal').value = '';
-        document.getElementById('appLogoFile').value = '';
-        logoBase64Temp = '';
+        document.getElementById('appLogo').value = '';
         document.getElementById('appLink').value = '';
+        alert("Aplicación publicada con éxito.");
       } else {
-        alert("Por favor rellena al menos el Nombre y la Ruta/Enlace de descarga.");
+        alert("Ingresa el Nombre y el Enlace de la aplicación.");
+      }
+    }
+
+    function agregarNovedad() {
+      let title = document.getElementById('newsTitleInput').value.trim();
+      let img = document.getElementById('newsImgInput').value.trim() || 'V2/banner.png';
+      let desc = document.getElementById('newsDescInput').value.trim();
+
+      if(title && desc) {
+        listaNoticias.unshift({ id: Date.now(), titulo: title, fecha: new Date().toLocaleDateString(), imagen: img, descripcion: desc });
+        localStorage.setItem('mmhp_news', JSON.stringify(listaNoticias));
+        renderizarNoticias(listaNoticias);
+
+        document.getElementById('newsTitleInput').value = '';
+        document.getElementById('newsImgInput').value = '';
+        document.getElementById('newsDescInput').value = '';
+        alert("Novedad publicada con éxito.");
+      } else {
+        alert("Ingresa el Título y la Descripción de la novedad.");
       }
     }
 
     function eliminarItem(id) {
-      listaAplicaciones = listaAplicaciones.filter(app => app.id !== id);
+      listaAplicaciones = listaAplicaciones.filter(a => a.id !== id);
+      localStorage.setItem('mmhp_apps', JSON.stringify(listaAplicaciones));
       renderizarAplicaciones(listaAplicaciones);
     }
 
-    function renderizarAplicaciones(lista) {
-      const contenedor = document.getElementById('listaContenido');
-      contenedor.innerHTML = '';
+    function eliminarNovedad(id) {
+      listaNoticias = listaNoticias.filter(n => n.id !== id);
+      localStorage.setItem('mmhp_news', JSON.stringify(listaNoticias));
+      renderizarNoticias(listaNoticias);
+    }
 
-      if (lista.length === 0) {
-        contenedor.innerHTML = '<p style="color: #aaa;">No se encontraron elementos en esta categoría o búsqueda.</p>';
-        return;
-      }
+    /* MOSTRAR EN PANTALLA */
+    function renderizarAplicaciones(lista) {
+      let c = document.getElementById('listaContenido');
+      c.innerHTML = '';
+      if (lista.length === 0) { c.innerHTML = '<p style="color:#aaa;">No hay aplicaciones disponibles en esta sección.</p>'; return; }
 
       lista.forEach(app => {
-        const btnEliminar = esAdmin ? `<button onclick="eliminarItem(${app.id})" style="background:#dc3545; color:#fff; border:none; padding:6px 10px; border-radius:4px; cursor:pointer; margin-left:5px;">🗑️</button>` : '';
-
-        contenedor.innerHTML += `
+        let btnDel = esAdmin ? `<button onclick="eliminarItem(${app.id})" style="background:#dc3545; color:#fff; border:none; padding:6px 10px; border-radius:4px; cursor:pointer; margin-left:5px;">🗑️</button>` : '';
+        c.innerHTML += `
           <div class="app-card">
             <div class="app-info">
-              <img src="${app.logo}" alt="Logo" class="app-logo" onerror="this.src='V2/apps.png'">
+              <img src="${app.logo}" class="app-logo" onerror="this.src='V2/apps.png'">
               <div>
                 <strong>[${app.categoria}] ${app.nombre}</strong><br>
-                <small style="color: #aaa;">Ruta/Enlace: ${app.enlace}</small>
+                <small style="color:#aaa;">Ruta: ${app.enlace}</small>
               </div>
             </div>
             <div>
-              <a href="${app.enlace}" download style="background:#0070d1; color:#fff; padding:6px 12px; text-decoration:none; border-radius:4px; font-size:14px; display:inline-block;">Descargar</a>
-              ${btnEliminar}
+              <a href="${app.enlace}" download onclick="registrarDescarga()" style="background:#0070d1; color:#fff; padding:6px 12px; text-decoration:none; border-radius:4px; font-size:14px; display:inline-block;">Descargar</a>
+              ${btnDel}
             </div>
-          </div>
-        `;
+          </div>`;
       });
     }
 
+    function renderizarNoticias(lista) {
+      let c = document.getElementById('newsContainer');
+      c.innerHTML = '';
+      if(lista.length === 0) { c.innerHTML = '<p style="color:#aaa;">No hay novedades publicadas por ahora.</p>'; return; }
+
+      lista.forEach(n => {
+        let btn = esAdmin ? `<button onclick="eliminarNovedad(${n.id})" style="background:#dc3545; color:#fff; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:12px; margin-top:8px;">🗑️ Borrar Novedad</button>` : '';
+        c.innerHTML += `
+          <div class="news-card">
+            <img src="${n.imagen}" class="news-img" onerror="this.src='V2/banner.png'">
+            <div>
+              <h4 style="margin:0 0 5px 0; color:#00a2ff;">${n.titulo}</h4>
+              <small style="color:#aaa;">📅 Fecha: ${n.fecha}</small>
+              <p style="margin:8px 0 0 0; color:#ccc; font-size:14px; line-height:1.4;">${n.descripcion}</p>
+              ${btn}
+            </div>
+          </div>`;
+      });
+    }
+
+    /* FILTROS Y BÚSQUEDA CON LUPITA */
     function filtrarCategoria(cat) {
       document.getElementById('searchInput').value = '';
       if(cat === 'TODOS') {
@@ -510,18 +561,15 @@
         renderizarAplicaciones(listaAplicaciones);
       } else {
         document.getElementById('tituloSeccion').innerText = 'Sección: ' + cat;
-        const filtradas = listaAplicaciones.filter(app => app.categoria === cat);
-        renderizarAplicaciones(filtradas);
+        renderizarAplicaciones(listaAplicaciones.filter(app => app.categoria === cat));
       }
     }
 
     function buscarAplicacion() {
-      const texto = document.getElementById('searchInput').value.toLowerCase();
-      const resultado = listaAplicaciones.filter(app => 
-        app.nombre.toLowerCase().includes(texto) || app.categoria.toLowerCase().includes(texto)
-      );
-      renderizarAplicaciones(resultado);
+      let t = document.getElementById('searchInput').value.toLowerCase();
+      renderizarAplicaciones(listaAplicaciones.filter(app => app.nombre.toLowerCase().includes(t) || app.categoria.toLowerCase().includes(t)));
     }
   </script>
 </body>
-</html>
+    </html>
+      
