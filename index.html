@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MundoManuelHenPlay</title>
   <style>
-    /* 1. FONDO GLOBAL Y ESTILOS BASE */
+    /* 1. ESTILOS GENERALES */
     body {
       margin: 0;
       padding: 0;
@@ -15,11 +15,9 @@
       color: #ffffff;
     }
 
-    /* 2. ENCABEZADO Y BANNER */
     header {
-      position: relative;
       width: 100%;
-      background: rgba(0, 0, 0, 0.8);
+      background: rgba(0, 0, 0, 0.85);
       border-bottom: 2px solid #0070d1;
     }
 
@@ -30,13 +28,12 @@
       display: block;
     }
 
-    /* 3. BARRA DE NAVEGACIÓN Y CONTADORES */
     nav {
       background: #161920;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0 20px;
+      padding: 10px 20px;
       flex-wrap: wrap;
     }
 
@@ -54,7 +51,7 @@
 
     .nav-item > a {
       display: block;
-      padding: 15px 20px;
+      padding: 12px 18px;
       color: #fff;
       text-decoration: none;
       font-weight: bold;
@@ -101,48 +98,43 @@
     .header-right {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
     .counter-badge {
       background: #1f232d;
       border: 1px solid #0070d1;
       border-radius: 15px;
-      padding: 4px 10px;
-      font-size: 12px;
+      padding: 5px 12px;
+      font-size: 13px;
       color: #00a2ff;
       font-weight: bold;
-      display: flex;
-      align-items: center;
-      gap: 5px;
     }
 
-    .admin-btn {
+    .btn-admin {
       background: #0070d1;
-      border: 1px solid #0070d1;
-      color: #fff;
-      padding: 8px 14px;
-      border-radius: 4px;
+      color: #ffffff;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      font-weight: bold;
       cursor: pointer;
       font-size: 13px;
-      font-weight: bold;
     }
 
-    .admin-btn:hover {
+    .btn-admin:hover {
       background: #0056a3;
     }
 
-    /* 4. CONTENEDOR PRINCIPAL */
+    /* CONTENEDOR PRINCIPAL */
     main {
-      padding: 30px;
+      padding: 25px;
       max-width: 1000px;
-      margin: 0 auto;
-      background: rgba(15, 18, 24, 0.85);
-      margin-top: 20px;
+      margin: 20px auto;
+      background: rgba(15, 18, 24, 0.9);
       border-radius: 8px;
     }
 
-    /* BARRA DE BÚSQUEDA */
     .search-box {
       display: flex;
       align-items: center;
@@ -163,13 +155,13 @@
       font-size: 15px;
     }
 
-    /* SECCIÓN DE NOVEDADES Y NOTICIAS */
+    /* CUADRO DE NOVEDADES EN INICIO */
     #newsSection {
       background: #161920;
       border: 1px solid #0070d1;
       border-radius: 8px;
       padding: 20px;
-      margin-bottom: 30px;
+      margin-bottom: 25px;
     }
 
     .news-title {
@@ -177,59 +169,35 @@
       color: #00a2ff;
       border-bottom: 2px solid #0070d1;
       padding-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
     }
 
     .news-card {
       background: #1f232d;
       border-radius: 6px;
       padding: 15px;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
       display: flex;
       gap: 15px;
-      align-items: flex-start;
       border-left: 4px solid #28a745;
     }
 
     .news-img {
-      width: 110px;
-      height: 110px;
+      width: 100px;
+      height: 100px;
       object-fit: cover;
       border-radius: 6px;
       border: 1px solid #0070d1;
-      background: #0d0f12;
-      flex-shrink: 0;
+      background: #000;
     }
 
-    .news-content h4 {
-      margin: 0 0 5px 0;
-      font-size: 18px;
-      color: #fff;
-    }
-
-    .news-date {
-      font-size: 12px;
-      color: #00a2ff;
-      margin-bottom: 8px;
-    }
-
-    .news-desc {
-      margin: 0;
-      font-size: 14px;
-      color: #ccc;
-      line-height: 1.4;
-    }
-
-    /* PANELS DE ADMINISTRACIÓN */
+    /* PANEL DE CONTROL ADMINISTRADOR */
     #adminPanel {
       display: none;
       background: #252a36;
       padding: 20px;
-      border-radius: 6px;
+      border-radius: 8px;
       margin-bottom: 25px;
-      border: 1px solid #0070d1;
+      border: 2px solid #0070d1;
     }
 
     .admin-subpanel {
@@ -240,24 +208,6 @@
       border: 1px dashed #00a2ff;
     }
 
-    .admin-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
-      border-bottom: 1px solid #3a4150;
-      padding-bottom: 10px;
-    }
-
-    .logout-btn {
-      background: #dc3545;
-      color: #fff;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
     .form-group {
       margin-bottom: 12px;
     }
@@ -265,8 +215,8 @@
     .form-group label {
       display: block;
       margin-bottom: 5px;
-      font-size: 14px;
       color: #00a2ff;
+      font-size: 14px;
     }
 
     .form-group input, .form-group select, .form-group textarea {
@@ -284,35 +234,35 @@
       margin-top: 8px;
       padding: 10px;
       background: #161920;
-      border-radius: 4px;
       border: 1px dashed #0070d1;
+      border-radius: 4px;
     }
 
-    /* VENTANA EMERGENTE (MODAL LOGIN) - CORREGIDA */
-    .modal {
-      display: none;
+    /* VENTANA FLOTANTE DE LOGIN (VENTANA OCULTA) */
+    #loginModal {
+      display: none; /* Se cambia con JavaScript */
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
       background: rgba(0, 0, 0, 0.85);
+      z-index: 99999;
       justify-content: center;
       align-items: center;
-      z-index: 9999;
     }
 
-    .modal-content {
+    .modal-box {
       background: #1f232d;
       padding: 25px;
       border-radius: 8px;
       width: 300px;
       text-align: center;
-      border: 1px solid #0070d1;
-      box-shadow: 0px 0px 20px rgba(0, 112, 209, 0.5);
+      border: 2px solid #0070d1;
+      box-shadow: 0 0 15px rgba(0, 112, 209, 0.6);
     }
 
-    /* TARJETAS DE APLICACIONES */
+    /* LISTA DE APLICACIONES */
     .app-card {
       background: #1f232d;
       padding: 15px;
@@ -347,14 +297,10 @@
     
     <nav>
       <ul class="nav-links">
-        <li class="nav-item">
-          <a onclick="filtrarCategoria('TODOS')">🏠 Inicio</a>
-        </li>
+        <li class="nav-item"><a onclick="filtrarCategoria('TODOS')">🏠 Inicio</a></li>
         <li class="nav-item">
           <a onclick="filtrarCategoria('PS2')">PS2</a>
-          <ul class="dropdown">
-            <li><a onclick="filtrarCategoria('PS2')">Ver Todo PS2</a></li>
-          </ul>
+          <ul class="dropdown"><li><a onclick="filtrarCategoria('PS2')">Ver Todo PS2</a></li></ul>
         </li>
         <li class="nav-item">
           <a onclick="filtrarCategoria('PS3')">PS3</a>
@@ -367,26 +313,16 @@
         </li>
         <li class="nav-item">
           <a onclick="filtrarCategoria('PS4')">PS4</a>
-          <ul class="dropdown">
-            <li><a onclick="filtrarCategoria('PS4')">Ver Todo PS4</a></li>
-          </ul>
+          <ul class="dropdown"><li><a onclick="filtrarCategoria('PS4')">Ver Todo PS4</a></li></ul>
         </li>
-        <li class="nav-item">
-          <a onclick="filtrarCategoria('Herramientas')">🛠️ Herramientas</a>
-        </li>
-        <li class="nav-item">
-          <a onclick="filtrarCategoria('Utilidades')">⚙️ Utilidades</a>
-        </li>
+        <li class="nav-item"><a onclick="filtrarCategoria('Herramientas')">🛠️ Herramientas</a></li>
+        <li class="nav-item"><a onclick="filtrarCategoria('Utilidades')">⚙️ Utilidades</a></li>
       </ul>
 
       <div class="header-right">
-        <div class="counter-badge" title="Total de visitas a la página">
-          👥 <span id="cntVisitas">0</span>
-        </div>
-        <div class="counter-badge" title="Total de descargas realizadas">
-          📥 <span id="cntDescargas">0</span>
-        </div>
-        <button class="admin-btn" id="btnAccesoAdmin" onclick="abrirLogin()">🔒 Admin</button>
+        <div class="counter-badge">👥 <span id="cntVisitas">0</span></div>
+        <div class="counter-badge">📥 <span id="cntDescargas">0</span></div>
+        <button class="btn-admin" id="btnAccesoAdmin" onclick="mostrarLogin()">🔒 Admin</button>
       </div>
     </nav>
   </header>
@@ -394,31 +330,28 @@
   <main>
     <div class="search-box">
       <span>🔍</span>
-      <input type="text" id="searchInput" onkeyup="buscarAplicacion()" placeholder="Buscar archivo, noticia, herramienta o aplicación...">
+      <input type="text" id="searchInput" onkeyup="buscarAplicacion()" placeholder="Buscar archivo, noticia o herramientas...">
     </div>
 
     <section id="newsSection">
       <h3 class="news-title">📢 Novedades y Actualizaciones Recientes</h3>
-      <div id="newsContainer">
-        </div>
+      <div id="newsContainer"></div>
     </section>
 
     <section id="adminPanel">
-      <div class="admin-header">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3a4150; padding-bottom: 10px;">
         <h3 style="margin: 0; color: #00a2ff;">Panel de Control (Administrador)</h3>
-        <button class="logout-btn" onclick="cerrarSesionAdmin()">🚪 Cerrar Sesión</button>
+        <button onclick="cerrarSesionAdmin()" style="background:#dc3545; color:#fff; border:none; padding:6px 12px; border-radius:4px; cursor:pointer;">🚪 Cerrar Sesión</button>
       </div>
 
       <div class="admin-subpanel">
-        <h4 style="margin-top:0; color:#28a745;">📦 Plantilla 1: Publicar Aplicación / Archivo</h4>
-        
+        <h4 style="margin-top:0; color:#28a745;">📦 Agregar Aplicación / Archivo</h4>
         <div class="form-group">
-          <label>Nombre de la Aplicación/Archivo:</label>
-          <input type="text" id="appName" placeholder="Ejemplo: HEN 4.93 Installer">
+          <label>Nombre:</label>
+          <input type="text" id="appName" placeholder="Ej: HEN 4.93 Installer">
         </div>
-
         <div class="form-group">
-          <label>Sección / Categoría:</label>
+          <label>Categoría:</label>
           <select id="appCategory">
             <option value="PS2">PS2</option>
             <option value="PS3">PS3</option>
@@ -427,111 +360,43 @@
             <option value="Utilidades">Utilidades</option>
           </select>
         </div>
-
         <div class="form-group">
-          <label>Método para agregar Logo/Foto de la App:</label>
+          <label>Método de Logo:</label>
           <select id="logoType" onchange="cambiarTipoLogo()">
             <option value="url">🌐 Enlace Web (URL de Internet)</option>
-            <option value="file">📁 Subir desde el Escritorio / Equipo</option>
-            <option value="local">📂 Ruta Local del Proyecto (Ej: V2/hen.png)</option>
+            <option value="file">📁 Subir del Escritorio / Equipo</option>
+            <option value="local">📂 Ruta Local (Ej: V2/hen.png)</option>
           </select>
 
           <div id="optUrl" class="logo-options" style="display: block;">
             <input type="text" id="appLogoUrl" placeholder="https://ejemplo.com/imagen.png">
           </div>
           <div id="optFile" class="logo-options">
-            <input type="file" id="appLogoFile" accept="image/*" onchange="convertirImagenEscritorio(event, 'app')">
+            <input type="file" accept="image/*" onchange="convertirImagenEscritorio(event, 'app')">
           </div>
           <div id="optLocal" class="logo-options">
-            <input type="text" id="appLogoLocal" placeholder="Ejemplo: V2/hen.png o V2/apps.png">
+            <input type="text" id="appLogoLocal" placeholder="Ejemplo: V2/apps.png">
           </div>
         </div>
-
         <div class="form-group">
-          <label>Ruta o Enlace de Descarga:</label>
-          <input type="text" id="appLink" placeholder="Ps3/Hen/4.93/SETUP.P3T o link directo">
+          <label>Ruta o Link de Descarga:</label>
+          <input type="text" id="appLink" placeholder="Ps3/Hen/4.93/SETUP.P3T o enlace de internet">
         </div>
-
-        <button onclick="agregarItem()" style="background: #28a745; color:#fff; border:none; padding: 10px 15px; cursor:pointer; width: 100%; border-radius:4px; font-weight:bold;">＋ Agregar Aplicación a la Web</button>
+        <button onclick="agregarItem()" style="background:#28a745; color:#fff; border:none; padding:10px; width:100%; border-radius:4px; font-weight:bold; cursor:pointer;">＋ Publicar Aplicación</button>
       </div>
 
       <div class="admin-subpanel">
-        <h4 style="margin-top:0; color:#00a2ff;">📢 Plantilla 2: Publicar Novedad / Noticia (Inicio)</h4>
-
+        <h4 style="margin-top:0; color:#00a2ff;">📢 Publicar Novedad en Inicio</h4>
         <div class="form-group">
-          <label>Título de la Novedad:</label>
-          <input type="text" id="newsTitleInput" placeholder="Ejemplo: ¡Lanzado Nuevo HEN 4.93 Oficial!">
+          <label>Título:</label>
+          <input type="text" id="newsTitleInput" placeholder="Ej: ¡Actualización HEN disponible!">
         </div>
-
         <div class="form-group">
-          <label>Fecha del Anuncio:</label>
-          <input type="text" id="newsDateInput" placeholder="Ejemplo: 28/08/2026">
+          <label>Fecha:</label>
+          <input type="text" id="newsDateInput">
         </div>
-
         <div class="form-group">
-          <label>Imagen de la Novedad:</label>
+          <label>Imagen de Novedad:</label>
           <select id="newsImgType" onchange="cambiarTipoImgNews()">
-            <option value="url">🌐 Enlace Web (URL de Internet)</option>
-            <option value="file">📁 Subir desde el Escritorio / Equipo</option>
-            <option value="local">📂 Ruta Local (Ej: V2/hen.png)</option>
-          </select>
-
-          <div id="optNewsUrl" class="logo-options" style="display: block;">
-            <input type="text" id="newsImgUrl" placeholder="https://ejemplo.com/noticia.png">
-          </div>
-          <div id="optNewsFile" class="logo-options">
-            <input type="file" id="newsImgFile" accept="image/*" onchange="convertirImagenEscritorio(event, 'news')">
-          </div>
-          <div id="optNewsLocal" class="logo-options">
-            <input type="text" id="newsImgLocal" placeholder="Ejemplo: V2/banner.png">
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>Descripción / Detalle de la Novedad:</label>
-          <textarea id="newsDescInput" rows="3" placeholder="Escribe aquí los detalles del anuncio, mejoras o instrucciones..."></textarea>
-        </div>
-
-        <button onclick="agregarNovedad()" style="background: #0070d1; color:#fff; border:none; padding: 10px 15px; cursor:pointer; width: 100%; border-radius:4px; font-weight:bold;">📢 Publicar Novedad en Inicio</button>
-      </div>
-    </section>
-
-    <h2 id="tituloSeccion">Contenido Disponible</h2>
-    <div id="listaContenido">
-      </div>
-  </main>
-
-  <div id="loginModal" class="modal">
-    <div class="modal-content">
-      <h3 style="margin-top:0; color:#00a2ff;">Acceso Administrador</h3>
-      <input type="text" id="userInput" placeholder="Usuario" style="width:100%; margin-bottom:10px; padding:8px; box-sizing: border-box; background:#161920; border:1px solid #3a4150; color:#fff; border-radius:4px;">
-      <input type="password" id="passInput" placeholder="Contraseña" style="width:100%; margin-bottom:15px; padding:8px; box-sizing: border-box; background:#161920; border:1px solid #3a4150; color:#fff; border-radius:4px;">
-      <button onclick="validarAdmin()" style="background:#0070d1; color:#fff; border:none; padding:8px 15px; cursor:pointer; border-radius:4px; font-weight:bold;">Entrar</button>
-      <button onclick="cerrarLogin()" style="background:#dc3545; color:#fff; border:none; padding:8px 15px; cursor:pointer; border-radius:4px; margin-left:5px;">Cancelar</button>
-    </div>
-  </div>
-
-  <script>
-    // Variables almacenadas en localStorage
-    let listaAplicaciones = JSON.parse(localStorage.getItem('mmhp_apps')) || [];
-    let listaNoticias = JSON.parse(localStorage.getItem('mmhp_news')) || [
-      {
-        id: 1,
-        titulo: "¡Bienvenido a MundoManuelHenPlay!",
-        fecha: "28/08/2026",
-        imagen: "V2/banner.png",
-        descripcion: "Explora todas nuestras secciones de PS2, PS3, PS4, Herramientas y Utilidades. Mantente atento a esta sección para futuras actualizaciones."
-      }
-    ];
-
-    let contadorVisitas = parseInt(localStorage.getItem('mmhp_visitas') || "0") + 1;
-    let contadorDescargas = parseInt(localStorage.getItem('mmhp_descargas') || "0");
-    
-    localStorage.setItem('mmhp_visitas', contadorVisitas);
-
-    let esAdmin = false;
-    let logoBase64App = '';
-    let logoBase64News = '';
-
-    // Carga inicial al abrir la página
-    document.addEventListener("DOMContentLoaded", () =>
+            <option value="url">
+              
