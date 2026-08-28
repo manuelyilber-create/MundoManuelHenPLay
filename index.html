@@ -178,12 +178,14 @@
     }
 
     .form-group {
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
 
     .form-group label {
       display: block;
       margin-bottom: 5px;
+      font-size: 14px;
+      color: #00a2ff;
     }
 
     .form-group input, .form-group select {
@@ -193,6 +195,16 @@
       background: #161920;
       border: 1px solid #3a4150;
       color: #fff;
+      border-radius: 4px;
+    }
+
+    .logo-options {
+      display: none;
+      margin-top: 8px;
+      padding: 10px;
+      background: #1a1e27;
+      border-radius: 4px;
+      border: 1px dashed #0070d1;
     }
 
     /* VENTANA EMERGENTE (MODAL LOGIN) */
@@ -301,6 +313,7 @@
         <label>Nombre de la Aplicación/Archivo:</label>
         <input type="text" id="appName" placeholder="Ejemplo: HEN 4.93 Installer">
       </div>
+
       <div class="form-group">
         <label>Sección / Categoría:</label>
         <select id="appCategory">
@@ -311,15 +324,34 @@
           <option value="Utilidades">Utilidades</option>
         </select>
       </div>
+
       <div class="form-group">
-        <label>Ruta/Enlace del Logo (Imagen):</label>
-        <input type="text" id="appLogo" placeholder="Ejemplo: V2/hen.png o V2/apps.png">
+        <label>Método para agregar Logo/Foto:</label>
+        <select id="logoType" onchange="cambiarTipoLogo()">
+          <option value="url">🌐 Enlace Web (URL de Internet)</option>
+          <option value="file">📁 Subir desde el Escritorio / Equipo</option>
+          <option value="local">📂 Ruta Local del Proyecto (Ej: V2/hen.png)</option>
+        </select>
+
+        <div id="optUrl" class="logo-options" style="display: block;">
+          <input type="text" id="appLogoUrl" placeholder="https://ejemplo.com/imagen.png">
+        </div>
+
+        <div id="optFile" class="logo-options">
+          <input type="file" id="appLogoFile" accept="image/*" onchange="convertirImagenEscritorio(event)">
+        </div>
+
+        <div id="optLocal" class="logo-options">
+          <input type="text" id="appLogoLocal" placeholder="Ejemplo: V2/hen.png o V2/apps.png">
+        </div>
       </div>
+
       <div class="form-group">
         <label>Ruta o Enlace de Descarga:</label>
-        <input type="text" id="appLink" placeholder="Ps3/Hen/4.93/SETUP.P3T">
+        <input type="text" id="appLink" placeholder="Ps3/Hen/4.93/SETUP.P3T o link directo">
       </div>
-      <button onclick="agregarItem()" style="background: #28a745; color:#fff; border:none; padding: 10px 15px; cursor:pointer; width: 100%; border-radius:4px; font-weight:bold;">＋ Agregar a la Web</button>
+
+      <button onclick="agregarItem()" style="background: #28a745; color:#fff; border:none; padding: 10px 15px; cursor:pointer; width: 100%; border-radius:4px; font-weight:bold; margin-top: 10px;">＋ Agregar a la Web</button>
     </section>
 
     <h2 id="tituloSeccion">Contenido Disponible</h2>
@@ -339,9 +371,38 @@
   </div>
 
   <script>
-    // Arreglo donde se almacenan las aplicaciones agregadas
     let listaAplicaciones = [];
     let esAdmin = false;
+    let logoBase64Temp = '';
+
+    function cambiarTipoLogo() {
+      const tipo = document.getElementById('logoType').value;
+      document.getElementById('optUrl').style.display = tipo === 'url' ? 'block' : 'none';
+      document.getElementById('optFile').style.display = tipo === 'file' ? 'block' : 'none';
+      document.getElementById('optLocal').style.display = tipo === 'local' ? 'block' : 'none';
+    }
+
+    function convertirImagenEscritorio(event) {
+      const archivo = event.target.files[0];
+      if (archivo) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          logoBase64Temp = e.target.result;
+        };
+        reader.readAsDataURL(archivo);
+      }
+    }
+
+    function obtenerLogoSeleccionado() {
+      const tipo = document.getElementById('logoType').value;
+      if (tipo === 'url') {
+        return document.getElementById('appLogoUrl').value.trim() || 'V2/apps.png';
+      } else if (tipo === 'file') {
+        return logoBase64Temp || 'V2/apps.png';
+      } else {
+        return document.getElementById('appLogoLocal').value.trim() || 'V2/apps.png';
+      }
+    }
 
     function abrirLogin() {
       document.getElementById('loginModal').style.display = 'flex';
@@ -380,7 +441,7 @@
     function agregarItem() {
       const name = document.getElementById('appName').value.trim();
       const category = document.getElementById('appCategory').value;
-      const logo = document.getElementById('appLogo').value.trim() || 'V2/apps.png';
+      const logo = obtenerLogoSeleccionado();
       const link = document.getElementById('appLink').value.trim();
 
       if(name && link) {
@@ -397,10 +458,13 @@
 
         // Limpiar formulario
         document.getElementById('appName').value = '';
-        document.getElementById('appLogo').value = '';
+        document.getElementById('appLogoUrl').value = '';
+        document.getElementById('appLogoLocal').value = '';
+        document.getElementById('appLogoFile').value = '';
+        logoBase64Temp = '';
         document.getElementById('appLink').value = '';
       } else {
-        alert("Por favor rellena al menos el Nombre y la Ruta de descarga.");
+        alert("Por favor rellena al menos el Nombre y la Ruta/Enlace de descarga.");
       }
     }
 
@@ -427,7 +491,7 @@
               <img src="${app.logo}" alt="Logo" class="app-logo" onerror="this.src='V2/apps.png'">
               <div>
                 <strong>[${app.categoria}] ${app.nombre}</strong><br>
-                <small style="color: #aaa;">Ruta: ${app.enlace}</small>
+                <small style="color: #aaa;">Ruta/Enlace: ${app.enlace}</small>
               </div>
             </div>
             <div>
