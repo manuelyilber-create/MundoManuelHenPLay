@@ -130,7 +130,7 @@
       border-radius: 8px;
     }
 
-    /* BARRA DE BÚSQUEDA (LUPITA) */
+    /* BARRA DE BÚSQUEDA */
     .search-box {
       display: flex;
       align-items: center;
@@ -178,7 +178,7 @@
       background: #161920;
     }
 
-    /* CUADRO DE NOVEDADES (ABAJO DE LAS APLICACIONES) */
+    /* CUADRO DE NOVEDADES */
     #newsSection {
       background: #161920;
       border: 1px solid #00a2ff;
@@ -300,7 +300,6 @@
         </li>
         <li class="nav-item"><a onclick="filtrarCategoria('Herramientas')">🛠️ Herramientas</a></li>
         <li class="nav-item"><a onclick="filtrarCategoria('Utilidades')">⚙️ Utilidades</a></li>
-        <!-- NUEVA CATEGORÍA AÑADIDA -->
         <li class="nav-item"><a onclick="filtrarCategoria('Android')">🤖 Android</a></li>
       </ul>
 
@@ -366,6 +365,31 @@
         </div>
         <button onclick="agregarNovedad()" style="background:#0070d1; color:#fff; border:none; padding:10px; width:100%; border-radius:4px; font-weight:bold; cursor:pointer;">📢 Publicar Novedad en el Inicio</button>
       </div>
+
+      <!-- PARTE 3 ADMIN: SEGURIDAD (CAMBIO DE USUARIO Y CLAVE) -->
+      <div class="admin-subpanel" style="border-color: #ffc107;">
+        <h4 style="margin-top:0; color:#ffc107;">🔑 3. Configuración de Seguridad</h4>
+        
+        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+          <!-- Modificar Usuario -->
+          <div style="flex: 1; min-width: 250px;">
+            <div class="form-group">
+              <label>Cambiar Usuario Admin:</label>
+              <input type="text" id="newUsernameInput" placeholder="Escribe el nuevo usuario">
+            </div>
+            <button onclick="cambiarUsuarioAdmin()" style="background:#ffc107; color:#000; border:none; padding:8px; width:100%; border-radius:4px; font-weight:bold; cursor:pointer;">Guardar Nuevo Usuario</button>
+          </div>
+
+          <!-- Modificar Contraseña -->
+          <div style="flex: 1; min-width: 250px;">
+            <div class="form-group">
+              <label>Cambiar Contraseña Admin:</label>
+              <input type="password" id="newPasswordInput" placeholder="Escribe la nueva contraseña">
+            </div>
+            <button onclick="cambiarClaveAdmin()" style="background:#ffc107; color:#000; border:none; padding:8px; width:100%; border-radius:4px; font-weight:bold; cursor:pointer;">Guardar Nueva Contraseña</button>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- BARRA DE BÚSQUEDA Y LUPITA -->
@@ -378,7 +402,7 @@
     <h2 id="tituloSeccion" style="color: #00a2ff;">Contenido Disponible</h2>
     <div id="listaContenido"></div>
 
-    <!-- SECCIÓN 2: NOVEDADES Y ANUNCIOS (CUADRO ABAJO) -->
+    <!-- SECCIÓN 2: NOVEDADES Y ANUNCIOS -->
     <section id="newsSection">
       <h3 class="news-title">📢 Novedades y Anuncios Recientes</h3>
       <div id="newsContainer"></div>
@@ -397,6 +421,10 @@
   </div>
 
   <script>
+    // VALORES POR DEFECTO ENCRIPTADOS ("admin" y "1234")
+    const DEFAULT_USER_HASH = "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918";
+    const DEFAULT_PASS_HASH = "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4";
+
     // BASE DE DATOS LOCAL
     let listaAplicaciones = JSON.parse(localStorage.getItem('mmhp_apps')) || [];
     let listaNoticias = JSON.parse(localStorage.getItem('mmhp_news')) || [
@@ -417,12 +445,28 @@
 
     // AL CARGAR LA PÁGINA
     window.onload = function() {
+      // Verificar e inicializar credenciales encriptadas si no existen
+      if (!localStorage.getItem('mmhp_user_hash')) {
+        localStorage.setItem('mmhp_user_hash', DEFAULT_USER_HASH);
+      }
+      if (!localStorage.getItem('mmhp_pass_hash')) {
+        localStorage.setItem('mmhp_pass_hash', DEFAULT_PASS_HASH);
+      }
+
       document.getElementById('cntVisitas').innerText = contadorVisitas;
       document.getElementById('cntDescargas').innerText = contadorDescargas;
 
       renderizarAplicaciones(listaAplicaciones);
       renderizarNoticias(listaNoticias);
     };
+
+    /* FUNCIÓN MATEMÁTICA DE ENCRIPTACIÓN SHA-256 */
+    async function encriptarTexto(texto) {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(texto);
+      const hash = await crypto.subtle.digest('SHA-256', data);
+      return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
 
     /* LOGIN ADMIN */
     function abrirLogin() {
@@ -435,11 +479,22 @@
       document.getElementById('passInput').value = '';
     }
 
-    function validarAdmin() {
+    async function validarAdmin() {
       let u = document.getElementById('userInput').value.trim();
       let p = document.getElementById('passInput').value.trim();
 
-      if (u === "admin" && p === "1234") {
+      if (!u || !p) {
+        alert("Por favor completa ambos campos.");
+        return;
+      }
+
+      let userHash = await encriptarTexto(u);
+      let passHash = await encriptarTexto(p);
+
+      let savedUserHash = localStorage.getItem('mmhp_user_hash');
+      let savedPassHash = localStorage.getItem('mmhp_pass_hash');
+
+      if (userHash === savedUserHash && passHash === savedPassHash) {
         alert("¡Acceso Correcto!");
         esAdmin = true;
         document.getElementById('adminPanel').style.display = 'block';
@@ -458,6 +513,33 @@
       document.getElementById('btnAccesoAdmin').style.display = 'inline-block';
       renderizarAplicaciones(listaAplicaciones);
       renderizarNoticias(listaNoticias);
+    }
+
+    /* CAMBIO INDEPENDIENTE DE USUARIO Y CLAVE ENCRIPTADA */
+    async function cambiarUsuarioAdmin() {
+      let nuevoUsuario = document.getElementById('newUsernameInput').value.trim();
+      if (!nuevoUsuario) {
+        alert("Escribe el nuevo nombre de usuario.");
+        return;
+      }
+
+      let nuevoUserHash = await encriptarTexto(nuevoUsuario);
+      localStorage.setItem('mmhp_user_hash', nuevoUserHash);
+      document.getElementById('newUsernameInput').value = '';
+      alert("¡Usuario actualizado correctamente y guardado de forma encriptada!");
+    }
+
+    async function cambiarClaveAdmin() {
+      let nuevaClave = document.getElementById('newPasswordInput').value.trim();
+      if (!nuevaClave) {
+        alert("Escribe la nueva contraseña.");
+        return;
+      }
+
+      let nuevaPassHash = await encriptarTexto(nuevaClave);
+      localStorage.setItem('mmhp_pass_hash', nuevaPassHash);
+      document.getElementById('newPasswordInput').value = '';
+      alert("¡Contraseña actualizada correctamente y guardada de forma encriptada!");
     }
 
     /* CONTADORES Y PUBLICACIONES */
@@ -509,77 +591,4 @@
     function eliminarItem(id) {
       listaAplicaciones = listaAplicaciones.filter(a => a.id !== id);
       localStorage.setItem('mmhp_apps', JSON.stringify(listaAplicaciones));
-      renderizarAplicaciones(listaAplicaciones);
-    }
-
-    function eliminarNovedad(id) {
-      listaNoticias = listaNoticias.filter(n => n.id !== id);
-      localStorage.setItem('mmhp_news', JSON.stringify(listaNoticias));
-      renderizarNoticias(listaNoticias);
-    }
-
-    /* MOSTRAR EN PANTALLA */
-    function renderizarAplicaciones(lista) {
-      let c = document.getElementById('listaContenido');
-      c.innerHTML = '';
-      if (lista.length === 0) { c.innerHTML = '<p style="color:#aaa;">No hay aplicaciones disponibles en esta sección.</p>'; return; }
-
-      lista.forEach(app => {
-        let btnDel = esAdmin ? `<button onclick="eliminarItem(${app.id})" style="background:#dc3545; color:#fff; border:none; padding:6px 10px; border-radius:4px; cursor:pointer; margin-left:5px;">🗑️</button>` : '';
-        
-        // AQUÍ SE REMOVIÓ LA LÍNEA DE RUTA PARA QUE SOLO SE VEA CATEGORÍA Y NOMBRE/VERSIÓN
-        c.innerHTML += `
-          <div class="app-card">
-            <div class="app-info">
-              <img src="${app.logo}" class="app-logo" onerror="this.src='V2/apps.png'">
-              <div>
-                <strong style="font-size:16px;">[${app.categoria}] ${app.nombre}</strong>
-              </div>
-            </div>
-            <div>
-              <a href="${app.enlace}" download onclick="registrarDescarga()" style="background:#0070d1; color:#fff; padding:8px 14px; text-decoration:none; border-radius:4px; font-size:14px; display:inline-block; font-weight:bold;">Descargar</a>
-              ${btnDel}
-            </div>
-          </div>`;
-      });
-    }
-
-    function renderizarNoticias(lista) {
-      let c = document.getElementById('newsContainer');
-      c.innerHTML = '';
-      if(lista.length === 0) { c.innerHTML = '<p style="color:#aaa;">No hay novedades publicadas por ahora.</p>'; return; }
-
-      lista.forEach(n => {
-        let btn = esAdmin ? `<button onclick="eliminarNovedad(${n.id})" style="background:#dc3545; color:#fff; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:12px; margin-top:8px;">🗑️ Borrar Novedad</button>` : '';
-        c.innerHTML += `
-          <div class="news-card">
-            <img src="${n.imagen}" class="news-img" onerror="this.src='V2/banner.png'">
-            <div>
-              <h4 style="margin:0 0 5px 0; color:#00a2ff;">${n.titulo}</h4>
-              <small style="color:#aaa;">📅 Fecha: ${n.fecha}</small>
-              <p style="margin:8px 0 0 0; color:#ccc; font-size:14px; line-height:1.4;">${n.descripcion}</p>
-              ${btn}
-            </div>
-          </div>`;
-      });
-    }
-
-    /* FILTROS Y BÚSQUEDA CON LUPITA */
-    function filtrarCategoria(cat) {
-      document.getElementById('searchInput').value = '';
-      if(cat === 'TODOS') {
-        document.getElementById('tituloSeccion').innerText = 'Contenido Disponible';
-        renderizarAplicaciones(listaAplicaciones);
-      } else {
-        document.getElementById('tituloSeccion').innerText = 'Sección: ' + cat;
-        renderizarAplicaciones(listaAplicaciones.filter(app => app.categoria === cat));
-      }
-    }
-
-    function buscarAplicacion() {
-      let t = document.getElementById('searchInput').value.toLowerCase();
-      renderizarAplicaciones(listaAplicaciones.filter(app => app.nombre.toLowerCase().includes(t) || app.categoria.toLowerCase().includes(t)));
-    }
-  </script>
-</body>
-</html>
+      render
