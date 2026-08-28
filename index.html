@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Console HEN Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;800&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #080b12;
+      --ps2-blue: #00439c;
+      --ps3-red: #ff0055;
+      --ps4-cyan: #00d4ff;
+      --glass-bg: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Rajdhani', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-x: hidden;
+      /* Fondo dinámico estilo malla neón */
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(0, 67, 156, 0.3) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(255, 0, 85, 0.25) 0%, transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(0, 212, 255, 0.15) 0%, transparent 60%);
+      background-attachment: fixed;
+    }
+
+    /* Encabezado */
+    header {
+      width: 100%;
+      padding: 2rem 1rem;
+      text-align: center;
+      background: rgba(8, 11, 18, 0.6);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--glass-border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    header h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.2rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, #00d4ff, #ff0055);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+    }
+
+    /* Grid de Módulos */
+    .container {
+      max-width: 1200px;
+      width: 90%;
+      margin: 3rem auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+
+    /* Tarjetas Modulares */
+    .console-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* Efecto de resplandor según consola */
+    .console-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      transition: height 0.3s ease;
+    }
+
+    .card-ps2::before { background: var(--ps2-blue); box-shadow: 0 0 15px var(--ps2-blue); }
+    .card-ps3::before { background: var(--ps3-red); box-shadow: 0 0 15px var(--ps3-red); }
+    .card-ps4::before { background: var(--ps4-cyan); box-shadow: 0 0 15px var(--ps4-cyan); }
+
+    .console-card:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    .card-ps2:hover { border-color: var(--ps2-blue); }
+    .card-ps3:hover { border-color: var(--ps3-red); }
+    .card-ps4:hover { border-color: var(--ps4-cyan); }
+
+    .card-badge {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 20px;
+      width: fit-content;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+    }
+
+    .card-ps2 .card-badge { background: rgba(0, 67, 156, 0.3); color: #4a90e2; border: 1px solid var(--ps2-blue); }
+    .card-ps3 .card-badge { background: rgba(255, 0, 85, 0.3); color: #ff5588; border: 1px solid var(--ps3-red); }
+    .card-ps4 .card-badge { background: rgba(0, 212, 255, 0.3); color: #80e5ff; border: 1px solid var(--ps4-cyan); }
+
+    .console-card h2 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .console-card p {
+      color: #a0a5b5;
+      font-size: 1rem;
+      line-height: 1.5;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Lista de Enlaces / Recursos */
+    .links-list {
+      list-style: none;
+      margin-bottom: 1.5rem;
+    }
+
+    .links-list li {
+      margin-bottom: 0.5rem;
+    }
+
+    .links-list a {
+      color: #e0e0e0;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      transition: background 0.2s;
+    }
+
+    .links-list a:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+
+    /* Botón Principal */
+    .btn-action {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      text-align: center;
+      text-decoration: none;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+      color: #fff;
+    }
+
+    .card-ps2 .btn-action { background: var(--ps2-blue); }
+    .card-ps3 .btn-action { background: var(--ps3-red); }
+    .card-ps4 .btn-action { background: var(--ps4-cyan); color: #000; }
+
+    .btn-action:hover {
+      filter: brightness(1.2);
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>CONSOLE HEN PORTAL</h1>
+  </header>
+
+  <div class="container">
+
+    <div class="console-card card-ps2">
+      <div>
+        <span class="card-badge">Retro Zone</span>
+        <h2>PLAYSTATION 2</h2>
+        <p>Catálogo de ISOs, FreeMcBoot, OPL y herramientas de conversión.</p>
+        <ul class="links-list">
+          <li><a href="#ps2-hen"><span>✦ Exploit / FMCB</span> ➔</a></li>
+          <li><a href="#ps2-games"><span>✦ ISOs & Juegos PS2</span> ➔</a></li>
+          <li><a href="#ps2-apps"><span>✦ Open PS2 Loader</span> ➔</a></li>
+        </ul>
+      </div>
+      <a href="#ps2-hub" class="btn-action">Entrar a PS2</a>
+    </div>
+
+    <div class="console-card card-ps3">
+      <div>
+        <span class="card-badge">HEN Homebrew</span>
+        <h2>PLAYSTATION 3</h2>
+        <p>Instaladores PKG, tiendas no oficiales, emuladores y PS3HEN.</p>
+        <ul class="links-list">
+          <li><a href="#ps3-hen"><span>✦ PS3HEN Installer</span> ➔</a></li>
+          <li><a href="#ps3-games"><span>✦ Catálogo PKG / ISO</span> ➔</a></li>
+          <li><a href="#ps3-tools"><span>✦ webMAN & irisMAN</span> ➔</a></li>
+        </ul>
+      </div>
+      <a href="#ps3-hub" class="btn-action">Entrar a PS3</a>
+    </div>
+
+    <div class="console-card card-ps4">
+      <div>
+        <span class="card-badge">Next Gen Exploits</span>
+        <h2>PLAYSTATION 4</h2>
+        <p>GoldHEN, FPKG, cargas útiles (Payloads) y firmwares compatibles.</p>
+        <ul class="links-list">
+          <li><a href="#ps4-hen"><span>✦ GoldHEN Host</span> ➔</a></li>
+          <li><a href="#ps4-games"><span>✦ FPKG Backup Games</span> ➔</a></li>
+          <li><a href="#ps4-tools"><span>✦ USB & Offline Tools</span> ➔</a></li>
+        </ul>
+      </div>
+      <a href="#ps4-hub" class="btn-action">Entrar a PS4</a>
+    </div>
+
+  </div>
+
+</body>
+</html>
