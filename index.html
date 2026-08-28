@@ -1,180 +1,297 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Console Portal</title>
-    <style>
-        :root {
-            /* Cambia las imágenes de fondo y banner aquí */
-            --bg-image: url('V2/fondo.jpg');
-            --banner-image: url('V2/banner.png');
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MundoManuelHenPlay</title>
+  <style>
+    /* 1. FONDO GLOBAL Y ESTILOS BASE */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: #0d0f12 url('fondo/fondo.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #ffffff;
+    }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+    /* 2. ENCABEZADO Y BANNER */
+    header {
+      position: relative;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      border-bottom: 2px solid #0070d1;
+    }
 
-        body {
-            background: #0f1015 var(--bg-image) no-repeat center center fixed;
-            background-size: cover;
-            color: #ffffff;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+    .banner {
+      width: 100%;
+      max-height: 180px;
+      object-fit: cover;
+      display: block;
+    }
 
-        /* BANNER SUPERIOR */
-        .header-banner {
-            width: 100%;
-            height: 250px;
-            margin-top: 25px;
-            
-            background-size: contain;
-            background-color: transparent; 
-            
-            border-bottom: 3px solid #00d2ff;
-            box-shadow: 0 4px 15px rgba(0, 210, 255, 0.4);
-        }
+    /* 3. BARRA DE NAVEGACIÓN Y MENÚ DESPLEGABLE */
+    nav {
+      background: #161920;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+    }
 
-        .container {
-            width: 90%;
-            max-width: 1100px;
-            margin: 30px auto;
-        }
+    .nav-links {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+    }
 
-        /* GRID PRINCIPAL DE CONSOLAS */
-        .console-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-        }
+    .nav-item {
+      position: relative;
+    }
 
-        /* TARJETAS ESTILO GLASSMORPHISM */
-        .card {
-            background: rgba(20, 25, 40, 0.75);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 25px;
-            text-align: center;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            transition: transform 0.3s ease, border-color 0.3s ease;
-        }
+    .nav-item > a {
+      display: block;
+      padding: 15px 25px;
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+    }
 
-        .card:hover {
-            transform: translateY(-5px);
-            border-color: #00d2ff;
-        }
+    .nav-item:hover > a {
+      background: #0070d1;
+    }
 
-        .card h2 {
-            font-size: 1.8rem;
-            margin-bottom: 10px;
-            color: #00d2ff;
-        }
+    /* Submenú desplegable lateral/hacia abajo */
+    .dropdown {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: #1f232d;
+      min-width: 180px;
+      box-shadow: 0px 8px 16px rgba(0,0,0,0.5);
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      z-index: 1000;
+    }
 
-        .card p {
-            font-size: 0.95rem;
-            color: #ccc;
-            margin-bottom: 20px;
-        }
+    .dropdown li a {
+      color: #ccc;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+      border-bottom: 1px solid #2a2f3d;
+    }
 
-        .btn {
-            display: inline-block;
-            width: 100%;
-            padding: 12px 0;
-            background: linear-gradient(45deg, #0072ff, #00d2ff);
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-            border: none;
-            transition: opacity 0.2s;
-        }
+    .dropdown li a:hover {
+      background: #0070d1;
+      color: #fff;
+    }
 
-        .btn:hover {
-            opacity: 0.9;
-        }
+    .nav-item:hover .dropdown {
+      display: block;
+    }
 
-        /* SECCIÓN DESPLEGABLE DE FIRMWARES */
-        .subversions {
-            display: none;
-            margin-top: 15px;
-            flex-direction: column;
-            gap: 10px;
-            border-top: 1px solid rgba(255, 255, 255, 0.15);
-            padding-top: 15px;
-        }
+    /* 4. BOTÓN ADMIN DISCRETO (ESQUINA SUPERIOR) */
+    .admin-btn {
+      background: transparent;
+      border: 1px solid #0070d1;
+      color: #0070d1;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+    }
 
-        .sub-btn {
-            background: rgba(255, 255, 255, 0.08);
-            color: #fff;
-            padding: 10px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-size: 0.9rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: background 0.3s;
-        }
+    .admin-btn:hover {
+      background: #0070d1;
+      color: #fff;
+    }
 
-        .sub-btn:hover {
-            background: rgba(0, 210, 255, 0.3);
-        }
+    /* 5. CONTENEDOR PRINCIPAL */
+    main {
+      padding: 30px;
+      max-width: 1000px;
+      margin: 0 auto;
+      background: rgba(15, 18, 24, 0.85);
+      margin-top: 20px;
+      border-radius: 8px;
+    }
 
-        .subversions.active {
-            display: flex;
-        }
-    </style>
+    /* PANEL ADMIN OCULTO */
+    #adminPanel {
+      display: none;
+      background: #252a36;
+      padding: 20px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      border: 1px solid #0070d1;
+    }
+
+    .form-group {
+      margin-bottom: 10px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+      background: #161920;
+      border: 1px solid #3a4150;
+      color: #fff;
+    }
+
+    /* VENTANA EMERGENTE (MODAL LOGIN) */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+
+    .modal-content {
+      background: #1f232d;
+      padding: 25px;
+      border-radius: 8px;
+      width: 300px;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
 
-    <!-- Banner Superior -->
-    <header class="header-banner"></header>
+  <header>
+    <!-- Coloca tu imagen de banner en la carpeta "fondo" -->
+    <img src="fondo/banner.png" alt="Banner MundoManuelHenPlay" class="banner" onerror="this.style.display='none'">
+    
+    <nav>
+      <ul class="nav-links">
+        <li class="nav-item">
+          <a href="#">PS2</a>
+          <ul class="dropdown">
+            <li><a href="#">Juegos PS2</a></li>
+            <li><a href="#">Herramientas</a></li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a href="#">PS3</a>
+          <ul class="dropdown">
+            <li><a href="Ps3/Hen/4.91/index.html">HEN 4.91</a></li>
+            <li><a href="Ps3/Hen/4.92/index.html">HEN 4.92</a></li>
+            <li><a href="Ps3/Hen/4.93/index.html">HEN 4.93</a></li>
+            <li><a href="Ps3/Hen/4.93/SETUP.P3T">SETUP.P3T</a></li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a href="#">PS4</a>
+          <ul class="dropdown">
+            <li><a href="#">Payloads</a></li>
+            <li><a href="#">PKGs</a></li>
+          </ul>
+        </li>
+      </ul>
 
-    <div class="container">
-        <div class="console-grid">
-            
-            <!-- PLAYSTATION 2 -->
-            <div class="card">
-                <h2>PLAYSTATION 2</h2>
-                <p>Catálogo de ISOs, FMCB, OPL y herramientas de conversión.</p>
-                <a href="ps2.html" class="btn">ENTRAR A PS2</a>
-            </div>
+      <!-- Botón Admin Esquina -->
+      <button class="admin-btn" onclick="abrirLogin()">🔒 Admin</button>
+    </nav>
+  </header>
 
-            <!-- PLAYSTATION 3 (CON SUB-DESPLEGABLE) -->
-            <div class="card">
-                <h2>PLAYSTATION 3</h2>
-                <p>Instaladores HEN, archivos PKG y herramientas de sistema.</p>
-                <button class="btn" onclick="toggleSubMenu('ps3-subs')">VER VERSIONES HEN</button>
-                
-                <div id="ps3-subs" class="subversions">
-                    <a href="Ps3/Hen/4.91/index.html" class="sub-btn">📂 HEN Versión 4.91</a>
-                    <a href="Ps3/Hen/4.92/index.html" class="sub-btn">📂 HEN Versión 4.92</a>
-                    <a href="Ps3/Hen/4.93/index.html" class="sub-btn">📂 Auto HEN Versión 4.93</a>
-                </div>
-            </div>
+  <main>
+    <!-- PANEL DE ADMINISTRACIÓN (SOLO VISIBLE AL INICIAR SESIÓN) -->
+    <section id="adminPanel">
+      <h3>Panel de Control (Administrador)</h3>
+      <div class="form-group">
+        <label>Nombre de la Aplicación/Archivo:</label>
+        <input type="text" id="appName" placeholder="Ejemplo: HEN 4.93 Installer">
+      </div>
+      <div class="form-group">
+        <label>Sección:</label>
+        <select id="appCategory">
+          <option value="PS2">PS2</option>
+          <option value="PS3">PS3</option>
+          <option value="PS4">PS4</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Ruta o Enlace de Descarga:</label>
+        <input type="text" id="appLink" placeholder="Ps3/Hen/4.93/SETUP.P3T">
+      </div>
+      <button onclick="agregarItem()" style="background: #28a745; color:#fff; border:none; padding: 10px 15px; cursor:pointer;">＋ Agregar a la Web</button>
+    </section>
 
-            <!-- PLAYSTATION 4 -->
-            <div class="card">
-                <h2>PLAYSTATION 4</h2>
-                <p>GoldHEN, FPKG, cargas útiles (Payloads) y firmwares.</p>
-                <a href="ps4.html" class="btn">ENTRAR A PS4</a>
-            </div>
-
-        </div>
+    <h2>Contenido Disponible</h2>
+    <div id="listaContenido">
+      <p>Selecciona una categoría en el menú superior para ver o descargar los archivos.</p>
     </div>
+  </main>
 
-    <script>
-        function toggleSubMenu(id) {
-            const container = document.getElementById(id);
-            container.classList.toggle('active');
-        }
-    </script>
+  <!-- MODAL DE LOGIN -->
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <h3>Acceso Administrador</h3>
+      <input type="text" id="userInput" placeholder="Usuario" style="width:100%; margin-bottom:10px; padding:8px;">
+      <input type="password" id="passInput" placeholder="Contraseña" style="width:100%; margin-bottom:15px; padding:8px;">
+      <button onclick="validarAdmin()" style="background:#0070d1; color:#fff; border:none; padding:8px 15px; cursor:pointer;">Entrar</button>
+      <button onclick="cerrarLogin()" style="background:#dc3545; color:#fff; border:none; padding:8px 15px; cursor:pointer;">Cancelar</button>
+    </div>
+  </div>
+
+  <script>
+    function abrirLogin() {
+      document.getElementById('loginModal').style.display = 'flex';
+    }
+
+    function cerrarLogin() {
+      document.getElementById('loginModal').style.display = 'none';
+    }
+
+    function validarAdmin() {
+      const user = document.getElementById('userInput').value;
+      const pass = document.getElementById('passInput').value;
+
+      // Puedes cambiar tu usuario y clave aquí
+      if (user === "admin" && pass === "1234") {
+        alert("¡Bienvenido Administrador!");
+        document.getElementById('adminPanel').style.display = 'block';
+        cerrarLogin();
+      } else {
+        alert("Usuario o clave incorrectos.");
+      }
+    }
+
+    function agregarItem() {
+      const name = document.getElementById('appName').value;
+      const category = document.getElementById('appCategory').value;
+      const link = document.getElementById('appLink').value;
+
+      if(name && link) {
+        const contenedor = document.getElementById('listaContenido');
+        contenedor.innerHTML += `
+          <div style="background:#1f232d; padding:15px; margin-bottom:10px; border-left:4px solid #0070d1; display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <strong>[${category}] ${name}</strong><br>
+              <small>Ruta: ${link}</small>
+            </div>
+            <div>
+              <a href="${link}" download style="background:#0070d1; color:#fff; padding:6px 12px; text-decoration:none; border-radius:4px; font-size:14px;">Descargar</a>
+              <button onclick="this.parentElement.parentElement.remove()" style="background:#dc3545; color:#fff; border:none; padding:6px 10px; border-radius:4px; cursor:pointer; margin-left:5px;">🗑️</button>
+            </div>
+          </div>
+        `;
+        document.getElementById('appName').value = '';
+        document.getElementById('appLink').value = '';
+      }
+    }
+  </script>
 </body>
 </html>
