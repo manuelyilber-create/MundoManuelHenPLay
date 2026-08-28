@@ -11,8 +11,8 @@
       --ps2-blue: #00439c;
       --ps3-red: #ff0055;
       --ps4-cyan: #00d4ff;
-      --glass-bg: rgba(255, 255, 255, 0.05);
-      --glass-border: rgba(255, 255, 255, 0.12);
+      --glass-bg: rgba(15, 20, 32, 0.65);
+      --glass-border: rgba(255, 255, 255, 0.15);
     }
 
     * {
@@ -30,11 +30,14 @@
       flex-direction: column;
       align-items: center;
       overflow-x: hidden;
-      /* Fondo dinámico estilo malla neón */
+
+      /* Imagen de fondo abarcando toda la pantalla */
       background-image: 
-        radial-gradient(circle at 10% 20%, rgba(0, 67, 156, 0.3) 0%, transparent 40%),
-        radial-gradient(circle at 90% 80%, rgba(255, 0, 85, 0.25) 0%, transparent 40%),
-        radial-gradient(circle at 50% 50%, rgba(0, 212, 255, 0.15) 0%, transparent 60%);
+        linear-gradient(rgba(8, 11, 18, 0.65), rgba(8, 11, 18, 0.75)), 
+        url('fondo.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
       background-attachment: fixed;
     }
 
@@ -43,8 +46,9 @@
       width: 100%;
       padding: 2rem 1rem;
       text-align: center;
-      background: rgba(8, 11, 18, 0.6);
+      background: rgba(8, 11, 18, 0.75);
       backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--glass-border);
       position: sticky;
       top: 0;
@@ -72,7 +76,7 @@
       gap: 2rem;
     }
 
-    /* Tarjetas Modulares */
+    /* Tarjetas Modulares con Cristalera (Glassmorphism) */
     .console-card {
       background: var(--glass-bg);
       backdrop-filter: blur(16px);
@@ -88,7 +92,7 @@
       justify-content: space-between;
     }
 
-    /* Efecto de resplandor según consola */
+    /* Resplandor superior de cada consola */
     .console-card::before {
       content: '';
       position: absolute;
@@ -105,7 +109,7 @@
 
     .console-card:hover {
       transform: translateY(-10px) scale(1.02);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
     }
 
     .card-ps2:hover { border-color: var(--ps2-blue); }
@@ -123,9 +127,9 @@
       text-transform: uppercase;
     }
 
-    .card-ps2 .card-badge { background: rgba(0, 67, 156, 0.3); color: #4a90e2; border: 1px solid var(--ps2-blue); }
-    .card-ps3 .card-badge { background: rgba(255, 0, 85, 0.3); color: #ff5588; border: 1px solid var(--ps3-red); }
-    .card-ps4 .card-badge { background: rgba(0, 212, 255, 0.3); color: #80e5ff; border: 1px solid var(--ps4-cyan); }
+    .card-ps2 .card-badge { background: rgba(0, 67, 156, 0.4); color: #6ba4ff; border: 1px solid var(--ps2-blue); }
+    .card-ps3 .card-badge { background: rgba(255, 0, 85, 0.4); color: #ff6699; border: 1px solid var(--ps3-red); }
+    .card-ps4 .card-badge { background: rgba(0, 212, 255, 0.4); color: #99eeff; border: 1px solid var(--ps4-cyan); }
 
     .console-card h2 {
       font-family: 'Orbitron', sans-serif;
@@ -134,13 +138,13 @@
     }
 
     .console-card p {
-      color: #a0a5b5;
+      color: #c0c5d5;
       font-size: 1rem;
       line-height: 1.5;
       margin-bottom: 1.5rem;
     }
 
-    /* Lista de Enlaces / Recursos */
+    /* Lista de Enlaces */
     .links-list {
       list-style: none;
       margin-bottom: 1.5rem;
@@ -151,23 +155,24 @@
     }
 
     .links-list a {
-      color: #e0e0e0;
+      color: #ffffff;
       text-decoration: none;
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 10px 14px;
-      background: rgba(0, 0, 0, 0.2);
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.05);
       border-radius: 8px;
-      transition: background 0.2s;
+      transition: background 0.2s, border-color 0.2s;
     }
 
     .links-list a:hover {
-      background: rgba(255, 255, 255, 0.1);
-      color: #fff;
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.3);
     }
 
-    /* Botón Principal */
+    /* Botones de Acción */
     .btn-action {
       display: block;
       width: 100%;
@@ -187,8 +192,8 @@
     .card-ps4 .btn-action { background: var(--ps4-cyan); color: #000; }
 
     .btn-action:hover {
-      filter: brightness(1.2);
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+      filter: brightness(1.25);
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
     }
   </style>
 </head>
