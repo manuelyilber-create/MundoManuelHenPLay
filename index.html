@@ -97,7 +97,7 @@
       display: block;
     }
 
-    /* CONTADORES Y BOTÓN ADMIN EN ESQUINA SUPERIOR */
+    /* CONTADORES Y BOTÓN ADMIN */
     .header-right {
       display: flex;
       align-items: center;
@@ -118,18 +118,18 @@
     }
 
     .admin-btn {
-      background: transparent;
+      background: #0070d1;
       border: 1px solid #0070d1;
-      color: #0070d1;
-      padding: 6px 12px;
+      color: #fff;
+      padding: 8px 14px;
       border-radius: 4px;
       cursor: pointer;
-      font-size: 12px;
+      font-size: 13px;
+      font-weight: bold;
     }
 
     .admin-btn:hover {
-      background: #0070d1;
-      color: #fff;
+      background: #0056a3;
     }
 
     /* 4. CONTENEDOR PRINCIPAL */
@@ -288,15 +288,18 @@
       border: 1px dashed #0070d1;
     }
 
-    /* VENTANA EMERGENTE (MODAL LOGIN) */
+    /* VENTANA EMERGENTE (MODAL LOGIN) - CORREGIDA */
     .modal {
       display: none;
       position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.8);
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
       justify-content: center;
       align-items: center;
-      z-index: 2000;
+      z-index: 9999;
     }
 
     .modal-content {
@@ -305,6 +308,8 @@
       border-radius: 8px;
       width: 300px;
       text-align: center;
+      border: 1px solid #0070d1;
+      box-shadow: 0px 0px 20px rgba(0, 112, 209, 0.5);
     }
 
     /* TARJETAS DE APLICACIONES */
@@ -498,16 +503,16 @@
 
   <div id="loginModal" class="modal">
     <div class="modal-content">
-      <h3>Acceso Administrador</h3>
-      <input type="text" id="userInput" placeholder="Usuario" style="width:100%; margin-bottom:10px; padding:8px; box-sizing: border-box;">
-      <input type="password" id="passInput" placeholder="Contraseña" style="width:100%; margin-bottom:15px; padding:8px; box-sizing: border-box;">
-      <button onclick="validarAdmin()" style="background:#0070d1; color:#fff; border:none; padding:8px 15px; cursor:pointer; border-radius:4px;">Entrar</button>
-      <button onclick="cerrarLogin()" style="background:#dc3545; color:#fff; border:none; padding:8px 15px; cursor:pointer; border-radius:4px;">Cancelar</button>
+      <h3 style="margin-top:0; color:#00a2ff;">Acceso Administrador</h3>
+      <input type="text" id="userInput" placeholder="Usuario" style="width:100%; margin-bottom:10px; padding:8px; box-sizing: border-box; background:#161920; border:1px solid #3a4150; color:#fff; border-radius:4px;">
+      <input type="password" id="passInput" placeholder="Contraseña" style="width:100%; margin-bottom:15px; padding:8px; box-sizing: border-box; background:#161920; border:1px solid #3a4150; color:#fff; border-radius:4px;">
+      <button onclick="validarAdmin()" style="background:#0070d1; color:#fff; border:none; padding:8px 15px; cursor:pointer; border-radius:4px; font-weight:bold;">Entrar</button>
+      <button onclick="cerrarLogin()" style="background:#dc3545; color:#fff; border:none; padding:8px 15px; cursor:pointer; border-radius:4px; margin-left:5px;">Cancelar</button>
     </div>
   </div>
 
   <script>
-    // Variables de Estado almacenadas en localStorage
+    // Variables almacenadas en localStorage
     let listaAplicaciones = JSON.parse(localStorage.getItem('mmhp_apps')) || [];
     let listaNoticias = JSON.parse(localStorage.getItem('mmhp_news')) || [
       {
@@ -522,128 +527,11 @@
     let contadorVisitas = parseInt(localStorage.getItem('mmhp_visitas') || "0") + 1;
     let contadorDescargas = parseInt(localStorage.getItem('mmhp_descargas') || "0");
     
-    // Guardar visita actual
     localStorage.setItem('mmhp_visitas', contadorVisitas);
 
     let esAdmin = false;
     let logoBase64App = '';
     let logoBase64News = '';
 
-    // Inicialización al cargar la pantalla
-    document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById('cntVisitas').innerText = contadorVisitas;
-      document.getElementById('cntDescargas').innerText = contadorDescargas;
-      
-      // Fecha actual por defecto en el campo de novedades
-      const hoy = new Date();
-      document.getElementById('newsDateInput').value = hoy.toLocaleDateString();
-
-      renderizarNoticias(listaNoticias);
-      renderizarAplicaciones(listaAplicaciones);
-    });
-
-    /* FUNCIONES DE CONTADORES */
-    function registrarDescarga() {
-      contadorDescargas++;
-      localStorage.setItem('mmhp_descargas', contadorDescargas);
-      document.getElementById('cntDescargas').innerText = contadorDescargas;
-    }
-
-    /* CAMBIOS EN SELECTORES DE IMÁGENES */
-    function cambiarTipoLogo() {
-      const tipo = document.getElementById('logoType').value;
-      document.getElementById('optUrl').style.display = tipo === 'url' ? 'block' : 'none';
-      document.getElementById('optFile').style.display = tipo === 'file' ? 'block' : 'none';
-      document.getElementById('optLocal').style.display = tipo === 'local' ? 'block' : 'none';
-    }
-
-    function cambiarTipoImgNews() {
-      const tipo = document.getElementById('newsImgType').value;
-      document.getElementById('optNewsUrl').style.display = tipo === 'url' ? 'block' : 'none';
-      document.getElementById('optNewsFile').style.display = tipo === 'file' ? 'block' : 'none';
-      document.getElementById('optNewsLocal').style.display = tipo === 'local' ? 'block' : 'none';
-    }
-
-    function convertirImagenEscritorio(event, destino) {
-      const archivo = event.target.files[0];
-      if (archivo) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          if(destino === 'app') logoBase64App = e.target.result;
-          if(destino === 'news') logoBase64News = e.target.result;
-        };
-        reader.readAsDataURL(archivo);
-      }
-    }
-
-    function obtenerLogoSeleccionado() {
-      const tipo = document.getElementById('logoType').value;
-      if (tipo === 'url') return document.getElementById('appLogoUrl').value.trim() || 'V2/apps.png';
-      if (tipo === 'file') return logoBase64App || 'V2/apps.png';
-      return document.getElementById('appLogoLocal').value.trim() || 'V2/apps.png';
-    }
-
-    function obtenerImagenNoticiaSeleccionada() {
-      const tipo = document.getElementById('newsImgType').value;
-      if (tipo === 'url') return document.getElementById('newsImgUrl').value.trim() || 'V2/banner.png';
-      if (tipo === 'file') return logoBase64News || 'V2/banner.png';
-      return document.getElementById('newsImgLocal').value.trim() || 'V2/banner.png';
-    }
-
-    /* LOGIN ADMIN */
-    function abrirLogin() { document.getElementById('loginModal').style.display = 'flex'; }
-    function cerrarLogin() { document.getElementById('loginModal').style.display = 'none'; }
-
-    function validarAdmin() {
-      const user = document.getElementById('userInput').value;
-      const pass = document.getElementById('passInput').value;
-
-      if (user === "admin" && pass === "1234") {
-        alert("¡Bienvenido Administrador!");
-        esAdmin = true;
-        document.getElementById('adminPanel').style.display = 'block';
-        document.getElementById('btnAccesoAdmin').style.display = 'none';
-        cerrarLogin();
-        renderizarNoticias(listaNoticias);
-        renderizarAplicaciones(listaAplicaciones);
-      } else {
-        alert("Usuario o clave incorrectos.");
-      }
-    }
-
-    function cerrarSesionAdmin() {
-      esAdmin = false;
-      document.getElementById('adminPanel').style.display = 'none';
-      document.getElementById('btnAccesoAdmin').style.display = 'inline-block';
-      document.getElementById('userInput').value = '';
-      document.getElementById('passInput').value = '';
-      renderizarNoticias(listaNoticias);
-      renderizarAplicaciones(listaAplicaciones);
-      alert("Sesión cerrada.");
-    }
-
-    /* AGREGAR ELEMENTOS */
-    function agregarItem() {
-      const name = document.getElementById('appName').value.trim();
-      const category = document.getElementById('appCategory').value;
-      const logo = obtenerLogoSeleccionado();
-      const link = document.getElementById('appLink').value.trim();
-
-      if(name && link) {
-        const nuevaApp = {
-          id: Date.now(),
-          nombre: name,
-          categoria: category,
-          logo: logo,
-          enlace: link
-        };
-
-        listaAplicaciones.push(nuevaApp);
-        localStorage.setItem('mmhp_apps', JSON.stringify(listaAplicaciones));
-        renderizarAplicaciones(listaAplicaciones);
-
-        document.getElementById('appName').value = '';
-        document.getElementById('appLogoUrl').value = '';
-        document.getElementById('appLogoLocal').value = '';
-        document.getElementById('appLogoFile').value = '';
-        l
+    // Carga inicial al abrir la página
+    document.addEventListener("DOMContentLoaded", () =>
