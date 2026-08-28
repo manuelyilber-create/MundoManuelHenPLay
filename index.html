@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MundoManuelHenPlay</title>
   <style>
-    /* 1. FONDO GLOBAL Y ESTILOS BASE */
+    /* 1. FONDO GLOBAL Y ESTILOS BASE (Ruta apuntando a V2/fondo.jpg) */
     body {
       margin: 0;
       padding: 0;
       font-family: Arial, sans-serif;
-      background: #0d0f12 url('fondo/fondo.jpg') no-repeat center center fixed;
+      background: #0d0f12 url('V2/fondo.jpg') no-repeat center center fixed;
       background-size: cover;
       color: #ffffff;
     }
@@ -44,6 +44,7 @@
       margin: 0;
       padding: 0;
       display: flex;
+      flex-wrap: wrap;
     }
 
     .nav-item {
@@ -52,7 +53,7 @@
 
     .nav-item > a {
       display: block;
-      padding: 15px 25px;
+      padding: 15px 20px;
       color: #fff;
       text-decoration: none;
       font-weight: bold;
@@ -62,7 +63,7 @@
       background: #0070d1;
     }
 
-    /* Submenú desplegable lateral/hacia abajo */
+    /* Submenú desplegable */
     .dropdown {
       display: none;
       position: absolute;
@@ -94,7 +95,7 @@
       display: block;
     }
 
-    /* 4. BOTÓN ADMIN DISCRETO (ESQUINA SUPERIOR) */
+    /* 4. BOTÓN ADMIN DISCRETO */
     .admin-btn {
       background: transparent;
       border: 1px solid #0070d1;
@@ -128,6 +129,24 @@
       border-radius: 6px;
       margin-bottom: 20px;
       border: 1px solid #0070d1;
+    }
+
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      border-bottom: 1px solid #3a4150;
+      padding-bottom: 10px;
+    }
+
+    .logout-btn {
+      background: #dc3545;
+      color: #fff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
     }
 
     .form-group {
@@ -166,16 +185,47 @@
       width: 300px;
       text-align: center;
     }
+
+    /* TARJETAS DE APLICACIONES */
+    .app-card {
+      background: #1f232d;
+      padding: 15px;
+      margin-bottom: 12px;
+      border-left: 4px solid #0070d1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-radius: 4px;
+    }
+
+    .app-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .app-logo {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid #0070d1;
+      background: #161920;
+    }
   </style>
 </head>
 <body>
 
   <header>
-    <!-- Coloca tu imagen de banner en la carpeta "fondo" -->
-    <img src="fondo/banner.png" alt="Banner MundoManuelHenPlay" class="banner" onerror="this.style.display='none'">
+    <!-- RUTA DIRECTA AL BANNER EN LA CARPETA V2 -->
+    <img src="V2/banner.png" alt="Banner MundoManuelHenPlay" class="banner" onerror="this.style.display='none'">
     
     <nav>
       <ul class="nav-links">
+        <!-- BOTÓN INICIO -->
+        <li class="nav-item">
+          <a href="index.html">🏠 Inicio</a>
+        </li>
         <li class="nav-item">
           <a href="#">PS2</a>
           <ul class="dropdown">
@@ -199,17 +249,35 @@
             <li><a href="#">PKGs</a></li>
           </ul>
         </li>
+        <li class="nav-item">
+          <a href="#">🛠️ Herramientas</a>
+          <ul class="dropdown">
+            <li><a href="#">Generales</a></li>
+            <li><a href="#">Consolas</a></li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a href="#">⚙️ Utilidades</a>
+          <ul class="dropdown">
+            <li><a href="#">Archivos PC</a></li>
+            <li><a href="#">Programas</a></li>
+          </ul>
+        </li>
       </ul>
 
       <!-- Botón Admin Esquina -->
-      <button class="admin-btn" onclick="abrirLogin()">🔒 Admin</button>
+      <button class="admin-btn" id="btnAccesoAdmin" onclick="abrirLogin()">🔒 Admin</button>
     </nav>
   </header>
 
   <main>
-    <!-- PANEL DE ADMINISTRACIÓN (SOLO VISIBLE AL INICIAR SESIÓN) -->
+    <!-- PANEL DE ADMINISTRACIÓN CON SALIDA Y SUBIDA DE LOGO -->
     <section id="adminPanel">
-      <h3>Panel de Control (Administrador)</h3>
+      <div class="admin-header">
+        <h3 style="margin: 0;">Panel de Control (Administrador)</h3>
+        <button class="logout-btn" onclick="cerrarSesionAdmin()">🚪 Cerrar Sesión</button>
+      </div>
+
       <div class="form-group">
         <label>Nombre de la Aplicación/Archivo:</label>
         <input type="text" id="appName" placeholder="Ejemplo: HEN 4.93 Installer">
@@ -220,13 +288,19 @@
           <option value="PS2">PS2</option>
           <option value="PS3">PS3</option>
           <option value="PS4">PS4</option>
+          <option value="Herramientas">Herramientas</option>
+          <option value="Utilidades">Utilidades</option>
         </select>
+      </div>
+      <div class="form-group">
+        <label>Ruta/Enlace del Logo (Imagen):</label>
+        <input type="text" id="appLogo" placeholder="Ejemplo: V2/hen.png o V2/apps.png">
       </div>
       <div class="form-group">
         <label>Ruta o Enlace de Descarga:</label>
         <input type="text" id="appLink" placeholder="Ps3/Hen/4.93/SETUP.P3T">
       </div>
-      <button onclick="agregarItem()" style="background: #28a745; color:#fff; border:none; padding: 10px 15px; cursor:pointer;">＋ Agregar a la Web</button>
+      <button onclick="agregarItem()" style="background: #28a745; color:#fff; border:none; padding: 10px 15px; cursor:pointer; width: 100%; border-radius:4px; font-weight:bold;">＋ Agregar a la Web</button>
     </section>
 
     <h2>Contenido Disponible</h2>
@@ -239,10 +313,10 @@
   <div id="loginModal" class="modal">
     <div class="modal-content">
       <h3>Acceso Administrador</h3>
-      <input type="text" id="userInput" placeholder="Usuario" style="width:100%; margin-bottom:10px; padding:8px;">
-      <input type="password" id="passInput" placeholder="Contraseña" style="width:100%; margin-bottom:15px; padding:8px;">
-      <button onclick="validarAdmin()" style="background:#0070d1; color:#fff; border:none; padding:8px 15px; cursor:pointer;">Entrar</button>
-      <button onclick="cerrarLogin()" style="background:#dc3545; color:#fff; border:none; padding:8px 15px; cursor:pointer;">Cancelar</button>
+      <input type="text" id="userInput" placeholder="Usuario" style="width:100%; margin-bottom:10px; padding:8px; box-sizing: border-box;">
+      <input type="password" id="passInput" placeholder="Contraseña" style="width:100%; margin-bottom:15px; padding:8px; box-sizing: border-box;">
+      <button onclick="validarAdmin()" style="background:#0070d1; color:#fff; border:none; padding:8px 15px; cursor:pointer; border-radius:4px;">Entrar</button>
+      <button onclick="cerrarLogin()" style="background:#dc3545; color:#fff; border:none; padding:8px 15px; cursor:pointer; border-radius:4px;">Cancelar</button>
     </div>
   </div>
 
@@ -259,37 +333,58 @@
       const user = document.getElementById('userInput').value;
       const pass = document.getElementById('passInput').value;
 
-      // Puedes cambiar tu usuario y clave aquí
       if (user === "admin" && pass === "1234") {
         alert("¡Bienvenido Administrador!");
         document.getElementById('adminPanel').style.display = 'block';
+        document.getElementById('btnAccesoAdmin').style.display = 'none';
         cerrarLogin();
       } else {
         alert("Usuario o clave incorrectos.");
       }
     }
 
+    function cerrarSesionAdmin() {
+      document.getElementById('adminPanel').style.display = 'none';
+      document.getElementById('btnAccesoAdmin').style.display = 'inline-block';
+      document.getElementById('userInput').value = '';
+      document.getElementById('passInput').value = '';
+      alert("Sesión cerrada.");
+    }
+
     function agregarItem() {
       const name = document.getElementById('appName').value;
       const category = document.getElementById('appCategory').value;
+      const logo = document.getElementById('appLogo').value || 'V2/apps.png';
       const link = document.getElementById('appLink').value;
 
       if(name && link) {
         const contenedor = document.getElementById('listaContenido');
+        
+        if (contenedor.innerHTML.includes("Selecciona una categoría")) {
+          contenedor.innerHTML = "";
+        }
+
         contenedor.innerHTML += `
-          <div style="background:#1f232d; padding:15px; margin-bottom:10px; border-left:4px solid #0070d1; display:flex; justify-content:space-between; align-items:center;">
-            <div>
-              <strong>[${category}] ${name}</strong><br>
-              <small>Ruta: ${link}</small>
+          <div class="app-card">
+            <div class="app-info">
+              <img src="${logo}" alt="Logo" class="app-logo" onerror="this.src='V2/apps.png'">
+              <div>
+                <strong>[${category}] ${name}</strong><br>
+                <small style="color: #aaa;">Ruta: ${link}</small>
+              </div>
             </div>
             <div>
-              <a href="${link}" download style="background:#0070d1; color:#fff; padding:6px 12px; text-decoration:none; border-radius:4px; font-size:14px;">Descargar</a>
+              <a href="${link}" download style="background:#0070d1; color:#fff; padding:6px 12px; text-decoration:none; border-radius:4px; font-size:14px; display:inline-block;">Descargar</a>
               <button onclick="this.parentElement.parentElement.remove()" style="background:#dc3545; color:#fff; border:none; padding:6px 10px; border-radius:4px; cursor:pointer; margin-left:5px;">🗑️</button>
             </div>
           </div>
         `;
+
         document.getElementById('appName').value = '';
+        document.getElementById('appLogo').value = '';
         document.getElementById('appLink').value = '';
+      } else {
+        alert("Por favor rellena al menos el Nombre y la Ruta de descarga.");
       }
     }
   </script>
