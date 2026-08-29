@@ -102,6 +102,14 @@
       border-radius: 4px;
     }
 
+    .sub-option-box {
+      background: #12151c;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #2a2f3d;
+      margin-top: 5px;
+    }
+
     .item-list-row {
       background: #161920;
       padding: 10px;
@@ -146,13 +154,15 @@
         </div>
       </div>
 
-      <!-- 1. AGREGAR APLICACIÓN DESDE ARCHIVOS LOCALES -->
+      <!-- 1. AGREGAR APLICACIÓN -->
       <div class="admin-subpanel">
         <h4 style="margin-top:0; color:#28a745;">📦 1. Agregar Nueva Aplicación / Archivo</h4>
+        
         <div class="form-group">
           <label>Nombre y Versión:</label>
           <input type="text" id="appName" placeholder="Ej: HEN 4.93 Installer v1.0">
         </div>
+
         <div class="form-group">
           <label>Categoría:</label>
           <select id="appCategory">
@@ -164,18 +174,39 @@
             <option value="Android">Android</option>
           </select>
         </div>
+
+        <!-- 3 OPCIONES PARA EL LOGO -->
         <div class="form-group">
-          <label>Seleccionar Logo/Imagen desde el Escritorio:</label>
-          <input type="file" id="appLogoFile" accept="image/*">
+          <label>Método para el Logo/Imagen:</label>
+          <select id="logoMethod" onchange="cambiarMetodoLogo()">
+            <option value="v2">📁 Ruta local de la carpeta V2 (Ej: V2/apps.png)</option>
+            <option value="url">🌐 Enlace Web / URL externa (Ej: https://...)</option>
+            <option value="file">💻 Subir archivo desde Escritorio</option>
+          </select>
+          
+          <div class="sub-option-box">
+            <div id="optV2">
+              <input type="text" id="appLogoV2" placeholder="Ej: V2/apps.png o V2/mi-logo.png">
+            </div>
+            <div id="optUrl" style="display:none;">
+              <input type="text" id="appLogoUrl" placeholder="Ej: https://sitio.com/imagen.png">
+            </div>
+            <div id="optFile" style="display:none;">
+              <input type="file" id="appLogoFile" accept="image/*">
+            </div>
+          </div>
         </div>
+
+        <!-- URL/RUTA DE DESCARGA -->
         <div class="form-group">
-          <label>Seleccionar Archivo Instalador / PKG / ZIP desde el Escritorio:</label>
-          <input type="file" id="appLinkFile">
+          <label>Ruta o Link de Descarga (URL/Servidor local):</label>
+          <input type="text" id="appLink" placeholder="Ej: Ps3/Hen/4.93/SETUP.P3T o https://megaupload.com/archivo">
         </div>
+
         <button onclick="agregarItem()" style="background:#28a745; color:#fff; border:none; padding:10px; width:100%; border-radius:4px; font-weight:bold; cursor:pointer;">＋ Publicar Aplicación</button>
       </div>
 
-      <!-- 2. AGREGAR NOVEDAD DESDE ARCHIVOS LOCALES -->
+      <!-- 2. AGREGAR NOVEDAD -->
       <div class="admin-subpanel">
         <h4 style="margin-top:0; color:#00a2ff;">📢 2. Publicar Novedad o Noticia</h4>
         <div class="form-group">
@@ -183,8 +214,8 @@
           <input type="text" id="newsTitleInput" placeholder="Ej: ¡Actualización HEN 4.93 disponible!">
         </div>
         <div class="form-group">
-          <label>Seleccionar Imagen del Anuncio desde el Escritorio:</label>
-          <input type="file" id="newsImgFile" accept="image/*">
+          <label>Imagen del Anuncio (Ruta V2 o URL web):</label>
+          <input type="text" id="newsImgInput" placeholder="Ej: V2/banner.png o https://...">
         </div>
         <div class="form-group">
           <label>Descripción / Detalle del Anuncio:</label>
@@ -238,14 +269,18 @@
       location.reload();
     }
 
-    // CONVERTIDOR DE ARCHIVO LOCAL A DATA URI
+    // ALTERNAR VISIBILIDAD DE LAS 3 OPCIONES DEL LOGO
+    function cambiarMetodoLogo() {
+      let metodo = document.getElementById('logoMethod').value;
+      document.getElementById('optV2').style.display = (metodo === 'v2') ? 'block' : 'none';
+      document.getElementById('optUrl').style.display = (metodo === 'url') ? 'block' : 'none';
+      document.getElementById('optFile').style.display = (metodo === 'file') ? 'block' : 'none';
+    }
+
     function leerArchivoComoDataURL(fileInput) {
       return new Promise((resolve, reject) => {
         const file = fileInput.files[0];
-        if (!file) {
-          resolve(null);
-          return;
-        }
+        if (!file) { resolve(null); return; }
         const reader = new FileReader();
         reader.onload = () => resolve(reader.result);
         reader.onerror = (error) => reject(error);
@@ -256,74 +291,70 @@
     async function agregarItem() {
       let name = document.getElementById('appName').value.trim();
       let category = document.getElementById('appCategory').value;
-      
-      let logoInput = document.getElementById('appLogoFile');
-      let linkInput = document.getElementById('appLinkFile');
+      let link = document.getElementById('appLink').value.trim();
+      let metodo = document.getElementById('logoMethod').value;
+      let logoFinal = 'V2/apps.png';
 
-      if (!name) {
-        alert("Ingresa el Nombre de la aplicación.");
+      if (!name || !link) {
+        alert("Ingresa el Nombre y el Enlace/URL de descarga.");
         return;
       }
 
-      try {
-        let logoData = await leerArchivoComoDataURL(logoInput) || 'V2/apps.png';
-        let linkData = await leerArchivoComoDataURL(linkInput);
-
-        if (!linkData) {
-          alert("Debes seleccionar un archivo para el botón de descarga.");
-          return;
-        }
-
-        listaAplicaciones.push({ 
-          id: Date.now(), 
-          nombre: name, 
-          categoria: category, 
-          logo: logoData, 
-          enlace: linkData 
-        });
-
-        localStorage.setItem('mmhp_apps', JSON.stringify(listaAplicaciones));
-        cargarListasAdmin();
-
-        document.getElementById('appName').value = '';
-        logoInput.value = '';
-        linkInput.value = '';
-        alert("Aplicación publicada con éxito desde tus archivos.");
-      } catch (err) {
-        alert("Error al procesar el archivo. Si es muy grande, te recomendamos alojarlo o usar archivos livianos.");
+      // DETERMINAR QUÉ LOGO USAR
+      if (metodo === 'v2') {
+        let v2Val = document.getElementById('appLogoV2').value.trim();
+        if (v2Val) logoFinal = v2Val;
+      } else if (metodo === 'url') {
+        let urlVal = document.getElementById('appLogoUrl').value.trim();
+        if (urlVal) logoFinal = urlVal;
+      } else if (metodo === 'file') {
+        let fileInput = document.getElementById('appLogoFile');
+        let fileData = await leerArchivoComoDataURL(fileInput);
+        if (fileData) logoFinal = fileData;
       }
+
+      listaAplicaciones.push({ 
+        id: Date.now(), 
+        nombre: name, 
+        categoria: category, 
+        logo: logoFinal, 
+        enlace: link 
+      });
+
+      localStorage.setItem('mmhp_apps', JSON.stringify(listaAplicaciones));
+      cargarListasAdmin();
+
+      // Limpiar campos
+      document.getElementById('appName').value = '';
+      document.getElementById('appLink').value = '';
+      document.getElementById('appLogoV2').value = '';
+      document.getElementById('appLogoUrl').value = '';
+      document.getElementById('appLogoFile').value = '';
+      alert("Aplicación publicada con éxito.");
     }
 
-    async function agregarNovedad() {
+    function agregarNovedad() {
       let title = document.getElementById('newsTitleInput').value.trim();
+      let img = document.getElementById('newsImgInput').value.trim() || 'V2/banner.png';
       let desc = document.getElementById('newsDescInput').value.trim();
-      let imgInput = document.getElementById('newsImgFile');
 
-      if (!title || !desc) {
-        alert("Ingresa el Título y la Descripción.");
-        return;
-      }
-
-      try {
-        let imgData = await leerArchivoComoDataURL(imgInput) || 'V2/banner.png';
-
+      if(title && desc) {
         listaNoticias.unshift({ 
           id: Date.now(), 
           titulo: title, 
           fecha: new Date().toLocaleDateString(), 
-          imagen: imgData, 
+          imagen: img, 
           descripcion: desc 
         });
-
         localStorage.setItem('mmhp_news', JSON.stringify(listaNoticias));
         cargarListasAdmin();
 
         document.getElementById('newsTitleInput').value = '';
+        document.getElementById('newsImgInput').value = '';
         document.getElementById('newsDescInput').value = '';
-        imgInput.value = '';
         alert("Novedad publicada con éxito.");
-      } catch (err) {
-        alert("Error al procesar la imagen seleccionada.");
+      } else {
+        alert("Ingresa el Título y la Descripción.");
       }
     }
 
