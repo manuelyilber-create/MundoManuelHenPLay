@@ -5,33 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MundoManuelHenPlay</title>
   
-  <!-- SDKs de Firebase (Versión Modular 10) -->
+  <!-- SDKs de Firebase -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, getDocs, addDoc, updateDoc, doc, increment, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, addDoc, updateDoc, doc, increment, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
-    // PEGA AQUÍ TUS CREDENCIALES DE FIREBASE
     const firebaseConfig = {
-      apiKey: "TU_API_KEY",
-      authDomain: "TU_AUTH_DOMAIN",
-      projectId: "TU_PROJECT_ID",
-      storageBucket: "TU_STORAGE_BUCKET",
-      messagingSenderId: "TU_MESSAGING_SENDER_ID",
-      appId: "TU_APP_ID"
+      apiKey: "AIzaSyCv-qeex1pBV7pfi2UD0iUio46-OX2MCiI",
+      authDomain: "mundomanuelhenplay.firebaseapp.com",
+      projectId: "mundomanuelhenplay",
+      storageBucket: "mundomanuelhenplay.firebasestorage.app",
+      messagingSenderId: "1072751644369",
+      appId: "1:1072751644369:web:9ce6b8ad4b115b2e643ff0",
+      measurementId: "G-QZ4RSWGEJL"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Exponer funciones globales para que funcionen con los botones del HTML
     window.db = db;
     window.colApps = collection(db, "apps");
     window.colNews = collection(db, "news");
     window.colComments = collection(db, "comments");
     window.colBlocked = collection(db, "blocked_users");
     
-    // Escuchar datos en tiempo real de Firestore
-    import { onMountedFirebase } from "./firebase-app-logic.js";
     if(window.iniciarAppWeb) window.iniciarAppWeb(db);
   </script>
 
@@ -163,7 +160,7 @@
   </div>
 
   <script type="module">
-    import { getDocs, addDoc, updateDoc, doc, increment, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getDocs, addDoc, updateDoc, doc, increment, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
     let listaAplicaciones = [];
     let listaNoticias = [];
@@ -173,25 +170,21 @@
     let filtroComentarios = 'reciente';
 
     window.iniciarAppWeb = function(db) {
-      // Sincronizar Apps en tiempo real
       onSnapshot(collection(db, "apps"), (snapshot) => {
         listaAplicaciones = snapshot.docs.map(doc => ({ idDoc: doc.id, ...doc.data() }));
         renderizarAplicaciones(listaAplicaciones);
       });
 
-      // Sincronizar Noticias en tiempo real
       onSnapshot(collection(db, "news"), (snapshot) => {
         listaNoticias = snapshot.docs.map(doc => ({ idDoc: doc.id, ...doc.data() }));
         renderizarNoticias(listaNoticias);
       });
 
-      // Sincronizar Comentarios en tiempo real
       onSnapshot(collection(db, "comments"), (snapshot) => {
         listaComentarios = snapshot.docs.map(doc => ({ idDoc: doc.id, ...doc.data() }));
         renderizarComentarios();
       });
 
-      // Sincronizar Usuarios Bloqueados
       onSnapshot(collection(db, "blocked_users"), (snapshot) => {
         listaUsuariosBloqueados = snapshot.docs.map(doc => doc.data());
       });
