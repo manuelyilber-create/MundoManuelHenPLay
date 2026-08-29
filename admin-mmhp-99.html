@@ -13,7 +13,6 @@
       color: #ffffff;
     }
 
-    /* PANTALLA DE ACCESO/LOGIN INICIAL */
     #lockScreen {
       display: flex;
       flex-direction: column;
@@ -55,7 +54,6 @@
       width: 100%;
     }
 
-    /* CONTENEDOR DEL PANEL PRIVADO */
     #adminContent {
       display: none;
       max-width: 1000px;
@@ -129,11 +127,20 @@
       border-radius: 4px;
       cursor: pointer;
     }
+
+    .btn-block {
+      background: #fd7e14;
+      color: #fff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-right: 5px;
+    }
   </style>
 </head>
 <body>
 
-  <!-- PANTALLA DE DESBLOQUEO -->
   <div id="lockScreen">
     <div class="login-box">
       <h3 style="margin-top:0; color:#00a2ff;">🔒 Acceso Exclusivo Admin</h3>
@@ -143,7 +150,6 @@
     </div>
   </div>
 
-  <!-- PANEL DE ADMINISTRACIÓN -->
   <div id="adminContent">
     <div id="adminPanel">
       <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3a4150; padding-bottom: 10px;">
@@ -157,12 +163,10 @@
       <!-- 1. AGREGAR APLICACIÓN -->
       <div class="admin-subpanel">
         <h4 style="margin-top:0; color:#28a745;">📦 1. Agregar Nueva Aplicación / Archivo</h4>
-        
         <div class="form-group">
           <label>Nombre y Versión:</label>
           <input type="text" id="appName" placeholder="Ej: HEN 4.93 Installer v1.0">
         </div>
-
         <div class="form-group">
           <label>Categoría:</label>
           <select id="appCategory">
@@ -174,8 +178,6 @@
             <option value="Android">Android</option>
           </select>
         </div>
-
-        <!-- 3 OPCIONES PARA EL LOGO -->
         <div class="form-group">
           <label>Método para el Logo/Imagen:</label>
           <select id="logoMethod" onchange="cambiarMetodoLogo()">
@@ -183,30 +185,20 @@
             <option value="url">🌐 Enlace Web / URL externa (Ej: https://...)</option>
             <option value="file">💻 Subir archivo desde Escritorio</option>
           </select>
-          
           <div class="sub-option-box">
-            <div id="optV2">
-              <input type="text" id="appLogoV2" placeholder="Ej: V2/apps.png o V2/mi-logo.png">
-            </div>
-            <div id="optUrl" style="display:none;">
-              <input type="text" id="appLogoUrl" placeholder="Ej: https://sitio.com/imagen.png">
-            </div>
-            <div id="optFile" style="display:none;">
-              <input type="file" id="appLogoFile" accept="image/*">
-            </div>
+            <div id="optV2"><input type="text" id="appLogoV2" placeholder="Ej: V2/apps.png"></div>
+            <div id="optUrl" style="display:none;"><input type="text" id="appLogoUrl" placeholder="Ej: https://..."></div>
+            <div id="optFile" style="display:none;"><input type="file" id="appLogoFile" accept="image/*"></div>
           </div>
         </div>
-
-        <!-- URL/RUTA DE DESCARGA -->
         <div class="form-group">
-          <label>Ruta o Link de Descarga (URL/Servidor local):</label>
-          <input type="text" id="appLink" placeholder="Ej: Ps3/Hen/4.93/SETUP.P3T o https://megaupload.com/archivo">
+          <label>Ruta o Link de Descarga:</label>
+          <input type="text" id="appLink" placeholder="Ej: Ps3/Hen/4.93/SETUP.P3T">
         </div>
-
         <button onclick="agregarItem()" style="background:#28a745; color:#fff; border:none; padding:10px; width:100%; border-radius:4px; font-weight:bold; cursor:pointer;">＋ Publicar Aplicación</button>
       </div>
 
-      <!-- 2. AGREGAR NOVEDAD -->
+      <!-- 2. PUBLICAR NOVEDAD -->
       <div class="admin-subpanel">
         <h4 style="margin-top:0; color:#00a2ff;">📢 2. Publicar Novedad o Noticia</h4>
         <div class="form-group">
@@ -214,35 +206,61 @@
           <input type="text" id="newsTitleInput" placeholder="Ej: ¡Actualización HEN 4.93 disponible!">
         </div>
         <div class="form-group">
-          <label>Imagen del Anuncio (Ruta V2 o URL web):</label>
-          <input type="text" id="newsImgInput" placeholder="Ej: V2/banner.png o https://...">
+          <label>Imagen del Anuncio:</label>
+          <input type="text" id="newsImgInput" placeholder="Ej: V2/banner.png">
         </div>
         <div class="form-group">
-          <label>Descripción / Detalle del Anuncio:</label>
-          <textarea id="newsDescInput" rows="3" placeholder="Escribe la información aquí..."></textarea>
+          <label>Descripción / Detalle:</label>
+          <textarea id="newsDescInput" rows="3" placeholder="Información..."></textarea>
         </div>
         <button onclick="agregarNovedad()" style="background:#0070d1; color:#fff; border:none; padding:10px; width:100%; border-radius:4px; font-weight:bold; cursor:pointer;">📢 Publicar Novedad</button>
       </div>
 
-      <!-- 3. LISTAS DE GESTIÓN -->
+      <!-- 3. PUBLICAR COMUNICADO OFICIAL COMO ADMIN -->
       <div class="admin-subpanel">
-        <h4 style="margin-top:0; color:#ffc107;">🗑️ 3. Administrar Aplicaciones Publicadas</h4>
+        <h4 style="margin-top:0; color:#28a745;">🛡️ 3. Publicar Comunicado Oficial en el Foro</h4>
+        <div class="form-group">
+          <label>Nombre del Administrador (Ej: Manuel / Administrador Oficial):</label>
+          <input type="text" id="adminNameInput" value="MundoManuelHenPlay Oficial" placeholder="Nombre admin">
+        </div>
+        <div class="form-group">
+          <label>Foto o Avatar del Administrador (Opcional - Sube imagen o ruta):</label>
+          <input type="file" id="adminAvatarFile" accept="image/*" class="form-control-custom">
+        </div>
+        <div class="form-group">
+          <label>Asunto del Comunicado:</label>
+          <input type="text" id="adminSubjectInput" placeholder="Ej: Anuncio importante sobre las descargas">
+        </div>
+        <div class="form-group">
+          <label>Mensaje Oficial:</label>
+          <textarea id="adminMessageInput" rows="3" placeholder="Escribe tu comunicado oficial..."></textarea>
+        </div>
+        <button onclick="publicarMensajeAdmin()" style="background:#28a745; color:#fff; border:none; padding:10px; width:100%; border-radius:4px; font-weight:bold; cursor:pointer;">📢 Publicar como Administrador</button>
+      </div>
+
+      <!-- 4. MODERACIÓN DE COMENTARIOS -->
+      <div class="admin-subpanel">
+        <h4 style="margin-top:0; color:#ffc107;">💬 4. Moderar Comentarios (Eliminar / Bloquear Usuarios)</h4>
+        <div id="adminCommentsList"></div>
+      </div>
+
+      <!-- 5. GESTIÓN DE APLICACIONES Y NOTICIAS -->
+      <div class="admin-subpanel">
+        <h4 style="margin-top:0; color:#ffc107;">🗑️ 5. Administrar Aplicaciones Publicadas</h4>
         <div id="adminAppsList"></div>
       </div>
 
       <div class="admin-subpanel">
-        <h4 style="margin-top:0; color:#ffc107;">🗑️ 4. Administrar Noticias Publicadas</h4>
+        <h4 style="margin-top:0; color:#ffc107;">🗑️ 6. Administrar Noticias Publicadas</h4>
         <div id="adminNewsList"></div>
       </div>
     </div>
   </div>
 
-  <!-- SDKs de Firebase Firestore -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
   <script>
-    // Configuración oficial de Firebase Firestore
     const firebaseConfig = {
       apiKey: "AIzaSyCv-qeex1pBV7pfi2UD0iUio46-OX2MCiI",
       authDomain: "mundomanuelhenplay.firebaseapp.com",
@@ -267,7 +285,6 @@
     async function validarAcceso() {
       let u = document.getElementById('userInput').value.trim();
       let p = document.getElementById('passInput').value.trim();
-
       const hashGuardado = "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"; // Contraseña: 1234
       let hashIngresado = await calcularSHA256(p);
 
@@ -280,9 +297,7 @@
       }
     }
 
-    function cerrarSesion() {
-      location.reload();
-    }
+    function cerrarSesion() { location.reload(); }
 
     function cambiarMetodoLogo() {
       let metodo = document.getElementById('logoMethod').value;
@@ -291,13 +306,12 @@
       document.getElementById('optFile').style.display = (metodo === 'file') ? 'block' : 'none';
     }
 
-    function leerArchivoComoDataURL(fileInput) {
-      return new Promise((resolve, reject) => {
-        const file = fileInput.files[0];
-        if (!file) { resolve(null); return; }
+    function leerArchivoBase64(inputElement) {
+      return new Promise((resolve) => {
+        const file = inputElement.files[0];
+        if(!file) { resolve(''); return; }
         const reader = new FileReader();
         reader.onload = () => resolve(reader.result);
-        reader.onerror = (error) => reject(error);
         reader.readAsDataURL(file);
       });
     }
@@ -309,10 +323,7 @@
       let metodo = document.getElementById('logoMethod').value;
       let logoFinal = 'V2/apps.png';
 
-      if (!name || !link) {
-        alert("Ingresa el Nombre y el Enlace/URL de descarga.");
-        return;
-      }
+      if (!name || !link) { alert("Ingresa nombre y enlace."); return; }
 
       if (metodo === 'v2') {
         let v2Val = document.getElementById('appLogoV2').value.trim();
@@ -321,30 +332,14 @@
         let urlVal = document.getElementById('appLogoUrl').value.trim();
         if (urlVal) logoFinal = urlVal;
       } else if (metodo === 'file') {
-        let fileInput = document.getElementById('appLogoFile');
-        let fileData = await leerArchivoComoDataURL(fileInput);
+        let fileData = await leerArchivoBase64(document.getElementById('appLogoFile'));
         if (fileData) logoFinal = fileData;
       }
 
-      try {
-        await db.collection("aplicaciones").add({
-          nombre: name,
-          categoria: category,
-          logo: logoFinal,
-          enlace: link,
-          creado: firebase.firestore.FieldValue.serverTimestamp()
-        });
-
-        alert("Aplicación publicada con éxito en Firestore.");
-        document.getElementById('appName').value = '';
-        document.getElementById('appLink').value = '';
-        document.getElementById('appLogoV2').value = '';
-        document.getElementById('appLogoUrl').value = '';
-        document.getElementById('appLogoFile').value = '';
-      } catch (e) {
-        console.error("Error al guardar aplicación: ", e);
-        alert("Error al publicar la aplicación.");
-      }
+      await db.collection("aplicaciones").add({ nombre: name, categoria: category, logo: logoFinal, enlace: link, creado: firebase.firestore.FieldValue.serverTimestamp() });
+      alert("Aplicación publicada con éxito.");
+      document.getElementById('appName').value = '';
+      document.getElementById('appLink').value = '';
     }
 
     async function agregarNovedad() {
@@ -353,57 +348,88 @@
       let desc = document.getElementById('newsDescInput').value.trim();
 
       if(title && desc) {
-        try {
-          await db.collection("noticias").add({
-            titulo: title,
-            fecha: new Date().toLocaleDateString(),
-            imagen: img,
-            descripcion: desc,
-            creado: firebase.firestore.FieldValue.serverTimestamp()
-          });
+        await db.collection("noticias").add({ titulo: title, fecha: new Date().toLocaleDateString(), imagen: img, descripcion: desc, creado: firebase.firestore.FieldValue.serverTimestamp() });
+        alert("Novedad publicada.");
+        document.getElementById('newsTitleInput').value = '';
+        document.getElementById('newsDescInput').value = '';
+      } else { alert("Ingresa título y descripción."); }
+    }
 
-          alert("Novedad publicada con éxito en Firestore.");
-          document.getElementById('newsTitleInput').value = '';
-          document.getElementById('newsImgInput').value = '';
-          document.getElementById('newsDescInput').value = '';
-        } catch (e) {
-          console.error("Error al guardar novedad: ", e);
-          alert("Error al publicar la novedad.");
-        }
-      } else {
-        alert("Ingresa el Título y la Descripción.");
+    // Publicar como Administrador Oficial en el foro
+    async function publicarMensajeAdmin() {
+      let adminName = document.getElementById('adminNameInput').value.trim() || "Administrador Oficial";
+      let asunto = document.getElementById('adminSubjectInput').value.trim();
+      let mensaje = document.getElementById('adminMessageInput').value.trim();
+
+      if(!asunto || !mensaje) { alert("Ingresa el asunto y el mensaje oficial."); return; }
+
+      let avatarData = await leerArchivoBase64(document.getElementById('adminAvatarFile'));
+      if(!avatarData) avatarData = 'V2/banner.png';
+
+      await db.collection("comentarios").add({
+        usuario: adminName,
+        avatar: avatarData,
+        asunto: asunto,
+        mensaje: mensaje,
+        archivo: "",
+        esAdmin: true, // Marca oficial de administrador
+        fecha: new Date().toLocaleDateString(),
+        creado: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      document.getElementById('adminSubjectInput').value = '';
+      document.getElementById('adminMessageInput').value = '';
+      alert("Comunicado oficial publicado en el foro con éxito.");
+    }
+
+    // Eliminar comentario
+    async function eliminarComentario(id) {
+      if(confirm("¿Estás seguro de eliminar este comentario?")) {
+        await db.collection("comentarios").doc(id).delete();
       }
     }
 
-    async function eliminarItem(id) {
-      if(confirm("¿Estás seguro de borrar esta aplicación?")) {
-        try {
-          await db.collection("aplicaciones").doc(id).delete();
-        } catch (e) {
-          console.error("Error al borrar: ", e);
-        }
+    // Bloquear usuario
+    async function bloquearUsuario(nombreUsuario) {
+      if(confirm(`¿Estás seguro de BLOQUEAR a "${nombreUsuario}"? No podrá volver a comentar en la página.`)) {
+        await db.collection("bloqueados").doc(nombreUsuario.toLowerCase()).set({
+          usuario: nombreUsuario,
+          fechaBloqueo: new Date().toLocaleDateString()
+        });
+        alert(`El usuario ${nombreUsuario} ha sido bloqueado.`);
       }
     }
 
-    async function eliminarNovedad(id) {
-      if(confirm("¿Estás seguro de borrar esta novedad?")) {
-        try {
-          await db.collection("noticias").doc(id).delete();
-        } catch (e) {
-          console.error("Error al borrar: ", e);
-        }
-      }
-    }
+    async function eliminarItem(id) { if(confirm("¿Borrar app?")) await db.collection("aplicaciones").doc(id).delete(); }
+    async function eliminarNovedad(id) { if(confirm("¿Borrar noticia?")) await db.collection("noticias").doc(id).delete(); }
 
     function cargarListasAdminEnTiempoReal() {
-      // Sincronizar aplicaciones en tiempo real dentro del panel
+      // Sincronizar Moderación de Comentarios
+      db.collection("comentarios").orderBy("creado", "desc").onSnapshot((snapshot) => {
+        let container = document.getElementById('adminCommentsList');
+        container.innerHTML = '';
+        if(snapshot.empty) { container.innerHTML = '<small style="color:#aaa;">No hay comentarios para moderar.</small>'; return; }
+        
+        snapshot.forEach((doc) => {
+          let c = doc.data();
+          let badgeAdmin = c.esAdmin ? '<span style="color:#28a745; font-weight:bold;">[ADMIN]</span>' : '';
+          container.innerHTML += `
+            <div class="item-list-row">
+              <div>
+                ${badgeAdmin} <strong>${c.usuario}</strong>: "${c.asunto}"
+                <div style="font-size:12px; color:#aaa; max-width:400px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${c.mensaje}</div>
+              </div>
+              <div>
+                ${!c.esAdmin ? `<button class="btn-block" onclick="bloquearUsuario('${c.usuario}')">🚫 Bloquear</button>` : ''}
+                <button class="btn-delete" onclick="eliminarComentario('${doc.id}')">🗑️ Borrar</button>
+              </div>
+            </div>`;
+        });
+      });
+
       db.collection("aplicaciones").onSnapshot((snapshot) => {
         let appContainer = document.getElementById('adminAppsList');
         appContainer.innerHTML = '';
-        if(snapshot.empty) {
-          appContainer.innerHTML = '<small style="color:#aaa;">No hay aplicaciones.</small>';
-          return;
-        }
         snapshot.forEach((doc) => {
           let app = doc.data();
           appContainer.innerHTML += `
@@ -414,14 +440,9 @@
         });
       });
 
-      // Sincronizar noticias en tiempo real dentro del panel
       db.collection("noticias").onSnapshot((snapshot) => {
         let newsContainer = document.getElementById('adminNewsList');
         newsContainer.innerHTML = '';
-        if(snapshot.empty) {
-          newsContainer.innerHTML = '<small style="color:#aaa;">No hay novedades.</small>';
-          return;
-        }
         snapshot.forEach((doc) => {
           let n = doc.data();
           newsContainer.innerHTML += `
