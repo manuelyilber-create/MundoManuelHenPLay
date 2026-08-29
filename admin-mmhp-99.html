@@ -32,7 +32,6 @@
     window.colApps = collection(db, "apps");
     window.colNews = collection(db, "news");
     window.colComments = collection(db, "comments");
-    window.colBlocked = collection(db, "blocked_users");
   </script>
 
   <style>
@@ -81,9 +80,19 @@
             <option value="Aplicaciones">Aplicaciones</option><option value="Utilidades">Utilidades</option><option value="Android">Android</option>
           </select>
         </div>
-        <div class="form-group"><label>Logo (Seleccionar imagen o dejar V2/apps.png):</label><input type="file" id="appLogoFile" accept="image/*"></div>
-        <div class="form-group"><label>Archivo del Juego/App (Desde tu escritorio) o Enlace:</label><input type="file" id="appFile"></div>
-        <div class="form-group"><label>O pega un Enlace Externo opcional (si no subes archivo):</label><input type="text" id="appLinkText" placeholder="https://..."></div>
+        
+        <div class="form-group">
+          <label>Logo (Elige una opción):</label>
+          <input type="file" id="appLogoFile" accept="image/*" style="margin-bottom:6px;">
+          <input type="text" id="appLogoUrl" placeholder="O pega URL de imagen (Ej: V2/apps.png)">
+        </div>
+
+        <div class="form-group">
+          <label>Archivo o Enlace de Descarga (Elige una opción):</label>
+          <input type="file" id="appFile" style="margin-bottom:6px;">
+          <input type="text" id="appLinkText" placeholder="O pega un Enlace Externo (https://...)">
+        </div>
+
         <span id="statusApp" class="upload-status"></span>
         <button onclick="agregarItem()" style="background:#28a745; color:#fff; border:none; padding:10px; width:100%; border-radius:4px; font-weight:bold; cursor:pointer;">＋ Publicar en la Nube</button>
       </div>
@@ -91,7 +100,11 @@
       <div class="admin-subpanel">
         <h4 style="margin-top:0; color:#00a2ff;">📢 2. Publicar Novedad</h4>
         <div class="form-group"><input type="text" id="newsTitleInput" placeholder="Título..."></div>
-        <div class="form-group"><label>Imagen de Novedad (Archivo):</label><input type="file" id="newsImgFile" accept="image/*"></div>
+        <div class="form-group">
+          <label>Imagen de Novedad (Elige una opción):</label>
+          <input type="file" id="newsImgFile" accept="image/*" style="margin-bottom:6px;">
+          <input type="text" id="newsImgUrl" placeholder="O pega URL de imagen (Ej: V2/banner.png)">
+        </div>
         <div class="form-group"><textarea id="newsDescInput" rows="2" placeholder="Descripción..."></textarea></div>
         <span id="statusNews" class="upload-status"></span>
         <button onclick="agregarNovedad()" style="background:#0070d1; color:#fff; border:none; padding:10px; width:100%; border-radius:4px; font-weight:bold; cursor:pointer;">Publicar Novedad</button>
@@ -127,35 +140,39 @@
     window.agregarItem = async function() {
       let name = document.getElementById('appName').value.trim();
       let category = document.getElementById('appCategory').value;
+      
       let linkText = document.getElementById('appLinkText').value.trim();
       let fileInput = document.getElementById('appFile').files[0];
+      
+      let logoUrlInput = document.getElementById('appLogoUrl').value.trim();
       let logoInput = document.getElementById('appLogoFile').files[0];
+      
       let statusEl = document.getElementById('statusApp');
 
       if (!name) { alert("Ingresa al menos el nombre de la aplicación."); return; }
 
       let downloadUrl = linkText;
-      let logoUrl = "V2/apps.png";
+      let logoUrl = logoUrlInput ? logoUrlInput : "V2/apps.png";
 
-      statusEl.innerText = "Subiendo archivos a la nube, por favor espera...";
+      statusEl.innerText = "Procesando...";
 
       try {
-        // Subir archivo principal si se seleccionó uno
         if (fileInput) {
+          statusEl.innerText = "Subiendo archivo desde escritorio...";
           const fileRef = window.ref(window.storage, 'archivos/' + Date.now() + '_' + fileInput.name);
           await window.uploadBytes(fileRef, fileInput);
           downloadUrl = await window.getDownloadURL(fileRef);
         }
 
-        // Subir logo si se seleccionó uno
         if (logoInput) {
+          statusEl.innerText = "Subiendo logo desde escritorio...";
           const logoRef = window.ref(window.storage, 'logos/' + Date.now() + '_' + logoInput.name);
           await window.uploadBytes(logoRef, logoInput);
           logoUrl = await window.getDownloadURL(logoRef);
         }
 
         if (!downloadUrl) {
-          alert("Debes seleccionar un archivo para subir o ingresar un enlace de descarga.");
+          alert("Debes subir un archivo o colocar un enlace de descarga.");
           statusEl.innerText = "";
           return;
         }
@@ -168,17 +185,19 @@
           enlace: downloadUrl
         });
 
-        statusEl.innerText = "¡Subido con éxito!";
-        alert("¡Aplicación publicada en la nube correctamente!");
+        statusEl.innerText = "¡Publicado con éxito!";
+        alert("¡Aplicación publicada correctamente!");
+        
         document.getElementById('appName').value = '';
         document.getElementById('appLinkText').value = '';
         document.getElementById('appFile').value = '';
+        document.getElementById('appLogoUrl').value = '';
         document.getElementById('appLogoFile').value = '';
         setTimeout(() => statusEl.innerText = "", 3000);
 
       } catch (error) {
         console.error(error);
-        alert("Hubo un error al subir el archivo: " + error.message);
+        alert("Error al subir: " + error.message);
         statusEl.innerText = "";
       }
     }
@@ -186,16 +205,20 @@
     window.agregarNovedad = async function() {
       let title = document.getElementById('newsTitleInput').value.trim();
       let desc = document.getElementById('newsDescInput').value.trim();
+      
+      let imgUrlInput = document.getElementById('newsImgUrl').value.trim();
       let imgInput = document.getElementById('newsImgFile').files[0];
+      
       let statusEl = document.getElementById('statusNews');
 
       if (!title || !desc) { alert("Faltan datos en la novedad."); return; }
 
-      let imgUrl = "V2/banner.png";
-      statusEl.innerText = "Subiendo imagen de novedad...";
+      let imgUrl = imgUrlInput ? imgUrlInput : "V2/banner.png";
+      statusEl.innerText = "Procesando novedad...";
 
       try {
         if (imgInput) {
+          statusEl.innerText = "Subiendo imagen de novedad...";
           const imgRef = window.ref(window.storage, 'novedades/' + Date.now() + '_' + imgInput.name);
           await window.uploadBytes(imgRef, imgInput);
           imgUrl = await window.getDownloadURL(imgRef);
@@ -211,8 +234,10 @@
 
         statusEl.innerText = "¡Novedad publicada!";
         alert("Novedad publicada con éxito.");
+        
         document.getElementById('newsTitleInput').value = '';
         document.getElementById('newsDescInput').value = '';
+        document.getElementById('newsImgUrl').value = '';
         document.getElementById('newsImgFile').value = '';
         setTimeout(() => statusEl.innerText = "", 3000);
 
