@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MundoManuelHenPlay</title>
   <style>
-    /* 1. ESTILOS GENERALES Y TEMA */
     body {
       margin: 0;
       padding: 0;
@@ -94,7 +93,6 @@
       display: block;
     }
 
-    /* CONTADORES Y BOTÓN ADMIN */
     .header-right {
       display: flex;
       align-items: center;
@@ -111,17 +109,6 @@
       font-weight: bold;
     }
 
-    .btn-admin-nav {
-      background: #0070d1;
-      color: #ffffff;
-      border: none;
-      padding: 8px 15px;
-      border-radius: 5px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    /* CONTENEDOR PRINCIPAL */
     main {
       padding: 25px;
       max-width: 1000px;
@@ -130,7 +117,6 @@
       border-radius: 8px;
     }
 
-    /* BARRA DE BÚSQUEDA (LUPITA) */
     .search-box {
       display: flex;
       align-items: center;
@@ -151,7 +137,6 @@
       font-size: 15px;
     }
 
-    /* TARJETAS DE APLICACIONES */
     .app-card {
       background: #1f232d;
       padding: 15px;
@@ -178,7 +163,6 @@
       background: #161920;
     }
 
-    /* CUADRO DE NOVEDADES (ABAJO DE LAS APLICACIONES) */
     #newsSection {
       background: #161920;
       border: 1px solid #00a2ff;
@@ -212,65 +196,6 @@
       border: 1px solid #0070d1;
       background: #000;
     }
-
-    /* PANEL DE CONTROL DE ADMINISTRADOR */
-    #adminPanel {
-      display: none;
-      background: #252a36;
-      padding: 20px;
-      border-radius: 8px;
-      margin-bottom: 25px;
-      border: 2px solid #0070d1;
-    }
-
-    .admin-subpanel {
-      background: #1a1e27;
-      padding: 15px;
-      border-radius: 6px;
-      margin-top: 15px;
-      border: 1px dashed #00a2ff;
-    }
-
-    .form-group {
-      margin-bottom: 12px;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 5px;
-      color: #00a2ff;
-      font-size: 14px;
-    }
-
-    .form-group input, .form-group select, .form-group textarea {
-      width: 100%;
-      padding: 8px;
-      box-sizing: border-box;
-      background: #161920;
-      border: 1px solid #3a4150;
-      color: #fff;
-      border-radius: 4px;
-    }
-
-    /* MODAL DE LOGIN */
-    #loginModal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.85);
-      z-index: 99999;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .modal-box {
-      background: #1f232d;
-      padding: 25px;
-      border-radius: 8px;
-      width: 300px;
-      text-align: center;
-      border: 2px solid #0070d1;
-    }
   </style>
 </head>
 <body>
@@ -300,104 +225,32 @@
         </li>
         <li class="nav-item"><a onclick="filtrarCategoria('Herramientas')">🛠️ Herramientas</a></li>
         <li class="nav-item"><a onclick="filtrarCategoria('Utilidades')">⚙️ Utilidades</a></li>
-        <!-- NUEVA CATEGORÍA AÑADIDA -->
         <li class="nav-item"><a onclick="filtrarCategoria('Android')">🤖 Android</a></li>
       </ul>
 
       <div class="header-right">
         <div class="counter-badge">👥 Visitas: <span id="cntVisitas">0</span></div>
         <div class="counter-badge">📥 Descargas: <span id="cntDescargas">0</span></div>
-        <button class="btn-admin-nav" id="btnAccesoAdmin" onclick="abrirLogin()">🔒 Admin</button>
       </div>
     </nav>
   </header>
 
   <main>
-    <!-- PANEL DE ADMINISTRACIÓN -->
-    <section id="adminPanel">
-      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3a4150; padding-bottom: 10px;">
-        <h3 style="margin: 0; color: #00a2ff;">Panel de Control General</h3>
-        <button onclick="cerrarSesionAdmin()" style="background:#dc3545; color:#fff; border:none; padding:6px 12px; border-radius:4px; cursor:pointer;">🚪 Cerrar Sesión</button>
-      </div>
-
-      <!-- PARTE 1 ADMIN: AGREGAR APLICACIÓN -->
-      <div class="admin-subpanel">
-        <h4 style="margin-top:0; color:#28a745;">📦 1. Agregar Nueva Aplicación / Archivo</h4>
-        <div class="form-group">
-          <label>Nombre y Versión:</label>
-          <input type="text" id="appName" placeholder="Ej: HEN 4.93 Installer v1.0">
-        </div>
-        <div class="form-group">
-          <label>Categoría:</label>
-          <select id="appCategory">
-            <option value="PS2">PS2</option>
-            <option value="PS3">PS3</option>
-            <option value="PS4">PS4</option>
-            <option value="Herramientas">Herramientas</option>
-            <option value="Utilidades">Utilidades</option>
-            <option value="Android">Android</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Imagen/Logo (Ruta Local o Enlace Web):</label>
-          <input type="text" id="appLogo" placeholder="Ej: V2/apps.png o https://...">
-        </div>
-        <div class="form-group">
-          <label>Ruta o Link de Descarga (Oculto para el usuario):</label>
-          <input type="text" id="appLink" placeholder="Ej: Ps3/Hen/4.93/SETUP.P3T o enlace web">
-        </div>
-        <button onclick="agregarItem()" style="background:#28a745; color:#fff; border:none; padding:10px; width:100%; border-radius:4px; font-weight:bold; cursor:pointer;">＋ Publicar Aplicación</button>
-      </div>
-
-      <!-- PARTE 2 ADMIN: AGREGAR NOVEDADES -->
-      <div class="admin-subpanel">
-        <h4 style="margin-top:0; color:#00a2ff;">📢 2. Publicar Novedad o Noticia</h4>
-        <div class="form-group">
-          <label>Título de la Novedad:</label>
-          <input type="text" id="newsTitleInput" placeholder="Ej: ¡Actualización HEN 4.93 disponible!">
-        </div>
-        <div class="form-group">
-          <label>Imagen de Novedad (Ruta o URL):</label>
-          <input type="text" id="newsImgInput" placeholder="Ej: V2/banner.png o https://...">
-        </div>
-        <div class="form-group">
-          <label>Descripción / Detalle del Anuncio:</label>
-          <textarea id="newsDescInput" rows="3" placeholder="Escribe la información aquí..."></textarea>
-        </div>
-        <button onclick="agregarNovedad()" style="background:#0070d1; color:#fff; border:none; padding:10px; width:100%; border-radius:4px; font-weight:bold; cursor:pointer;">📢 Publicar Novedad en el Inicio</button>
-      </div>
-    </section>
-
-    <!-- BARRA DE BÚSQUEDA Y LUPITA -->
     <div class="search-box">
       <span>🔍</span>
       <input type="text" id="searchInput" onkeyup="buscarAplicacion()" placeholder="Buscar archivo, herramientas o categorías...">
     </div>
 
-    <!-- SECCIÓN 1: CONTENIDO Y APLICACIONES -->
     <h2 id="tituloSeccion" style="color: #00a2ff;">Contenido Disponible</h2>
     <div id="listaContenido"></div>
 
-    <!-- SECCIÓN 2: NOVEDADES Y ANUNCIOS (CUADRO ABAJO) -->
     <section id="newsSection">
       <h3 class="news-title">📢 Novedades y Anuncios Recientes</h3>
       <div id="newsContainer"></div>
     </section>
   </main>
 
-  <!-- VENTANA FLOTANTE LOGIN -->
-  <div id="loginModal">
-    <div class="modal-box">
-      <h3 style="margin-top:0; color:#00a2ff;">Acceso Administrador</h3>
-      <input type="text" id="userInput" placeholder="Usuario" style="width:100%; margin-bottom:10px; padding:8px; box-sizing:border-box; background:#161920; border:1px solid #3a4150; color:#fff; border-radius:4px;">
-      <input type="password" id="passInput" placeholder="Contraseña" style="width:100%; margin-bottom:15px; padding:8px; box-sizing:border-box; background:#161920; border:1px solid #3a4150; color:#fff; border-radius:4px;">
-      <button onclick="validarAdmin()" style="background:#0070d1; color:#fff; border:none; padding:8px 15px; cursor:pointer; border-radius:4px; font-weight:bold;">Entrar</button>
-      <button onclick="cerrarLogin()" style="background:#dc3545; color:#fff; border:none; padding:8px 15px; cursor:pointer; border-radius:4px; margin-left:5px;">Cancelar</button>
-    </div>
-  </div>
-
   <script>
-    // BASE DE DATOS LOCAL
     let listaAplicaciones = JSON.parse(localStorage.getItem('mmhp_apps')) || [];
     let listaNoticias = JSON.parse(localStorage.getItem('mmhp_news')) || [
       {
@@ -413,9 +266,6 @@
     let contadorDescargas = parseInt(localStorage.getItem('mmhp_descargas') || "0");
     localStorage.setItem('mmhp_visitas', contadorVisitas);
 
-    let esAdmin = false;
-
-    // AL CARGAR LA PÁGINA
     window.onload = function() {
       document.getElementById('cntVisitas').innerText = contadorVisitas;
       document.getElementById('cntDescargas').innerText = contadorDescargas;
@@ -424,110 +274,18 @@
       renderizarNoticias(listaNoticias);
     };
 
-    /* LOGIN ADMIN */
-    function abrirLogin() {
-      document.getElementById('loginModal').style.display = 'flex';
-    }
-
-    function cerrarLogin() {
-      document.getElementById('loginModal').style.display = 'none';
-      document.getElementById('userInput').value = '';
-      document.getElementById('passInput').value = '';
-    }
-
-    function validarAdmin() {
-      let u = document.getElementById('userInput').value.trim();
-      let p = document.getElementById('passInput').value.trim();
-
-      if (u === "admin" && p === "1234") {
-        alert("¡Acceso Correcto!");
-        esAdmin = true;
-        document.getElementById('adminPanel').style.display = 'block';
-        document.getElementById('btnAccesoAdmin').style.display = 'none';
-        cerrarLogin();
-        renderizarAplicaciones(listaAplicaciones);
-        renderizarNoticias(listaNoticias);
-      } else {
-        alert("Usuario o Contraseña incorrectos.");
-      }
-    }
-
-    function cerrarSesionAdmin() {
-      esAdmin = false;
-      document.getElementById('adminPanel').style.display = 'none';
-      document.getElementById('btnAccesoAdmin').style.display = 'inline-block';
-      renderizarAplicaciones(listaAplicaciones);
-      renderizarNoticias(listaNoticias);
-    }
-
-    /* CONTADORES Y PUBLICACIONES */
     function registrarDescarga() {
       contadorDescargas++;
       localStorage.setItem('mmhp_descargas', contadorDescargas);
       document.getElementById('cntDescargas').innerText = contadorDescargas;
     }
 
-    function agregarItem() {
-      let name = document.getElementById('appName').value.trim();
-      let category = document.getElementById('appCategory').value;
-      let logo = document.getElementById('appLogo').value.trim() || 'V2/apps.png';
-      let link = document.getElementById('appLink').value.trim();
-
-      if(name && link) {
-        listaAplicaciones.push({ id: Date.now(), nombre: name, categoria: category, logo: logo, enlace: link });
-        localStorage.setItem('mmhp_apps', JSON.stringify(listaAplicaciones));
-        renderizarAplicaciones(listaAplicaciones);
-
-        document.getElementById('appName').value = '';
-        document.getElementById('appLogo').value = '';
-        document.getElementById('appLink').value = '';
-        alert("Aplicación publicada con éxito.");
-      } else {
-        alert("Ingresa el Nombre y el Enlace de la aplicación.");
-      }
-    }
-
-    function agregarNovedad() {
-      let title = document.getElementById('newsTitleInput').value.trim();
-      let img = document.getElementById('newsImgInput').value.trim() || 'V2/banner.png';
-      let desc = document.getElementById('newsDescInput').value.trim();
-
-      if(title && desc) {
-        listaNoticias.unshift({ id: Date.now(), titulo: title, fecha: new Date().toLocaleDateString(), imagen: img, descripcion: desc });
-        localStorage.setItem('mmhp_news', JSON.stringify(listaNoticias));
-        renderizarNoticias(listaNoticias);
-
-        document.getElementById('newsTitleInput').value = '';
-        document.getElementById('newsImgInput').value = '';
-        document.getElementById('newsDescInput').value = '';
-        alert("Novedad publicada con éxito.");
-      } else {
-        alert("Ingresa el Título y la Descripción de la novedad.");
-      }
-    }
-
-    function eliminarItem(id) {
-      listaAplicaciones = listaAplicaciones.filter(a => a.id !== id);
-      localStorage.setItem('mmhp_apps', JSON.stringify(listaAplicaciones));
-      renderizarAplicaciones(listaAplicaciones);
-    }
-
-    function eliminarNovedad(id) {
-      listaNoticias = listaNoticias.filter(n => n.id !== id);
-      localStorage.setItem('mmhp_news', JSON.stringify(listaNoticias));
-      renderizarNoticias(listaNoticias);
-    }
-
-    /* MOSTRAR EN PANTALLA */
     function renderizarAplicaciones(lista) {
       let c = document.getElementById('listaContenido');
       c.innerHTML = '';
       if (lista.length === 0) { c.innerHTML = '<p style="color:#aaa;">No hay aplicaciones disponibles en esta sección.</p>'; return; }
 
       lista.forEach(app => {
-        let btnDel = esAdmin ? `<button onclick="eliminarItem(${app.id})" style="background:#dc3545; color:#fff; border:none; padding:6px 10px; border-radius:4px; cursor:pointer; margin-left:5px;">🗑️</button>` : '';
-        
-        // AQUÍ SE REMOVIÓ LA LÍNEA DE RUTA PARA QUE SOLO SE VEA CATEGORÍA Y NOMBRE/VERSIÓN
         c.innerHTML += `
           <div class="app-card">
             <div class="app-info">
@@ -538,7 +296,6 @@
             </div>
             <div>
               <a href="${app.enlace}" download onclick="registrarDescarga()" style="background:#0070d1; color:#fff; padding:8px 14px; text-decoration:none; border-radius:4px; font-size:14px; display:inline-block; font-weight:bold;">Descargar</a>
-              ${btnDel}
             </div>
           </div>`;
       });
@@ -550,7 +307,6 @@
       if(lista.length === 0) { c.innerHTML = '<p style="color:#aaa;">No hay novedades publicadas por ahora.</p>'; return; }
 
       lista.forEach(n => {
-        let btn = esAdmin ? `<button onclick="eliminarNovedad(${n.id})" style="background:#dc3545; color:#fff; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:12px; margin-top:8px;">🗑️ Borrar Novedad</button>` : '';
         c.innerHTML += `
           <div class="news-card">
             <img src="${n.imagen}" class="news-img" onerror="this.src='V2/banner.png'">
@@ -558,13 +314,11 @@
               <h4 style="margin:0 0 5px 0; color:#00a2ff;">${n.titulo}</h4>
               <small style="color:#aaa;">📅 Fecha: ${n.fecha}</small>
               <p style="margin:8px 0 0 0; color:#ccc; font-size:14px; line-height:1.4;">${n.descripcion}</p>
-              ${btn}
             </div>
           </div>`;
       });
     }
 
-    /* FILTROS Y BÚSQUEDA CON LUPITA */
     function filtrarCategoria(cat) {
       document.getElementById('searchInput').value = '';
       if(cat === 'TODOS') {
