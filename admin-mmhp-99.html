@@ -94,7 +94,7 @@
           </select>
         </div>
 
-        <!-- Método para el Logo -->
+        <!-- Selector con las 3 opciones para el Logo -->
         <div class="form-group">
           <label>Método para el Logo/Imagen:</label>
           <select id="logoMethod" onchange="cambiarMetodoLogo()">
@@ -107,17 +107,10 @@
           <input type="text" id="appLogoValue" placeholder="Ej: V2/apps.png o V2/mi-logo.png" value="V2/apps.png">
         </div>
 
-        <!-- Método para el Archivo/Enlace de Descarga -->
+        <!-- Ruta o Link de Descarga (Como estaba en la imagen original) -->
         <div class="form-group">
-          <label>Método para el Archivo o Link de Descarga:</label>
-          <select id="fileMethod" onchange="cambiarMetodoArchivo()">
-            <option value="v2">📁 Ruta local de la carpeta V2 (Ej: V2/archivo.pkg)</option>
-            <option value="web">🌐 Enlace Web / URL externa (Ej: https://...)</option>
-            <option value="desktop">💻 Subir archivo desde Escritorio</option>
-          </select>
-        </div>
-        <div class="form-group" id="fileInputContainer">
-          <input type="text" id="appFileValue" placeholder="Ej: V2/HEN.pkg o https://...">
+          <label>Ruta o Link de Descarga (URL/Servidor local):</label>
+          <input type="text" id="appLinkText" placeholder="Ej: Ps3/Hen/4.93/SETUP.P3T o https://megaupload.com/archivo">
         </div>
 
         <span id="statusApp" class="upload-status"></span>
@@ -172,7 +165,7 @@
       }
     }
 
-    // Cambiar input de logo dinámicamente según el select
+    // Cambiar input de logo dinámicamente según la opción seleccionada
     window.cambiarMetodoLogo = function() {
       let metodo = document.getElementById('logoMethod').value;
       let container = document.getElementById('logoInputContainer');
@@ -183,34 +176,25 @@
       }
     }
 
-    // Cambiar input de archivo dinámicamente según el select
-    window.cambiarMetodoArchivo = function() {
-      let metodo = document.getElementById('fileMethod').value;
-      let container = document.getElementById('fileInputContainer');
-      if (metodo === 'desktop') {
-        container.innerHTML = `<input type="file" id="appFileFile">`;
-      } else {
-        container.innerHTML = `<input type="text" id="appFileValue" placeholder="Ej: V2/archivo.pkg o https://...">`;
-      }
-    }
-
     window.agregarItem = async function() {
       let name = document.getElementById('appName').value.trim();
       let category = document.getElementById('appCategory').value;
+      let downloadUrl = document.getElementById('appLinkText').value.trim();
       let statusEl = document.getElementById('statusApp');
 
       if (!name) { alert("Ingresa el nombre de la aplicación."); return; }
+      if (!downloadUrl) { alert("Ingresa la ruta o link de descarga."); return; }
 
       statusEl.innerText = "Procesando...";
 
       try {
-        // Obtener Logo
         let logoMethod = document.getElementById('logoMethod').value;
         let logoUrl = "V2/apps.png";
+
         if (logoMethod === 'desktop') {
           let logoFile = document.getElementById('appLogoFile').files[0];
           if (logoFile) {
-            statusEl.innerText = "Subiendo logo a la nube...";
+            statusEl.innerText = "Subiendo logo desde el escritorio...";
             const logoRef = window.ref(window.storage, 'logos/' + Date.now() + '_' + logoFile.name);
             await window.uploadBytes(logoRef, logoFile);
             logoUrl = await window.getDownloadURL(logoRef);
@@ -218,30 +202,6 @@
         } else {
           let val = document.getElementById('appLogoValue').value.trim();
           if (val) logoUrl = val;
-        }
-
-        // Obtener Enlace o Archivo de Descarga
-        let fileMethod = document.getElementById('fileMethod').value;
-        let downloadUrl = "";
-        if (fileMethod === 'desktop') {
-          let fileFile = document.getElementById('appFileFile').files[0];
-          if (fileFile) {
-            statusEl.innerText = "Subiendo archivo principal a la nube...";
-            const fileRef = window.ref(window.storage, 'archivos/' + Date.now() + '_' + fileFile.name);
-            await window.uploadBytes(fileRef, fileFile);
-            downloadUrl = await window.getDownloadURL(fileRef);
-          } else {
-            alert("Selecciona un archivo de tu escritorio para subir.");
-            statusEl.innerText = "";
-            return;
-          }
-        } else {
-          downloadUrl = document.getElementById('appFileValue').value.trim();
-          if (!downloadUrl) {
-            alert("Ingresa la ruta V2 o el enlace web de descarga.");
-            statusEl.innerText = "";
-            return;
-          }
         }
 
         await addDoc(window.colApps, {
@@ -255,6 +215,7 @@
         statusEl.innerText = "¡Publicado con éxito!";
         alert("¡Aplicación publicada correctamente!");
         document.getElementById('appName').value = '';
+        document.getElementById('appLinkText').value = '';
         setTimeout(() => statusEl.innerText = "", 3000);
 
       } catch (error) {
