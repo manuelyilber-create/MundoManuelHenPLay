@@ -89,7 +89,10 @@
       font-size: 14px;
     }
 
-    .form-group input, .form-group select, .form-group textarea {
+    .form-group input[type="text"], 
+    .form-group select, 
+    .form-group textarea,
+    .form-group input[type="file"] {
       width: 100%;
       padding: 8px;
       box-sizing: border-box;
@@ -122,7 +125,7 @@
 </head>
 <body>
 
-  <!-- PANTALLA DE DESBLOQUEO (SE MUESTRA PRIMERO) -->
+  <!-- PANTALLA DE DESBLOQUEO -->
   <div id="lockScreen">
     <div class="login-box">
       <h3 style="margin-top:0; color:#00a2ff;">🔒 Acceso Exclusivo Admin</h3>
@@ -132,7 +135,7 @@
     </div>
   </div>
 
-  <!-- PANEL DE ADMINISTRACIÓN (SOLO SE REVELA TRAS LA CLAVE) -->
+  <!-- PANEL DE ADMINISTRACIÓN -->
   <div id="adminContent">
     <div id="adminPanel">
       <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3a4150; padding-bottom: 10px;">
@@ -143,7 +146,7 @@
         </div>
       </div>
 
-      <!-- 1. AGREGAR APLICACIÓN -->
+      <!-- 1. AGREGAR APLICACIÓN DESDE ARCHIVOS LOCALES -->
       <div class="admin-subpanel">
         <h4 style="margin-top:0; color:#28a745;">📦 1. Agregar Nueva Aplicación / Archivo</h4>
         <div class="form-group">
@@ -162,17 +165,17 @@
           </select>
         </div>
         <div class="form-group">
-          <label>Imagen/Logo (Ruta Local o Enlace Web):</label>
-          <input type="text" id="appLogo" placeholder="Ej: V2/apps.png o https://...">
+          <label>Seleccionar Logo/Imagen desde el Escritorio:</label>
+          <input type="file" id="appLogoFile" accept="image/*">
         </div>
         <div class="form-group">
-          <label>Ruta o Link de Descarga:</label>
-          <input type="text" id="appLink" placeholder="Ej: Ps3/Hen/4.93/SETUP.P3T o enlace web">
+          <label>Seleccionar Archivo Instalador / PKG / ZIP desde el Escritorio:</label>
+          <input type="file" id="appLinkFile">
         </div>
         <button onclick="agregarItem()" style="background:#28a745; color:#fff; border:none; padding:10px; width:100%; border-radius:4px; font-weight:bold; cursor:pointer;">＋ Publicar Aplicación</button>
       </div>
 
-      <!-- 2. AGREGAR NOVEDAD -->
+      <!-- 2. AGREGAR NOVEDAD DESDE ARCHIVOS LOCALES -->
       <div class="admin-subpanel">
         <h4 style="margin-top:0; color:#00a2ff;">📢 2. Publicar Novedad o Noticia</h4>
         <div class="form-group">
@@ -180,8 +183,8 @@
           <input type="text" id="newsTitleInput" placeholder="Ej: ¡Actualización HEN 4.93 disponible!">
         </div>
         <div class="form-group">
-          <label>Imagen de Novedad (Ruta o URL):</label>
-          <input type="text" id="newsImgInput" placeholder="Ej: V2/banner.png o https://...">
+          <label>Seleccionar Imagen del Anuncio desde el Escritorio:</label>
+          <input type="file" id="newsImgFile" accept="image/*">
         </div>
         <div class="form-group">
           <label>Descripción / Detalle del Anuncio:</label>
@@ -190,7 +193,7 @@
         <button onclick="agregarNovedad()" style="background:#0070d1; color:#fff; border:none; padding:10px; width:100%; border-radius:4px; font-weight:bold; cursor:pointer;">📢 Publicar Novedad</button>
       </div>
 
-      <!-- 3. GESTIONAR Y BORRAR LO PUBLICADO -->
+      <!-- 3. LISTAS DE GESTIÓN -->
       <div class="admin-subpanel">
         <h4 style="margin-top:0; color:#ffc107;">🗑️ 3. Administrar Aplicaciones Publicadas</h4>
         <div id="adminAppsList"></div>
@@ -207,7 +210,6 @@
     let listaAplicaciones = JSON.parse(localStorage.getItem('mmhp_apps')) || [];
     let listaNoticias = JSON.parse(localStorage.getItem('mmhp_news')) || [];
 
-    // HASH SHA-256 PARA VALIDACIÓN SEGURA
     async function calcularSHA256(texto) {
       const encoder = new TextEncoder();
       const data = encoder.encode(texto);
@@ -220,8 +222,7 @@
       let u = document.getElementById('userInput').value.trim();
       let p = document.getElementById('passInput').value.trim();
 
-      // Contraseña actual configurada: 1234
-      const hashGuardado = "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4";
+      const hashGuardado = "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"; // Contraseña: 1234
       let hashIngresado = await calcularSHA256(p);
 
       if (u === "admin" && hashIngresado === hashGuardado) {
@@ -237,42 +238,92 @@
       location.reload();
     }
 
-    function agregarItem() {
+    // CONVERTIDOR DE ARCHIVO LOCAL A DATA URI
+    function leerArchivoComoDataURL(fileInput) {
+      return new Promise((resolve, reject) => {
+        const file = fileInput.files[0];
+        if (!file) {
+          resolve(null);
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = (error) => reject(error);
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function agregarItem() {
       let name = document.getElementById('appName').value.trim();
       let category = document.getElementById('appCategory').value;
-      let logo = document.getElementById('appLogo').value.trim() || 'V2/apps.png';
-      let link = document.getElementById('appLink').value.trim();
+      
+      let logoInput = document.getElementById('appLogoFile');
+      let linkInput = document.getElementById('appLinkFile');
 
-      if(name && link) {
-        listaAplicaciones.push({ id: Date.now(), nombre: name, categoria: category, logo: logo, enlace: link });
+      if (!name) {
+        alert("Ingresa el Nombre de la aplicación.");
+        return;
+      }
+
+      try {
+        let logoData = await leerArchivoComoDataURL(logoInput) || 'V2/apps.png';
+        let linkData = await leerArchivoComoDataURL(linkInput);
+
+        if (!linkData) {
+          alert("Debes seleccionar un archivo para el botón de descarga.");
+          return;
+        }
+
+        listaAplicaciones.push({ 
+          id: Date.now(), 
+          nombre: name, 
+          categoria: category, 
+          logo: logoData, 
+          enlace: linkData 
+        });
+
         localStorage.setItem('mmhp_apps', JSON.stringify(listaAplicaciones));
         cargarListasAdmin();
 
         document.getElementById('appName').value = '';
-        document.getElementById('appLogo').value = '';
-        document.getElementById('appLink').value = '';
-        alert("Aplicación publicada con éxito.");
-      } else {
-        alert("Ingresa el Nombre y el Enlace.");
+        logoInput.value = '';
+        linkInput.value = '';
+        alert("Aplicación publicada con éxito desde tus archivos.");
+      } catch (err) {
+        alert("Error al procesar el archivo. Si es muy grande, te recomendamos alojarlo o usar archivos livianos.");
       }
     }
 
-    function agregarNovedad() {
+    async function agregarNovedad() {
       let title = document.getElementById('newsTitleInput').value.trim();
-      let img = document.getElementById('newsImgInput').value.trim() || 'V2/banner.png';
       let desc = document.getElementById('newsDescInput').value.trim();
+      let imgInput = document.getElementById('newsImgFile');
 
-      if(title && desc) {
-        listaNoticias.unshift({ id: Date.now(), titulo: title, fecha: new Date().toLocaleDateString(), imagen: img, descripcion: desc });
+      if (!title || !desc) {
+        alert("Ingresa el Título y la Descripción.");
+        return;
+      }
+
+      try {
+        let imgData = await leerArchivoComoDataURL(imgInput) || 'V2/banner.png';
+
+        listaNoticias.unshift({ 
+          id: Date.now(), 
+          titulo: title, 
+          fecha: new Date().toLocaleDateString(), 
+          imagen: imgData, 
+          descripcion: desc 
+        });
+
         localStorage.setItem('mmhp_news', JSON.stringify(listaNoticias));
         cargarListasAdmin();
 
         document.getElementById('newsTitleInput').value = '';
-        document.getElementById('newsImgInput').value = '';
         document.getElementById('newsDescInput').value = '';
+        imgInput.value = '';
         alert("Novedad publicada con éxito.");
-      } else {
-        alert("Ingresa el Título y la Descripción.");
+      } catch (err) {
+        alert("Error al procesar la imagen seleccionada.");
       }
     }
 
