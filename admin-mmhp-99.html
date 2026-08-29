@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Panel Privado Admin | MundoManuelHenPlay</title>
+  <title>Panel Privado de Control General | MundoManuelHenPlay</title>
   
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
@@ -41,13 +41,13 @@
     .login-box { background: #1f232d; padding: 25px; border-radius: 8px; width: 100%; max-width: 320px; text-align: center; border: 2px solid #0070d1; }
     .login-box input { width: 100%; padding: 10px; margin-bottom: 12px; background: #161920; border: 1px solid #3a4150; color: #fff; border-radius: 4px; }
     .login-box button { background: #0070d1; color: #fff; border: none; padding: 10px; border-radius: 4px; font-weight: bold; cursor: pointer; width: 100%; }
-    #adminContent { display: none; max-width: 1000px; margin: 15px auto; padding: 15px; }
-    #adminPanel { background: #252a36; padding: 15px; border-radius: 8px; border: 2px solid #0070d1; }
-    .admin-subpanel { background: #1a1e27; padding: 12px; border-radius: 6px; margin-top: 15px; border: 1px dashed #00a2ff; }
-    .form-group { margin-bottom: 12px; }
-    .form-group label { display: block; margin-bottom: 5px; color: #00a2ff; font-size: 13px; }
-    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 8px; background: #161920; border: 1px solid #3a4150; color: #fff; border-radius: 4px; }
-    .item-list-row { background: #161920; padding: 10px; margin-top: 8px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; border-left: 3px solid #0070d1; flex-wrap: wrap; gap: 10px; }
+    #adminContent { display: none; max-width: 900px; margin: 20px auto; padding: 15px; }
+    #adminPanel { background: #161b22; padding: 20px; border-radius: 8px; border: 2px solid #0070d1; }
+    .admin-subpanel { background: #1f242d; padding: 15px; border-radius: 6px; margin-top: 20px; border: 1px dashed #0070d1; }
+    .form-group { margin-bottom: 15px; }
+    .form-group label { display: block; margin-bottom: 6px; color: #00a2ff; font-size: 13px; font-weight: bold; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 9px; background: #0d0f12; border: 1px solid #3a4150; color: #fff; border-radius: 4px; }
+    .item-list-row { background: #0d0f12; padding: 10px; margin-top: 8px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; border-left: 3px solid #0070d1; flex-wrap: wrap; gap: 10px; }
     .btn-delete { background: #dc3545; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
     .upload-status { font-size: 12px; color: #f1c40f; margin-top: 4px; display: block; }
   </style>
@@ -65,51 +65,93 @@
 
   <div id="adminContent">
     <div id="adminPanel">
-      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3a4150; padding-bottom: 10px;">
-        <h3 style="margin: 0; color: #00a2ff;">Panel de Administración Cloud</h3>
-        <a href="index.html" style="background:#0070d1; color:#fff; text-decoration:none; padding:6px 12px; border-radius:4px; font-size:13px;">🌐 Sitio Web</a>
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3a4150; padding-bottom: 12px;">
+        <h2 style="margin: 0; color: #fff; font-size: 18px;">Panel Privado de Control General</h2>
+        <div>
+          <a href="index.html" style="background:#0070d1; color:#fff; text-decoration:none; padding:6px 12px; border-radius:4px; font-size:13px; margin-right: 5px;">🌐 Ver Sitio Web</a>
+          <button onclick="location.reload()" style="background:#dc3545; color:#fff; border:none; padding:6px 12px; border-radius:4px; font-size:13px; cursor:pointer;">🚪 Salir</button>
+        </div>
       </div>
 
+      <!-- 1. AGREGAR APLICACIÓN -->
       <div class="admin-subpanel">
-        <h4 style="margin-top:0; color:#28a745;">📦 1. Agregar Aplicación / Archivo</h4>
-        <div class="form-group"><label>Nombre:</label><input type="text" id="appName" placeholder="Ej: HEN 4.93"></div>
+        <h3 style="margin-top:0; color:#28a745; font-size: 15px;">📦 1. Agregar Nueva Aplicación / Archivo</h3>
+        
+        <div class="form-group">
+          <label>Nombre y Versión:</label>
+          <input type="text" id="appName" placeholder="Ej: HEN 4.93 Installer v1.0">
+        </div>
+
         <div class="form-group">
           <label>Categoría:</label>
           <select id="appCategory">
-            <option value="PS2">PS2</option><option value="PS3">PS3</option><option value="PS4">PS4</option>
-            <option value="Aplicaciones">Aplicaciones</option><option value="Utilidades">Utilidades</option><option value="Android">Android</option>
+            <option value="PS2">PS2</option>
+            <option value="PS3">PS3</option>
+            <option value="PS4">PS4</option>
+            <option value="Aplicaciones">Aplicaciones</option>
+            <option value="Utilidades">Utilidades</option>
+            <option value="Android">Android</option>
           </select>
         </div>
-        <div class="form-group"><label>Logo (URL o ruta, ej: V2/apps.png):</label><input type="text" id="appLogo" placeholder="V2/apps.png" value="V2/apps.png"></div>
-        
-        <!-- Las 3 opciones para el archivo/enlace de descarga -->
+
+        <!-- Método para el Logo -->
         <div class="form-group">
-          <label>Archivo o Enlace de Descarga (Elige una de las 3 opciones):</label>
-          <input type="file" id="appFile" style="margin-bottom:6px;" title="1. Subir desde el escritorio">
-          <input type="text" id="appLinkV2" placeholder="2. O usar ruta V2 (Ej: V2/archivo.pkg)" style="margin-bottom:6px;">
-          <input type="text" id="appLinkWeb" placeholder="3. O pegar URL de la web (https://...)">
+          <label>Método para el Logo/Imagen:</label>
+          <select id="logoMethod" onchange="cambiarMetodoLogo()">
+            <option value="v2">📁 Ruta local de la carpeta V2 (Ej: V2/apps.png)</option>
+            <option value="web">🌐 Enlace Web / URL externa (Ej: https://...)</option>
+            <option value="desktop">💻 Subir archivo desde Escritorio</option>
+          </select>
+        </div>
+        <div class="form-group" id="logoInputContainer">
+          <input type="text" id="appLogoValue" placeholder="Ej: V2/apps.png o V2/mi-logo.png" value="V2/apps.png">
+        </div>
+
+        <!-- Método para el Archivo/Enlace de Descarga -->
+        <div class="form-group">
+          <label>Método para el Archivo o Link de Descarga:</label>
+          <select id="fileMethod" onchange="cambiarMetodoArchivo()">
+            <option value="v2">📁 Ruta local de la carpeta V2 (Ej: V2/archivo.pkg)</option>
+            <option value="web">🌐 Enlace Web / URL externa (Ej: https://...)</option>
+            <option value="desktop">💻 Subir archivo desde Escritorio</option>
+          </select>
+        </div>
+        <div class="form-group" id="fileInputContainer">
+          <input type="text" id="appFileValue" placeholder="Ej: V2/HEN.pkg o https://...">
         </div>
 
         <span id="statusApp" class="upload-status"></span>
-        <button onclick="agregarItem()" style="background:#28a745; color:#fff; border:none; padding:10px; width:100%; border-radius:4px; font-weight:bold; cursor:pointer;">＋ Publicar en la Nube</button>
+        <button onclick="agregarItem()" style="background:#28a745; color:#fff; border:none; padding:11px; width:100%; border-radius:4px; font-weight:bold; cursor:pointer; font-size: 14px;">＋ Publicar Aplicación</button>
       </div>
 
+      <!-- 2. PUBLICAR NOVEDAD -->
       <div class="admin-subpanel">
-        <h4 style="margin-top:0; color:#00a2ff;">📢 2. Publicar Novedad</h4>
-        <div class="form-group"><input type="text" id="newsTitleInput" placeholder="Título..."></div>
-        <div class="form-group"><label>Imagen de Novedad (URL):</label><input type="text" id="newsImgInput" placeholder="V2/banner.png" value="V2/banner.png"></div>
-        <div class="form-group"><textarea id="newsDescInput" rows="2" placeholder="Descripción..."></textarea></div>
+        <h3 style="margin-top:0; color:#00a2ff; font-size: 15px;">📢 2. Publicar Novedad o Noticia</h3>
+        <div class="form-group">
+          <label>Título de la Novedad:</label>
+          <input type="text" id="newsTitleInput" placeholder="Ej: ¡Actualización HEN 4.93 disponible!">
+        </div>
+        <div class="form-group">
+          <label>Imagen del Anuncio (Ruta V2 o URL web):</label>
+          <input type="text" id="newsImgInput" placeholder="Ej: V2/banner.png o https://..." value="V2/banner.png">
+        </div>
+        <div class="form-group">
+          <label>Descripción / Detalle del Anuncio:</label>
+          <textarea id="newsDescInput" rows="3" placeholder="Escribe la información aquí..."></textarea>
+        </div>
         <span id="statusNews" class="upload-status"></span>
-        <button onclick="agregarNovedad()" style="background:#0070d1; color:#fff; border:none; padding:10px; width:100%; border-radius:4px; font-weight:bold; cursor:pointer;">Publicar Novedad</button>
+        <button onclick="agregarNovedad()" style="background:#0070d1; color:#fff; border:none; padding:11px; width:100%; border-radius:4px; font-weight:bold; cursor:pointer; font-size: 14px;">📢 Publicar Novedad</button>
       </div>
 
+      <!-- 3. MODERAR COMENTARIOS -->
       <div class="admin-subpanel">
-        <h4 style="margin-top:0; color:#e67e22;">💬 3. Moderar Comentarios</h4>
+        <h3 style="margin-top:0; color:#e67e22; font-size: 15px;">💬 3. Moderar Comentarios</h3>
         <div id="adminCommentsList"></div>
       </div>
 
+      <!-- 4. ADMINISTRAR APLICACIONES -->
       <div class="admin-subpanel">
-        <h4 style="margin-top:0; color:#ffc107;">🗑️ 4. Administrar Aplicaciones</h4>
+        <h3 style="margin-top:0; color:#ffc107; font-size: 15px;">🗑️ 4. Administrar Aplicaciones Publicadas</h3>
         <div id="adminAppsList"></div>
       </div>
     </div>
@@ -130,59 +172,94 @@
       }
     }
 
+    // Cambiar input de logo dinámicamente según el select
+    window.cambiarMetodoLogo = function() {
+      let metodo = document.getElementById('logoMethod').value;
+      let container = document.getElementById('logoInputContainer');
+      if (metodo === 'desktop') {
+        container.innerHTML = `<input type="file" id="appLogoFile" accept="image/*">`;
+      } else {
+        container.innerHTML = `<input type="text" id="appLogoValue" placeholder="Ej: V2/apps.png o https://..." value="V2/apps.png">`;
+      }
+    }
+
+    // Cambiar input de archivo dinámicamente según el select
+    window.cambiarMetodoArchivo = function() {
+      let metodo = document.getElementById('fileMethod').value;
+      let container = document.getElementById('fileInputContainer');
+      if (metodo === 'desktop') {
+        container.innerHTML = `<input type="file" id="appFileFile">`;
+      } else {
+        container.innerHTML = `<input type="text" id="appFileValue" placeholder="Ej: V2/archivo.pkg o https://...">`;
+      }
+    }
+
     window.agregarItem = async function() {
       let name = document.getElementById('appName').value.trim();
       let category = document.getElementById('appCategory').value;
-      let logo = document.getElementById('appLogo').value.trim() || "V2/apps.png";
-      
-      let fileInput = document.getElementById('appFile').files[0];
-      let linkV2 = document.getElementById('appLinkV2').value.trim();
-      let linkWeb = document.getElementById('appLinkWeb').value.trim();
       let statusEl = document.getElementById('statusApp');
 
-      if (!name) { alert("Ingresa al menos el nombre de la aplicación."); return; }
+      if (!name) { alert("Ingresa el nombre de la aplicación."); return; }
 
-      let downloadUrl = "";
       statusEl.innerText = "Procesando...";
 
       try {
-        if (fileInput) {
-          statusEl.innerText = "Subiendo archivo desde el escritorio...";
-          const fileRef = window.ref(window.storage, 'archivos/' + Date.now() + '_' + fileInput.name);
-          await window.uploadBytes(fileRef, fileInput);
-          downloadUrl = await window.getDownloadURL(fileRef);
-        } else if (linkV2) {
-          downloadUrl = linkV2;
-        } else if (linkWeb) {
-          downloadUrl = linkWeb;
+        // Obtener Logo
+        let logoMethod = document.getElementById('logoMethod').value;
+        let logoUrl = "V2/apps.png";
+        if (logoMethod === 'desktop') {
+          let logoFile = document.getElementById('appLogoFile').files[0];
+          if (logoFile) {
+            statusEl.innerText = "Subiendo logo a la nube...";
+            const logoRef = window.ref(window.storage, 'logos/' + Date.now() + '_' + logoFile.name);
+            await window.uploadBytes(logoRef, logoFile);
+            logoUrl = await window.getDownloadURL(logoRef);
+          }
+        } else {
+          let val = document.getElementById('appLogoValue').value.trim();
+          if (val) logoUrl = val;
         }
 
-        if (!downloadUrl) {
-          alert("Debes elegir una opción para el archivo (subir archivo, poner ruta V2 o pegar una URL web).");
-          statusEl.innerText = "";
-          return;
+        // Obtener Enlace o Archivo de Descarga
+        let fileMethod = document.getElementById('fileMethod').value;
+        let downloadUrl = "";
+        if (fileMethod === 'desktop') {
+          let fileFile = document.getElementById('appFileFile').files[0];
+          if (fileFile) {
+            statusEl.innerText = "Subiendo archivo principal a la nube...";
+            const fileRef = window.ref(window.storage, 'archivos/' + Date.now() + '_' + fileFile.name);
+            await window.uploadBytes(fileRef, fileFile);
+            downloadUrl = await window.getDownloadURL(fileRef);
+          } else {
+            alert("Selecciona un archivo de tu escritorio para subir.");
+            statusEl.innerText = "";
+            return;
+          }
+        } else {
+          downloadUrl = document.getElementById('appFileValue').value.trim();
+          if (!downloadUrl) {
+            alert("Ingresa la ruta V2 o el enlace web de descarga.");
+            statusEl.innerText = "";
+            return;
+          }
         }
 
         await addDoc(window.colApps, {
           id: Date.now(),
           nombre: name,
           categoria: category,
-          logo: logo,
+          logo: logoUrl,
           enlace: downloadUrl
         });
 
         statusEl.innerText = "¡Publicado con éxito!";
         alert("¡Aplicación publicada correctamente!");
-        
         document.getElementById('appName').value = '';
-        document.getElementById('appFile').value = '';
-        document.getElementById('appLinkV2').value = '';
-        document.getElementById('appLinkWeb').value = '';
         setTimeout(() => statusEl.innerText = "", 3000);
 
       } catch (error) {
         console.error(error);
-        alert("Error al procesar: " + error.message);
+        alert("Error al publicar: " + error.message);
         statusEl.innerText = "";
       }
     }
@@ -208,7 +285,9 @@
     }
 
     window.eliminarDocumento = async function(coleccion, idDoc) {
-      await deleteDoc(doc(window.db, coleccion, idDoc));
+      if (confirm("¿Estás seguro de eliminar este elemento?")) {
+        await deleteDoc(doc(window.db, coleccion, idDoc));
+      }
     }
 
     function cargarListasAdminRealtime() {
