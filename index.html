@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MundoManuelHenPlay</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       padding: 0;
@@ -32,8 +36,9 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 20px;
+      padding: 10px 15px;
       flex-wrap: wrap;
+      gap: 10px;
     }
 
     .nav-links {
@@ -42,6 +47,7 @@
       padding: 0;
       display: flex;
       flex-wrap: wrap;
+      gap: 5px;
     }
 
     .nav-item {
@@ -50,15 +56,17 @@
 
     .nav-item > a {
       display: block;
-      padding: 12px 18px;
+      padding: 10px 14px;
       color: #fff;
       text-decoration: none;
       font-weight: bold;
       cursor: pointer;
+      font-size: 14px;
     }
 
     .nav-item:hover > a {
       background: #0070d1;
+      border-radius: 4px;
     }
 
     .dropdown {
@@ -67,21 +75,23 @@
       top: 100%;
       left: 0;
       background: #1f232d;
-      min-width: 180px;
+      min-width: 160px;
       box-shadow: 0px 8px 16px rgba(0,0,0,0.5);
       list-style: none;
       padding: 0;
       margin: 0;
       z-index: 1000;
+      border-radius: 0 0 4px 4px;
     }
 
     .dropdown li a {
       color: #ccc;
-      padding: 12px 16px;
+      padding: 10px 14px;
       text-decoration: none;
       display: block;
       border-bottom: 1px solid #2a2f3d;
       cursor: pointer;
+      font-size: 13px;
     }
 
     .dropdown li a:hover {
@@ -96,24 +106,25 @@
     .header-right {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
+      flex-wrap: wrap;
     }
 
     .counter-badge {
       background: #1f232d;
       border: 1px solid #0070d1;
       border-radius: 15px;
-      padding: 5px 12px;
-      font-size: 13px;
+      padding: 5px 10px;
+      font-size: 12px;
       color: #00a2ff;
       font-weight: bold;
     }
 
     main {
-      padding: 25px;
+      padding: 15px;
       max-width: 1000px;
-      margin: 20px auto;
-      background: rgba(15, 18, 24, 0.9);
+      margin: 15px auto;
+      background: rgba(15, 18, 24, 0.92);
       border-radius: 8px;
     }
 
@@ -139,36 +150,38 @@
 
     .app-card {
       background: #1f232d;
-      padding: 15px;
+      padding: 12px 15px;
       margin-bottom: 12px;
       border-left: 4px solid #0070d1;
       display: flex;
       align-items: center;
       justify-content: space-between;
       border-radius: 4px;
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
     .app-info {
       display: flex;
       align-items: center;
-      gap: 15px;
+      gap: 12px;
     }
 
     .app-logo {
-      width: 50px;
-      height: 50px;
+      width: 45px;
+      height: 45px;
       object-fit: cover;
       border-radius: 6px;
       border: 1px solid #0070d1;
       background: #161920;
     }
 
-    #newsSection {
+    #newsSection, #chatSection {
       background: #161920;
-      border: 1px solid #00a2ff;
+      border: 1px solid #0070d1;
       border-radius: 8px;
-      padding: 20px;
-      margin-top: 35px;
+      padding: 15px;
+      margin-top: 25px;
     }
 
     .news-title {
@@ -181,39 +194,34 @@
     .news-card {
       background: #1f232d;
       border-radius: 6px;
-      padding: 15px;
-      margin-bottom: 15px;
+      padding: 12px;
+      margin-bottom: 12px;
       display: flex;
-      gap: 15px;
+      gap: 12px;
       border-left: 4px solid #28a745;
+      flex-wrap: wrap;
     }
 
     .news-img {
-      width: 100px;
-      height: 100px;
+      width: 90px;
+      height: 90px;
       object-fit: cover;
       border-radius: 6px;
       border: 1px solid #0070d1;
       background: #000;
     }
 
-    /* ESTILOS DE LA SECCIÓN DE CHAT Y COMENTARIOS */
-    #chatSection {
-      background: #161920;
-      border: 1px solid #0070d1;
-      border-radius: 8px;
-      padding: 20px;
-      margin-top: 35px;
-    }
-
+    /* SISTEMA DE CHAT RESPONSIVO */
     .user-profile-bar {
       background: #1f232d;
-      padding: 10px 15px;
+      padding: 10px 12px;
       border-radius: 6px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
     .user-avatar {
@@ -227,18 +235,17 @@
     .comment-form input, .comment-form textarea {
       width: 100%;
       padding: 10px;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       background: #1f232d;
       border: 1px solid #3a4150;
       color: #fff;
       border-radius: 4px;
-      box-sizing: border-box;
     }
 
     .comment-tabs {
       display: flex;
-      gap: 10px;
-      margin: 15px 0;
+      gap: 8px;
+      margin: 12px 0;
       border-bottom: 1px solid #3a4150;
       padding-bottom: 8px;
     }
@@ -247,9 +254,10 @@
       background: #1f232d;
       color: #ccc;
       border: none;
-      padding: 6px 14px;
+      padding: 6px 12px;
       border-radius: 4px;
       cursor: pointer;
+      font-size: 13px;
     }
 
     .tab-btn.active {
@@ -260,18 +268,12 @@
 
     .comment-card {
       background: #1f232d;
-      padding: 12px 15px;
+      padding: 12px;
       border-radius: 6px;
       margin-bottom: 10px;
       display: flex;
-      gap: 12px;
-      border-left: 3px solid #00a2ff;
-    }
-
-    .comment-header {
-      display: flex;
-      align-items: center;
       gap: 10px;
+      border-left: 3px solid #00a2ff;
     }
 
     .btn-like {
@@ -285,7 +287,6 @@
       margin-top: 5px;
     }
 
-    /* MODAL DE REGISTRO */
     .modal {
       display: none;
       position: fixed;
@@ -294,14 +295,47 @@
       justify-content: center;
       align-items: center;
       z-index: 2000;
+      padding: 15px;
     }
 
     .modal-content {
       background: #1f232d;
-      padding: 25px;
+      padding: 20px;
       border-radius: 8px;
-      width: 300px;
+      width: 100%;
+      max-width: 350px;
       border: 2px solid #0070d1;
+    }
+
+    /* AJUSTES ESPECÍFICOS PARA ANDROID Y PANTALLAS PEQUEÑAS */
+    @media (max-width: 600px) {
+      nav {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .header-right {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .app-card {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .app-card > div:last-child {
+        width: 100%;
+      }
+      .app-card a {
+        display: block;
+        text-align: center;
+        width: 100%;
+      }
+      .news-card {
+        flex-direction: column;
+      }
+      .news-img {
+        width: 100%;
+        height: 140px;
+      }
     }
   </style>
 </head>
@@ -348,7 +382,7 @@
       <input type="text" id="searchInput" onkeyup="buscarAplicacion()" placeholder="Buscar archivo, aplicaciones o categorías...">
     </div>
 
-    <h2 id="tituloSeccion" style="color: #00a2ff;">Contenido Disponible</h2>
+    <h2 id="tituloSeccion" style="color: #00a2ff; font-size: 20px;">Contenido Disponible</h2>
     <div id="listaContenido"></div>
 
     <section id="newsSection">
@@ -356,9 +390,8 @@
       <div id="newsContainer"></div>
     </section>
 
-    <!-- SECCIÓN DE CHAT Y COMENTARIOS DE LA COMUNIDAD -->
     <section id="chatSection">
-      <h3 style="color: #00a2ff; margin-top:0; border-bottom: 2px solid #0070d1; padding-bottom: 8px;">💬 Chat de la Comunidad y Comentarios</h3>
+      <h3 style="color: #00a2ff; margin-top:0; border-bottom: 2px solid #0070d1; padding-bottom: 8px;">💬 Chat de la Comunidad</h3>
       
       <div id="userBar" class="user-profile-bar">
         <div style="display:flex; align-items:center; gap:10px;">
@@ -370,7 +403,7 @@
 
       <div class="comment-form">
         <input type="text" id="commentSubject" placeholder="Asunto...">
-        <textarea id="commentMessage" rows="3" placeholder="Escribe tu mensaje o descripción aquí..."></textarea>
+        <textarea id="commentMessage" rows="3" placeholder="Escribe tu mensaje aquí..."></textarea>
         <button onclick="publicarComentario()" style="background:#28a745; color:#fff; border:none; padding:10px; width:100%; border-radius:4px; font-weight:bold; cursor:pointer;">Enviar Mensaje</button>
       </div>
 
@@ -383,7 +416,6 @@
     </section>
   </main>
 
-  <!-- MODAL PARA REGISTRO DE USUARIO -->
   <div id="regModal" class="modal">
     <div class="modal-content">
       <h3 style="margin-top:0; color:#00a2ff;">👤 Registrar Perfil</h3>
@@ -446,7 +478,7 @@
             <div class="app-info">
               <img src="${app.logo}" class="app-logo" onerror="this.src='V2/apps.png'">
               <div>
-                <strong style="font-size:16px;">[${app.categoria}] ${app.nombre}</strong>
+                <strong style="font-size:15px;">[${app.categoria}] ${app.nombre}</strong>
               </div>
             </div>
             <div>
@@ -490,7 +522,6 @@
       renderizarAplicaciones(listaAplicaciones.filter(app => app.nombre.toLowerCase().includes(t) || app.categoria.toLowerCase().includes(t)));
     }
 
-    /* SISTEMA DE CHAT/COMENTARIOS Y USUARIOS */
     function abrirModalRegistro() { document.getElementById('regModal').style.display = 'flex'; }
     function cerrarModalRegistro() { document.getElementById('regModal').style.display = 'none'; }
 
@@ -528,11 +559,10 @@
     }
 
     function publicarComentario() {
-      if (!usuarioActual) { alert("Debes registrarte o identificarte para poder comentar."); abrirModalRegistro(); return; }
+      if (!usuarioActual) { alert("Debes registrarte o identificarte para comentar."); abrirModalRegistro(); return; }
       
-      // Verificar si el usuario está bloqueado por el Admin
       let bloqueado = listaUsuariosBloqueados.some(u => u.nombre.toLowerCase() === usuarioActual.nombre.toLowerCase() && u.apellido.toLowerCase() === usuarioActual.apellido.toLowerCase());
-      if (bloqueado) { alert("⚠️ Tu cuenta ha sido bloqueada por el Administrador. No puedes enviar comentarios."); return; }
+      if (bloqueado) { alert("⚠️ Tu cuenta ha sido bloqueada por el Administrador."); return; }
 
       let asunto = document.getElementById('commentSubject').value.trim();
       let msj = document.getElementById('commentMessage').value.trim();
@@ -589,12 +619,12 @@
           <div class="comment-card">
             <img src="${item.foto}" class="user-avatar" onerror="this.src='V2/apps.png'">
             <div style="width:100%;">
-              <div class="comment-header">
+              <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
                 <strong style="color:#00a2ff;">${item.usuario}</strong>
                 <small style="color:#aaa;">• ${item.fecha}</small>
               </div>
-              <h5 style="margin:4px 0; color:#fff; font-size:15px;">📌 ${item.asunto}</h5>
-              <p style="margin:0; color:#ccc; font-size:14px;">${item.mensaje}</p>
+              <h5 style="margin:4px 0; color:#fff; font-size:14px;">📌 ${item.asunto}</h5>
+              <p style="margin:0; color:#ccc; font-size:13px; word-break:break-word;">${item.mensaje}</p>
               <button class="btn-like" onclick="darMeGusta(${item.id})">❤️ Me gusta (${item.likes})</button>
             </div>
           </div>`;
