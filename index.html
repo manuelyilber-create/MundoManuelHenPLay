@@ -197,7 +197,6 @@
       background: #000;
     }
 
-    /* ESTILOS DE LA SECCIÓN DE CHAT Y COMENTARIOS */
     #chatSection {
       background: #161920;
       border: 1px solid #0070d1;
@@ -285,7 +284,6 @@
       margin-top: 5px;
     }
 
-    /* MODAL DE REGISTRO */
     .modal {
       display: none;
       position: fixed;
@@ -356,7 +354,6 @@
       <div id="newsContainer"></div>
     </section>
 
-    <!-- SECCIÓN DE CHAT Y COMENTARIOS DE LA COMUNIDAD -->
     <section id="chatSection">
       <h3 style="color: #00a2ff; margin-top:0; border-bottom: 2px solid #0070d1; padding-bottom: 8px;">💬 Chat de la Comunidad y Comentarios</h3>
       
@@ -383,7 +380,6 @@
     </section>
   </main>
 
-  <!-- MODAL PARA REGISTRO DE USUARIO -->
   <div id="regModal" class="modal">
     <div class="modal-content">
       <h3 style="margin-top:0; color:#00a2ff;">👤 Registrar Perfil</h3>
@@ -399,10 +395,9 @@
     </div>
   </div>
 
-  <!-- SCRIPT DE FIREBASE E INICIALIZACIÓN -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.x.x/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.x.x/firebase-analytics.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, onSnapshot, addDoc, updateDoc, doc, increment, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCv-qeex1pBV7pfi2UD0iUio46-OX2MCiI",
@@ -415,43 +410,88 @@
     };
 
     const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
+    const db = getFirestore(app);
+
+    window.db = db;
+    window.colApps = collection(db, "apps");
+    window.colNews = collection(db, "news");
+    window.colComments = collection(db, "comments");
+    window.colBlocked = collection(db, "blocked_users");
+    window.docStats = doc(db, "stats", "counters");
+
+    window.FirestoreFns = { addDoc, onSnapshot, updateDoc, doc, increment, getDoc, setDoc, collection };
   </script>
 
   <script>
-    let listaAplicaciones = JSON.parse(localStorage.getItem('mmhp_apps')) || [];
-    let listaNoticias = JSON.parse(localStorage.getItem('mmhp_news')) || [
-      {
-        id: 1,
-        titulo: "¡Bienvenido a MundoManuelHenPlay!",
-        fecha: new Date().toLocaleDateString(),
-        imagen: "V2/banner.png",
-        descripcion: "Aquí podrás ver todas las novedades y anuncios importantes de la página."
-      }
-    ];
-    let listaComentarios = JSON.parse(localStorage.getItem('mmhp_comments')) || [];
-    let listaUsuariosBloqueados = JSON.parse(localStorage.getItem('mmhp_blocked_users')) || [];
+    let listaAplicaciones = [];
+    let listaNoticias = [];
+    let listaComentarios = [];
+    let listaUsuariosBloqueados = [];
     let usuarioActual = JSON.parse(localStorage.getItem('mmhp_current_user')) || null;
     let filtroComentarios = 'reciente';
 
-    let contadorVisitas = parseInt(localStorage.getItem('mmhp_visitas') || "0") + 1;
-    let contadorDescargas = parseInt(localStorage.getItem('mmhp_descargas') || "0");
-    localStorage.setItem('mmhp_visitas', contadorVisitas);
-
     window.onload = function() {
-      document.getElementById('cntVisitas').innerText = contadorVisitas;
-      document.getElementById('cntDescargas').innerText = contadorDescargas;
+      setTimeout(() => {
+        if (!window.db) return;
+        const { onSnapshot, collection } = window.FirestoreFns;
 
-      renderizarAplicaciones(listaAplicaciones);
-      renderizarNoticias(listaNoticias);
+        // Escuchar Apps en tiempo real
+        onSnapshot(window.colApps, (snapshot) => {
+          listaAplicaciones = snapshot.docs.map(doc => ({ firebaseId: doc.id, ...doc.data() }));
+          renderizarAplicaciones(listaAplicaciones);
+        });
+
+        // Escuchar Noticias en tiempo real
+        onSnapshot(window.colNews, (snapshot) => {
+          listaNoticias = snapshot.docs.map(doc => ({ firebaseId: doc.id, ...doc.data() }));
+          if (listaNoticias.length === 0) {
+            listaNoticias = [{ titulo: "¡Bienvenido a MundoManuelHenPlay!", fecha: new Date().toLocaleDateString(), imagen: "V2/banner.png", descripcion: "Aquí podrás ver todas las novedades y anuncios importantes de la página." }];
+          }
+          renderizarNoticias(listaNoticias);
+        });
+
+        // Escuchar Comentarios en tiempo real
+        onSnapshot(window.colComments, (snapshot) => {
+          listaComentarios = snapshot.docs.map(doc => ({ firebaseId: doc.id, ...doc.data() }));
+          renderizarComentarios();
+        });
+
+        // Escuchar Bloqueados en tiempo real
+        onSnapshot(window.colBlocked, (snapshot) => {
+          listaUsuariosBloqueados = snapshot.docs.map(doc => doc.data());
+        });
+
+        // Manejar Visitas globales en Firestore
+        manejarContadores();
+      }, 500);
+
       actualizarBarraUsuario();
-      renderizarComentarios();
     };
 
-    function registrarDescarga() {
-      contadorDescargas++;
-      localStorage.setItem('mmhp_descargas', contadorDescargas);
-      document.getElementById('cntDescargas').innerText = contadorDescargas;
+    async function manejarContadores() {
+      const { getDoc, setDoc, updateDoc, increment } = window.FirestoreFns;
+      try {
+        let snap = await getDoc(window.docStats);
+        if (!snap.exists()) {
+          await setDoc(window.docStats, { visitas: 1, descargas: 0 });
+          document.getElementById('cntVisitas').innerText = "1";
+          document.getElementById('cntDescargas').innerText = "0";
+        } else {
+          await updateDoc(window.docStats, { visitas: increment(1) });
+          let data = snap.data();
+          document.getElementById('cntVisitas').innerText = (data.visitas || 0) + 1;
+          document.getElementById('cntDescargas').innerText = data.descargas || 0;
+        }
+      } catch(e) { console.error(e); }
+    }
+
+    async function registrarDescarga() {
+      const { updateDoc, increment } = window.FirestoreFns;
+      try {
+        await updateDoc(window.docStats, { descargas: increment(1) });
+        let actual = parseInt(document.getElementById('cntDescargas').innerText || "0") + 1;
+        document.getElementById('cntDescargas').innerText = actual;
+      } catch(e) { console.error(e); }
     }
 
     function renderizarAplicaciones(lista) {
@@ -509,7 +549,6 @@
       renderizarAplicaciones(listaAplicaciones.filter(app => app.nombre.toLowerCase().includes(t) || app.categoria.toLowerCase().includes(t)));
     }
 
-    /* SISTEMA DE CHAT/COMENTARIOS Y USUARIOS */
     function abrirModalRegistro() { document.getElementById('regModal').style.display = 'flex'; }
     function cerrarModalRegistro() { document.getElementById('regModal').style.display = 'none'; }
 
@@ -546,8 +585,8 @@
       }
     }
 
-    function publicarComentario() {
-      if (!usuarioActual) { alert("Debes registrarte o identificarte para poder comentar."); abrirModalRegistro(); return; }
+    async function publicarComentario() {
+      if (!usuarioActual) { alert("Debes registrarte o identificarse para poder comentar."); abrirModalRegistro(); return; }
       
       let bloqueado = listaUsuariosBloqueados.some(u => u.nombre.toLowerCase() === usuarioActual.nombre.toLowerCase() && u.apellido.toLowerCase() === usuarioActual.apellido.toLowerCase());
       if (bloqueado) { alert("⚠️ Tu cuenta ha sido bloqueada por el Administrador. No puedes enviar comentarios."); return; }
@@ -557,20 +596,20 @@
 
       if (!asunto || !msj) { alert("Por favor completa el Asunto y el Mensaje."); return; }
 
-      listaComentarios.unshift({
-        id: Date.now(),
-        usuario: usuarioActual.nombre + " " + usuarioActual.apellido,
-        foto: usuarioActual.foto,
-        asunto: asunto,
-        mensaje: msj,
-        likes: 0,
-        fecha: new Date().toLocaleString()
-      });
-
-      localStorage.setItem('mmhp_comments', JSON.stringify(listaComentarios));
-      document.getElementById('commentSubject').value = '';
-      document.getElementById('commentMessage').value = '';
-      renderizarComentarios();
+      const { addDoc } = window.FirestoreFns;
+      try {
+        await addDoc(window.colComments, {
+          id: Date.now(),
+          usuario: usuarioActual.nombre + " " + usuarioActual.apellido,
+          foto: usuarioActual.foto,
+          asunto: asunto,
+          mensaje: msj,
+          likes: 0,
+          fecha: new Date().toLocaleString()
+        });
+        document.getElementById('commentSubject').value = '';
+        document.getElementById('commentMessage').value = '';
+      } catch(e) { alert("Error al enviar comentario: " + e.message); }
     }
 
     function cambiarFiltroComentarios(tipo) {
@@ -580,13 +619,12 @@
       renderizarComentarios();
     }
 
-    function darMeGusta(id) {
-      let com = listaComentarios.find(c => c.id === id);
-      if (com) {
-        com.likes++;
-        localStorage.setItem('mmhp_comments', JSON.stringify(listaComentarios));
-        renderizarComentarios();
-      }
+    async function darMeGusta(firebaseId, likesActuales) {
+      const { updateDoc, doc } = window.FirestoreFns;
+      try {
+        let ref = doc(window.db, "comments", firebaseId);
+        await updateDoc(ref, { likes: (likesActuales || 0) + 1 });
+      } catch(e) { console.error(e); }
     }
 
     function renderizarComentarios() {
@@ -595,9 +633,9 @@
       let copia = [...listaComentarios];
 
       if (filtroComentarios === 'popular') {
-        copia.sort((a, b) => b.likes - a.likes);
+        copia.sort((a, b) => (b.likes || 0) - (a.likes || 0));
       } else {
-        copia.sort((a, b) => b.id - a.id);
+        copia.sort((a, b) => (b.id || 0) - (a.id || 0));
       }
 
       if (copia.length === 0) { c.innerHTML = '<p style="color:#aaa;">Sé el primero en comentar.</p>'; return; }
@@ -613,7 +651,7 @@
               </div>
               <h5 style="margin:4px 0; color:#fff; font-size:15px;">📌 ${item.asunto}</h5>
               <p style="margin:0; color:#ccc; font-size:14px;">${item.mensaje}</p>
-              <button class="btn-like" onclick="darMeGusta(${item.id})">❤️ Me gusta (${item.likes})</button>
+              <button class="btn-like" onclick="darMeGusta('${item.firebaseId}', ${item.likes || 0})">❤️ Me gusta (${item.likes || 0})</button>
             </div>
           </div>`;
       });
