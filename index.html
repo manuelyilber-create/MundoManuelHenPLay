@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MundoManuelHenPlay</title>
+  <!-- LIBRERÍA PARA ENCRIPTAR CLAVE (Funciona en archivo local file://) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
   <style>
     /* 1. ESTILOS GENERALES Y TEMA */
     body {
@@ -435,11 +437,17 @@
       document.getElementById('passInput').value = '';
     }
 
+    /* VALIDACIÓN CON CLAVE ENCRIPTADA (SHA-256 PARA "20192920") */
     function validarAdmin() {
       let u = document.getElementById('userInput').value.trim();
       let p = document.getElementById('passInput').value.trim();
 
-      if (u === "admin" && p === "1234") {
+      // Convertimos lo ingresado a SHA-256 al instante
+      let passIngresadaHash = CryptoJS.SHA256(p).toString();
+      // Hash de la clave "20192920"
+      let hashCorrecto = "ff3b10b784e27f9e8a71d87f7a77e7e6005d54e4f7e6f3df80fdfc43d790d9bf";
+
+      if (u === "admin" && passIngresadaHash === hashCorrecto) {
         alert("¡Acceso Correcto!");
         esAdmin = true;
         document.getElementById('adminPanel').style.display = 'block';
@@ -527,7 +535,6 @@
       lista.forEach(app => {
         let btnDel = esAdmin ? `<button onclick="eliminarItem(${app.id})" style="background:#dc3545; color:#fff; border:none; padding:6px 10px; border-radius:4px; cursor:pointer; margin-left:5px;">🗑️</button>` : '';
         
-        // AQUÍ SE REMOVIÓ LA LÍNEA DE RUTA PARA QUE SOLO SE VEA CATEGORÍA Y NOMBRE/VERSIÓN
         c.innerHTML += `
           <div class="app-card">
             <div class="app-info">
@@ -578,8 +585,4 @@
 
     function buscarAplicacion() {
       let t = document.getElementById('searchInput').value.toLowerCase();
-      renderizarAplicaciones(listaAplicaciones.filter(app => app.nombre.toLowerCase().includes(t) || app.categoria.toLowerCase().includes(t)));
-    }
-  </script>
-</body>
-</html>
+      renderizarAplicaciones(l
