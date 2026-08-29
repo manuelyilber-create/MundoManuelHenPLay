@@ -196,35 +196,6 @@
       border: 1px solid #0070d1;
       background: #000;
     }
-
-    /* Estilos para la sección de comentarios / conversación */
-    .comments-section {
-      margin-top: 35px;
-      background: #161920;
-      border: 1px solid #0070d1;
-      border-radius: 8px;
-      padding: 20px;
-    }
-
-    .comment-box input, .comment-box textarea {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 10px;
-      background: #1f232d;
-      border: 1px solid #3a4150;
-      color: #fff;
-      border-radius: 4px;
-      box-sizing: border-box;
-      outline: none;
-    }
-
-    .comment-item {
-      background: #1f232d;
-      padding: 12px;
-      border-radius: 4px;
-      margin-bottom: 10px;
-      border-left: 3px solid #00a2ff;
-    }
   </style>
 </head>
 <body>
@@ -277,17 +248,6 @@
       <h3 class="news-title">📢 Novedades y Anuncios Recientes</h3>
       <div id="newsContainer"></div>
     </section>
-
-    <!-- SECCIÓN DE COMENTARIOS / CONVERSACIÓN -->
-    <section class="comments-section">
-      <h3 style="color:#00a2ff; margin-top:0;">💬 Conversación y Comentarios</h3>
-      <div class="comment-box">
-        <input type="text" id="nombreComentario" placeholder="Tu nombre">
-        <textarea id="textoComentario" rows="3" placeholder="Escribe tu mensaje o conversación aquí..."></textarea>
-        <button onclick="enviarComentario()" style="background:#0070d1; color:#fff; border:none; padding:8px 16px; border-radius:4px; font-weight:bold; cursor:pointer;">Publicar Comentario</button>
-      </div>
-      <div id="listaComentarios" style="margin-top: 15px;"></div>
-    </section>
   </main>
 
   <!-- SDKs de Firebase Firestore -->
@@ -295,14 +255,15 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
   <script>
-    // CONFIGURACIÓN DE FIREBASE (Reemplaza con tus datos reales de la consola de Firebase)
+    // CONFIGURACIÓN DE FIREBASE CON TUS CREDENCIALES REALES
     const firebaseConfig = {
-      apiKey: "TU_API_KEY",
-      authDomain: "TU_AUTH_DOMAIN",
-      projectId: "TU_PROJECT_ID",
-      storageBucket: "TU_STORAGE_BUCKET",
-      messagingSenderId: "TU_MESSAGING_SENDER_ID",
-      appId: "TU_APP_ID"
+      apiKey: "AIzaSyCv-qeex1pBV7pfi2UD0iUio46-OX2MCiI",
+      authDomain: "mundomanuelhenplay.firebaseapp.com",
+      projectId: "mundomanuelhenplay",
+      storageBucket: "mundomanuelhenplay.firebasestorage.app",
+      messagingSenderId: "1072751644369",
+      appId: "1:1072751644369:web:9ce6b8ad4b115b2e643ff0",
+      measurementId: "G-QZ4RSWGEJL"
     };
 
     firebase.initializeApp(firebaseConfig);
@@ -310,7 +271,6 @@
 
     let listaAplicaciones = [];
     let listaNoticias = [];
-    let categoriaActual = 'TODOS';
 
     let contadorVisitas = parseInt(localStorage.getItem('mmhp_visitas') || "0") + 1;
     let contadorDescargas = parseInt(localStorage.getItem('mmhp_descargas') || "0");
@@ -320,78 +280,42 @@
       document.getElementById('cntVisitas').innerText = contadorVisitas;
       document.getElementById('cntDescargas').innerText = contadorDescargas;
 
-      sincronizarFirestore();
+      // Cargar datos en tiempo real desde Firestore
+      cargarDatosDesdeFirestore();
     };
 
-    function sincronizarFirestore() {
-      // 1. Sincronizar Aplicaciones en tiempo real
+    function cargarDatosDesdeFirestore() {
+      // Escuchar cambios en la colección "aplicaciones"
       db.collection("aplicaciones").onSnapshot((snapshot) => {
         listaAplicaciones = [];
         snapshot.forEach((doc) => {
-          listaAplicaciones.push({ id: doc.id, ...doc.data() });
+          let data = doc.data();
+          listaAplicaciones.push({
+            id: doc.id,
+            nombre: data.nombre || "Sin nombre",
+            categoria: data.categoria || "Herramientas",
+            logo: data.logo || "V2/apps.png",
+            enlace: data.enlace || "#"
+          });
         });
-        filtrarCategoria(categoriaActual);
+        renderizarAplicaciones(listaAplicaciones);
       });
 
-      // 2. Sincronizar Noticias en tiempo real
+      // Escuchar cambios en la colección "noticias"
       db.collection("noticias").onSnapshot((snapshot) => {
         listaNoticias = [];
         snapshot.forEach((doc) => {
-          listaNoticias.push({ id: doc.id, ...doc.data() });
+          let data = doc.data();
+          listaNoticias.push({
+            id: doc.id,
+            titulo: data.titulo || "Aviso importante",
+            fecha: data.fecha || new Date().toLocaleDateString(),
+            imagen: data.imagen || "V2/banner.png",
+            descripcion: data.descripcion || ""
+          });
         });
-        if (listaNoticias.length === 0) {
-          listaNoticias = [{
-            id: 1,
-            titulo: "¡Bienvenido a MundoManuelHenPlay!",
-            fecha: new Date().toLocaleDateString(),
-            imagen: "V2/banner.png",
-            descripcion: "Aquí podrás ver todas las novedades y anuncios importantes de la página."
-          }];
-        }
         renderizarNoticias(listaNoticias);
       });
-
-      // 3. Sincronizar Comentarios / Conversación en tiempo real
-      db.collection("comentarios").orderBy("creado", "desc").onSnapshot((snapshot) => {
-        let c = document.getElementById('listaComentarios');
-        c.innerHTML = '';
-        if (snapshot.empty) {
-          c.innerHTML = '<p style="color:#aaa;">No hay comentarios aún. ¡Sé el primero en participar en la conversación!</p>';
-          return;
-        }
-        snapshot.forEach((doc) => {
-          let com = doc.data();
-          c.innerHTML += `
-            <div class="comment-item">
-              <strong style="color:#00a2ff;">${com.nombre}</strong> <small style="color:#888;">(${com.fecha || 'Reciente'})</small>
-              <p style="margin:5px 0 0 0; color:#ddd; font-size:14px;">${com.texto}</p>
-            </div>`;
-        });
-      });
-    }
-
-    async function enviarComentario() {
-      let nombre = document.getElementById('nombreComentario').value.trim();
-      let texto = document.getElementById('textoComentario').value.trim();
-
-      if (!nombre || !texto) {
-        alert("Por favor ingresa tu nombre y el texto del comentario.");
-        return;
-      }
-
-      try {
-        await db.collection("comentarios").add({
-          nombre: nombre,
-          texto: texto,
-          fecha: new Date().toLocaleDateString(),
-          creado: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        document.getElementById('nombreComentario').value = '';
-        document.getElementById('textoComentario').value = '';
-      } catch (error) {
-        console.error("Error al enviar comentario: ", error);
-        alert("Hubo un error al publicar el comentario en Firestore.");
-      }
     }
 
     function registrarDescarga() {
@@ -403,7 +327,10 @@
     function renderizarAplicaciones(lista) {
       let c = document.getElementById('listaContenido');
       c.innerHTML = '';
-      if (lista.length === 0) { c.innerHTML = '<p style="color:#aaa;">No hay aplicaciones disponibles en esta sección.</p>'; return; }
+      if (lista.length === 0) { 
+        c.innerHTML = '<p style="color:#aaa;">No hay aplicaciones disponibles en este momento.</p>'; 
+        return; 
+      }
 
       lista.forEach(app => {
         c.innerHTML += `
@@ -424,7 +351,10 @@
     function renderizarNoticias(lista) {
       let c = document.getElementById('newsContainer');
       c.innerHTML = '';
-      if(lista.length === 0) { c.innerHTML = '<p style="color:#aaa;">No hay novedades publicadas por ahora.</p>'; return; }
+      if(lista.length === 0) { 
+        c.innerHTML = '<p style="color:#aaa;">No hay novedades publicadas por ahora.</p>'; 
+        return; 
+      }
 
       lista.forEach(n => {
         c.innerHTML += `
@@ -440,7 +370,6 @@
     }
 
     function filtrarCategoria(cat) {
-      categoriaActual = cat;
       document.getElementById('searchInput').value = '';
       if(cat === 'TODOS') {
         document.getElementById('tituloSeccion').innerText = 'Contenido Disponible';
@@ -453,8 +382,7 @@
 
     function buscarAplicacion() {
       let t = document.getElementById('searchInput').value.toLowerCase();
-      let fuente = categoriaActual === 'TODOS' ? listaAplicaciones : listaAplicaciones.filter(app => app.categoria === categoriaActual);
-      renderizarAplicaciones(fuente.filter(app => app.nombre.toLowerCase().includes(t) || app.categoria.toLowerCase().includes(t)));
+      renderizarAplicaciones(listaAplicaciones.filter(app => app.nombre.toLowerCase().includes(t) || app.categoria.toLowerCase().includes(t)));
     }
   </script>
 </body>
