@@ -13,7 +13,6 @@
       color: #ffffff;
     }
 
-    /* PANTALLA DE ACCESO/LOGIN INICIAL */
     #lockScreen {
       display: flex;
       flex-direction: column;
@@ -55,7 +54,6 @@
       width: 100%;
     }
 
-    /* CONTENEDOR DEL PANEL PRIVADO */
     #adminContent {
       display: none;
       max-width: 1000px;
@@ -129,11 +127,20 @@
       border-radius: 4px;
       cursor: pointer;
     }
+
+    .btn-block {
+      background: #ff9800;
+      color: #fff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-right: 5px;
+    }
   </style>
 </head>
 <body>
 
-  <!-- PANTALLA DE DESBLOQUEO -->
   <div id="lockScreen">
     <div class="login-box">
       <h3 style="margin-top:0; color:#00a2ff;">🔒 Acceso Exclusivo Admin</h3>
@@ -143,7 +150,6 @@
     </div>
   </div>
 
-  <!-- PANEL DE ADMINISTRACIÓN -->
   <div id="adminContent">
     <div id="adminPanel">
       <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3a4150; padding-bottom: 10px;">
@@ -175,7 +181,6 @@
           </select>
         </div>
 
-        <!-- 3 OPCIONES PARA EL LOGO -->
         <div class="form-group">
           <label>Método para el Logo/Imagen:</label>
           <select id="logoMethod" onchange="cambiarMetodoLogo()">
@@ -197,7 +202,6 @@
           </div>
         </div>
 
-        <!-- URL/RUTA DE DESCARGA -->
         <div class="form-group">
           <label>Ruta o Link de Descarga (URL/Servidor local):</label>
           <input type="text" id="appLink" placeholder="Ej: Ps3/Hen/4.93/SETUP.P3T o https://megaupload.com/archivo">
@@ -224,14 +228,26 @@
         <button onclick="agregarNovedad()" style="background:#0070d1; color:#fff; border:none; padding:10px; width:100%; border-radius:4px; font-weight:bold; cursor:pointer;">📢 Publicar Novedad</button>
       </div>
 
-      <!-- 3. LISTAS DE GESTIÓN -->
+      <!-- 3. GESTIÓN DE COMENTARIOS Y MODERACIÓN -->
       <div class="admin-subpanel">
-        <h4 style="margin-top:0; color:#ffc107;">🗑️ 3. Administrar Aplicaciones Publicadas</h4>
+        <h4 style="margin-top:0; color:#e67e22;">💬 3. Moderar Comentarios del Chat</h4>
+        <div id="adminCommentsList"></div>
+      </div>
+
+      <!-- 4. GESTIÓN DE USUARIOS BLOQUEADOS -->
+      <div class="admin-subpanel">
+        <h4 style="margin-top:0; color:#e74c3c;">🚫 4. Usuarios Bloqueados</h4>
+        <div id="adminBlockedList"></div>
+      </div>
+
+      <!-- 5. LISTAS DE GESTIÓN CONTENIDOS -->
+      <div class="admin-subpanel">
+        <h4 style="margin-top:0; color:#ffc107;">🗑️ 5. Administrar Aplicaciones Publicadas</h4>
         <div id="adminAppsList"></div>
       </div>
 
       <div class="admin-subpanel">
-        <h4 style="margin-top:0; color:#ffc107;">🗑️ 4. Administrar Noticias Publicadas</h4>
+        <h4 style="margin-top:0; color:#ffc107;">🗑️ 6. Administrar Noticias Publicadas</h4>
         <div id="adminNewsList"></div>
       </div>
     </div>
@@ -240,6 +256,8 @@
   <script>
     let listaAplicaciones = JSON.parse(localStorage.getItem('mmhp_apps')) || [];
     let listaNoticias = JSON.parse(localStorage.getItem('mmhp_news')) || [];
+    let listaComentarios = JSON.parse(localStorage.getItem('mmhp_comments')) || [];
+    let listaUsuariosBloqueados = JSON.parse(localStorage.getItem('mmhp_blocked_users')) || [];
 
     async function calcularSHA256(texto) {
       const encoder = new TextEncoder();
@@ -265,11 +283,8 @@
       }
     }
 
-    function cerrarSesion() {
-      location.reload();
-    }
+    function cerrarSesion() { location.reload(); }
 
-    // ALTERNAR VISIBILIDAD DE LAS 3 OPCIONES DEL LOGO
     function cambiarMetodoLogo() {
       let metodo = document.getElementById('logoMethod').value;
       document.getElementById('optV2').style.display = (metodo === 'v2') ? 'block' : 'none';
@@ -295,12 +310,8 @@
       let metodo = document.getElementById('logoMethod').value;
       let logoFinal = 'V2/apps.png';
 
-      if (!name || !link) {
-        alert("Ingresa el Nombre y el Enlace/URL de descarga.");
-        return;
-      }
+      if (!name || !link) { alert("Ingresa el Nombre y el Enlace/URL de descarga."); return; }
 
-      // DETERMINAR QUÉ LOGO USAR
       if (metodo === 'v2') {
         let v2Val = document.getElementById('appLogoV2').value.trim();
         if (v2Val) logoFinal = v2Val;
@@ -313,23 +324,9 @@
         if (fileData) logoFinal = fileData;
       }
 
-      listaAplicaciones.push({ 
-        id: Date.now(), 
-        nombre: name, 
-        categoria: category, 
-        logo: logoFinal, 
-        enlace: link 
-      });
-
+      listaAplicaciones.push({ id: Date.now(), nombre: name, categoria: category, logo: logoFinal, enlace: link });
       localStorage.setItem('mmhp_apps', JSON.stringify(listaAplicaciones));
       cargarListasAdmin();
-
-      // Limpiar campos
-      document.getElementById('appName').value = '';
-      document.getElementById('appLink').value = '';
-      document.getElementById('appLogoV2').value = '';
-      document.getElementById('appLogoUrl').value = '';
-      document.getElementById('appLogoFile').value = '';
       alert("Aplicación publicada con éxito.");
     }
 
@@ -339,23 +336,37 @@
       let desc = document.getElementById('newsDescInput').value.trim();
 
       if(title && desc) {
-        listaNoticias.unshift({ 
-          id: Date.now(), 
-          titulo: title, 
-          fecha: new Date().toLocaleDateString(), 
-          imagen: img, 
-          descripcion: desc 
-        });
+        listaNoticias.unshift({ id: Date.now(), titulo: title, fecha: new Date().toLocaleDateString(), imagen: img, descripcion: desc });
         localStorage.setItem('mmhp_news', JSON.stringify(listaNoticias));
         cargarListasAdmin();
-
-        document.getElementById('newsTitleInput').value = '';
-        document.getElementById('newsImgInput').value = '';
-        document.getElementById('newsDescInput').value = '';
         alert("Novedad publicada con éxito.");
-      } else {
-        alert("Ingresa el Título y la Descripción.");
       }
+    }
+
+    /* MODERACIÓN DE CHAT Y BLOQUEO DE USUARIOS */
+    function eliminarComentario(id) {
+      listaComentarios = listaComentarios.filter(c => c.id !== id);
+      localStorage.setItem('mmhp_comments', JSON.stringify(listaComentarios));
+      cargarListasAdmin();
+    }
+
+    function bloquearUsuario(nombreUsuario) {
+      let partes = nombreUsuario.split(" ");
+      let nombre = partes[0] || "";
+      let apellido = partes.slice(1).join(" ") || "";
+
+      if (!listaUsuariosBloqueados.some(u => u.nombre.toLowerCase() === nombre.toLowerCase() && u.apellido.toLowerCase() === apellido.toLowerCase())) {
+        listaUsuariosBloqueados.push({ nombre: nombre, apellido: apellido });
+        localStorage.setItem('mmhp_blocked_users', JSON.stringify(listaUsuariosBloqueados));
+        alert("Usuario " + nombreUsuario + " bloqueado.");
+        cargarListasAdmin();
+      }
+    }
+
+    function desbloquearUsuario(index) {
+      listaUsuariosBloqueados.splice(index, 1);
+      localStorage.setItem('mmhp_blocked_users', JSON.stringify(listaUsuariosBloqueados));
+      cargarListasAdmin();
     }
 
     function eliminarItem(id) {
@@ -371,6 +382,34 @@
     }
 
     function cargarListasAdmin() {
+      // Cargar Comentarios
+      let comContainer = document.getElementById('adminCommentsList');
+      comContainer.innerHTML = '';
+      if(listaComentarios.length === 0) comContainer.innerHTML = '<small style="color:#aaa;">No hay comentarios registrados.</small>';
+      listaComentarios.forEach(c => {
+        comContainer.innerHTML += `
+          <div class="item-list-row">
+            <span><strong>${c.usuario}</strong>: "${c.asunto}" - ${c.mensaje}</span>
+            <div>
+              <button class="btn-block" onclick="bloquearUsuario('${c.usuario}')">🚫 Bloquear Usuario</button>
+              <button class="btn-delete" onclick="eliminarComentario(${c.id})">🗑️ Borrar</button>
+            </div>
+          </div>`;
+      });
+
+      // Cargar Usuarios Bloqueados
+      let blockedContainer = document.getElementById('adminBlockedList');
+      blockedContainer.innerHTML = '';
+      if(listaUsuariosBloqueados.length === 0) blockedContainer.innerHTML = '<small style="color:#aaa;">No hay usuarios bloqueados.</small>';
+      listaUsuariosBloqueados.forEach((u, index) => {
+        blockedContainer.innerHTML += `
+          <div class="item-list-row">
+            <span>🚫 <strong>${u.nombre} ${u.apellido}</strong></span>
+            <button class="btn-delete" style="background:#28a745;" onclick="desbloquearUsuario(${index})">🔓 Desbloquear</button>
+          </div>`;
+      });
+
+      // Cargar Aplicaciones
       let appContainer = document.getElementById('adminAppsList');
       appContainer.innerHTML = '';
       if(listaAplicaciones.length === 0) appContainer.innerHTML = '<small style="color:#aaa;">No hay aplicaciones.</small>';
@@ -382,6 +421,7 @@
           </div>`;
       });
 
+      // Cargar Noticias
       let newsContainer = document.getElementById('adminNewsList');
       newsContainer.innerHTML = '';
       if(listaNoticias.length === 0) newsContainer.innerHTML = '<small style="color:#aaa;">No hay novedades.</small>';
