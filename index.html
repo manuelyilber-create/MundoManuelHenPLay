@@ -255,7 +255,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
   <script>
-    // CONFIGURACIÓN DE FIREBASE CON TUS CREDENCIALES REALES
+    // Configuración oficial de Firebase Firestore para tu proyecto
     const firebaseConfig = {
       apiKey: "AIzaSyCv-qeex1pBV7pfi2UD0iUio46-OX2MCiI",
       authDomain: "mundomanuelhenplay.firebaseapp.com",
@@ -280,43 +280,46 @@
       document.getElementById('cntVisitas').innerText = contadorVisitas;
       document.getElementById('cntDescargas').innerText = contadorDescargas;
 
-      // Cargar datos en tiempo real desde Firestore
-      cargarDatosDesdeFirestore();
-    };
-
-    function cargarDatosDesdeFirestore() {
-      // Escuchar cambios en la colección "aplicaciones"
+      // Carga en tiempo real de tu base de datos Firestore
       db.collection("aplicaciones").onSnapshot((snapshot) => {
         listaAplicaciones = [];
         snapshot.forEach((doc) => {
           let data = doc.data();
           listaAplicaciones.push({
             id: doc.id,
-            nombre: data.nombre || "Sin nombre",
-            categoria: data.categoria || "Herramientas",
-            logo: data.logo || "V2/apps.png",
-            enlace: data.enlace || "#"
+            nombre: data.nombre,
+            categoria: data.categoria,
+            logo: data.logo,
+            enlace: data.enlace
           });
         });
         renderizarAplicaciones(listaAplicaciones);
       });
 
-      // Escuchar cambios en la colección "noticias"
       db.collection("noticias").onSnapshot((snapshot) => {
         listaNoticias = [];
         snapshot.forEach((doc) => {
           let data = doc.data();
           listaNoticias.push({
             id: doc.id,
-            titulo: data.titulo || "Aviso importante",
-            fecha: data.fecha || new Date().toLocaleDateString(),
-            imagen: data.imagen || "V2/banner.png",
-            descripcion: data.descripcion || ""
+            titulo: data.titulo,
+            fecha: data.fecha,
+            imagen: data.imagen,
+            descripcion: data.descripcion
           });
         });
+        if(listaNoticias.length === 0) {
+          listaNoticias = [{
+            id: 1,
+            titulo: "¡Bienvenido a MundoManuelHenPlay!",
+            fecha: new Date().toLocaleDateString(),
+            imagen: "V2/banner.png",
+            descripcion: "Aquí podrás ver todas las novedades y anuncios importantes de la página."
+          }];
+        }
         renderizarNoticias(listaNoticias);
       });
-    }
+    };
 
     function registrarDescarga() {
       contadorDescargas++;
@@ -327,10 +330,7 @@
     function renderizarAplicaciones(lista) {
       let c = document.getElementById('listaContenido');
       c.innerHTML = '';
-      if (lista.length === 0) { 
-        c.innerHTML = '<p style="color:#aaa;">No hay aplicaciones disponibles en este momento.</p>'; 
-        return; 
-      }
+      if (lista.length === 0) { c.innerHTML = '<p style="color:#aaa;">No hay aplicaciones disponibles en esta sección.</p>'; return; }
 
       lista.forEach(app => {
         c.innerHTML += `
@@ -351,10 +351,7 @@
     function renderizarNoticias(lista) {
       let c = document.getElementById('newsContainer');
       c.innerHTML = '';
-      if(lista.length === 0) { 
-        c.innerHTML = '<p style="color:#aaa;">No hay novedades publicadas por ahora.</p>'; 
-        return; 
-      }
+      if(lista.length === 0) { c.innerHTML = '<p style="color:#aaa;">No hay novedades publicadas por ahora.</p>'; return; }
 
       lista.forEach(n => {
         c.innerHTML += `
