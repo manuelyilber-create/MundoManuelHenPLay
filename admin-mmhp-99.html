@@ -7,7 +7,8 @@
   
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, deleteDoc, doc, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-storage.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCv-qeex1pBV7pfi2UD0iUio46-OX2MCiI",
@@ -21,8 +22,13 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    const storage = getStorage(app);
 
     window.db = db;
+    window.storage = storage;
+    window.ref = ref;
+    window.uploadBytes = uploadBytes;
+    window.getDownloadURL = getDownloadURL;
     window.colApps = collection(db, "apps");
     window.colNews = collection(db, "news");
     window.colComments = collection(db, "comments");
@@ -44,6 +50,7 @@
     .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 8px; background: #161920; border: 1px solid #3a4150; color: #fff; border-radius: 4px; }
     .item-list-row { background: #161920; padding: 10px; margin-top: 8px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; border-left: 3px solid #0070d1; flex-wrap: wrap; gap: 10px; }
     .btn-delete { background: #dc3545; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
+    .upload-status { font-size: 12px; color: #f1c40f; margin-top: 4px; display: block; }
   </style>
 </head>
 <body>
@@ -74,16 +81,19 @@
             <option value="Aplicaciones">Aplicaciones</option><option value="Utilidades">Utilidades</option><option value="Android">Android</option>
           </select>
         </div>
-        <div class="form-group"><label>Logo (URL o Ruta V2):</label><input type="text" id="appLogo" placeholder="V2/apps.png"></div>
-        <div class="form-group"><label>Enlace de Descarga:</label><input type="text" id="appLink" placeholder="Ps3/Hen/4.93/..."></div>
+        <div class="form-group"><label>Logo (Seleccionar imagen o dejar V2/apps.png):</label><input type="file" id="appLogoFile" accept="image/*"></div>
+        <div class="form-group"><label>Archivo del Juego/App (Desde tu escritorio) o Enlace:</label><input type="file" id="appFile"></div>
+        <div class="form-group"><label>O pega un Enlace Externo opcional (si no subes archivo):</label><input type="text" id="appLinkText" placeholder="https://..."></div>
+        <span id="statusApp" class="upload-status"></span>
         <button onclick="agregarItem()" style="background:#28a745; color:#fff; border:none; padding:10px; width:100%; border-radius:4px; font-weight:bold; cursor:pointer;">＋ Publicar en la Nube</button>
       </div>
 
       <div class="admin-subpanel">
         <h4 style="margin-top:0; color:#00a2ff;">📢 2. Publicar Novedad</h4>
         <div class="form-group"><input type="text" id="newsTitleInput" placeholder="Título..."></div>
-        <div class="form-group"><input type="text" id="newsImgInput" placeholder="Imagen URL..."></div>
+        <div class="form-group"><label>Imagen de Novedad (Archivo):</label><input type="file" id="newsImgFile" accept="image/*"></div>
         <div class="form-group"><textarea id="newsDescInput" rows="2" placeholder="Descripción..."></textarea></div>
+        <span id="statusNews" class="upload-status"></span>
         <button onclick="agregarNovedad()" style="background:#0070d1; color:#fff; border:none; padding:10px; width:100%; border-radius:4px; font-weight:bold; cursor:pointer;">Publicar Novedad</button>
       </div>
 
@@ -117,23 +127,100 @@
     window.agregarItem = async function() {
       let name = document.getElementById('appName').value.trim();
       let category = document.getElementById('appCategory').value;
-      let logo = document.getElementById('appLogo').value.trim() || 'V2/apps.png';
-      let link = document.getElementById('appLink').value.trim();
+      let linkText = document.getElementById('appLinkText').value.trim();
+      let fileInput = document.getElementById('appFile').files[0];
+      let logoInput = document.getElementById('appLogoFile').files[0];
+      let statusEl = document.getElementById('statusApp');
 
-      if (!name || !link) { alert("Faltan datos."); return; }
-      await addDoc(window.colApps, { id: Date.now(), nombre: name, categoria: category, logo: logo, enlace: link });
-      alert("¡Subido a la nube con éxito!");
-      document.getElementById('appName').value = '';
-      document.getElementById('appLink').value = '';
+      if (!name) { alert("Ingresa al menos el nombre de la aplicación."); return; }
+
+      let downloadUrl = linkText;
+      let logoUrl = "V2/apps.png";
+
+      statusEl.innerText = "Subiendo archivos a la nube, por favor espera...";
+
+      try {
+        // Subir archivo principal si se seleccionó uno
+        if (fileInput) {
+          const fileRef = window.ref(window.storage, 'archivos/' + Date.now() + '_' + fileInput.name);
+          await window.uploadBytes(fileRef, fileInput);
+          downloadUrl = await window.getDownloadURL(fileRef);
+        }
+
+        // Subir logo si se seleccionó uno
+        if (logoInput) {
+          const logoRef = window.ref(window.storage, 'logos/' + Date.now() + '_' + logoInput.name);
+          await window.uploadBytes(logoRef, logoInput);
+          logoUrl = await window.getDownloadURL(logoRef);
+        }
+
+        if (!downloadUrl) {
+          alert("Debes seleccionar un archivo para subir o ingresar un enlace de descarga.");
+          statusEl.innerText = "";
+          return;
+        }
+
+        await addDoc(window.colApps, {
+          id: Date.now(),
+          nombre: name,
+          categoria: category,
+          logo: logoUrl,
+          enlace: downloadUrl
+        });
+
+        statusEl.innerText = "¡Subido con éxito!";
+        alert("¡Aplicación publicada en la nube correctamente!");
+        document.getElementById('appName').value = '';
+        document.getElementById('appLinkText').value = '';
+        document.getElementById('appFile').value = '';
+        document.getElementById('appLogoFile').value = '';
+        setTimeout(() => statusEl.innerText = "", 3000);
+
+      } catch (error) {
+        console.error(error);
+        alert("Hubo un error al subir el archivo: " + error.message);
+        statusEl.innerText = "";
+      }
     }
 
     window.agregarNovedad = async function() {
       let title = document.getElementById('newsTitleInput').value.trim();
-      let img = document.getElementById('newsImgInput').value.trim() || 'V2/banner.png';
       let desc = document.getElementById('newsDescInput').value.trim();
-      if (!title || !desc) return;
-      await addDoc(window.colNews, { id: Date.now(), titulo: title, fecha: new Date().toLocaleDateString(), imagen: img, descripcion: desc });
-      alert("Novedad publicada.");
+      let imgInput = document.getElementById('newsImgFile').files[0];
+      let statusEl = document.getElementById('statusNews');
+
+      if (!title || !desc) { alert("Faltan datos en la novedad."); return; }
+
+      let imgUrl = "V2/banner.png";
+      statusEl.innerText = "Subiendo imagen de novedad...";
+
+      try {
+        if (imgInput) {
+          const imgRef = window.ref(window.storage, 'novedades/' + Date.now() + '_' + imgInput.name);
+          await window.uploadBytes(imgRef, imgInput);
+          imgUrl = await window.getDownloadURL(imgRef);
+        }
+
+        await addDoc(window.colNews, {
+          id: Date.now(),
+          titulo: title,
+          fecha: new Date().toLocaleDateString(),
+          imagen: imgUrl,
+          descripcion: desc
+        });
+
+        statusEl.innerText = "¡Novedad publicada!";
+        alert("Novedad publicada con éxito.");
+        document.getElementById('newsTitleInput').value = '';
+        document.getElementById('newsDescInput').value = '';
+        document.getElementById('newsImgFile').value = '';
+        setTimeout(() => statusEl.innerText = "", 3000);
+
+      } catch (error) {
+        console.error(error);
+        alert("Error al publicar novedad: " + error.message);
+        statusEl.innerText = "";
+      }
     }
 
     window.eliminarDocumento = async function(coleccion, idDoc) {
