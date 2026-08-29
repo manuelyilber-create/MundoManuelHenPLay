@@ -196,6 +196,113 @@
       border: 1px solid #0070d1;
       background: #000;
     }
+
+    /* ESTILOS DE LA SECCIÓN DE CHAT Y COMENTARIOS */
+    #chatSection {
+      background: #161920;
+      border: 1px solid #0070d1;
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 35px;
+    }
+
+    .user-profile-bar {
+      background: #1f232d;
+      padding: 10px 15px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1px solid #00a2ff;
+    }
+
+    .comment-form input, .comment-form textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      background: #1f232d;
+      border: 1px solid #3a4150;
+      color: #fff;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    .comment-tabs {
+      display: flex;
+      gap: 10px;
+      margin: 15px 0;
+      border-bottom: 1px solid #3a4150;
+      padding-bottom: 8px;
+    }
+
+    .tab-btn {
+      background: #1f232d;
+      color: #ccc;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      background: #0070d1;
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .comment-card {
+      background: #1f232d;
+      padding: 12px 15px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      display: flex;
+      gap: 12px;
+      border-left: 3px solid #00a2ff;
+    }
+
+    .comment-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-like {
+      background: transparent;
+      border: 1px solid #ff4757;
+      color: #ff4757;
+      padding: 4px 8px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    /* MODAL DE REGISTRO */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+
+    .modal-content {
+      background: #1f232d;
+      padding: 25px;
+      border-radius: 8px;
+      width: 300px;
+      border: 2px solid #0070d1;
+    }
   </style>
 </head>
 <body>
@@ -248,7 +355,49 @@
       <h3 class="news-title">📢 Novedades y Anuncios Recientes</h3>
       <div id="newsContainer"></div>
     </section>
+
+    <!-- SECCIÓN DE CHAT Y COMENTARIOS DE LA COMUNIDAD -->
+    <section id="chatSection">
+      <h3 style="color: #00a2ff; margin-top:0; border-bottom: 2px solid #0070d1; padding-bottom: 8px;">💬 Chat de la Comunidad y Comentarios</h3>
+      
+      <div id="userBar" class="user-profile-bar">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <img id="userBarAvatar" src="V2/apps.png" class="user-avatar">
+          <span id="userBarName">Invitado</span>
+        </div>
+        <button id="btnAuth" onclick="abrirModalRegistro()" style="background:#0070d1; color:#fff; border:none; padding:6px 12px; border-radius:4px; cursor:pointer;">Registrarse / Identificarse</button>
+      </div>
+
+      <div class="comment-form">
+        <input type="text" id="commentSubject" placeholder="Asunto...">
+        <textarea id="commentMessage" rows="3" placeholder="Escribe tu mensaje o descripción aquí..."></textarea>
+        <button onclick="publicarComentario()" style="background:#28a745; color:#fff; border:none; padding:10px; width:100%; border-radius:4px; font-weight:bold; cursor:pointer;">Enviar Mensaje</button>
+      </div>
+
+      <div class="comment-tabs">
+        <button id="tabRecent" class="tab-btn active" onclick="cambiarFiltroComentarios('reciente')">🕒 Más Recientes</button>
+        <button id="tabPopular" class="tab-btn" onclick="cambiarFiltroComentarios('popular')">🔥 Más Populares</button>
+      </div>
+
+      <div id="commentsList"></div>
+    </section>
   </main>
+
+  <!-- MODAL PARA REGISTRO DE USUARIO -->
+  <div id="regModal" class="modal">
+    <div class="modal-content">
+      <h3 style="margin-top:0; color:#00a2ff;">👤 Registrar Perfil</h3>
+      <input type="text" id="regNombre" placeholder="Nombre" style="width:100%; padding:8px; margin-bottom:8px; background:#161920; border:1px solid #3a4150; color:#fff; border-radius:4px;">
+      <input type="text" id="regApellido" placeholder="Apellido" style="width:100%; padding:8px; margin-bottom:8px; background:#161920; border:1px solid #3a4150; color:#fff; border-radius:4px;">
+      
+      <label style="font-size:12px; color:#aaa;">Foto de Perfil (Subir o URL):</label>
+      <input type="file" id="regFotoFile" accept="image/*" style="width:100%; margin-bottom:6px; color:#ccc;">
+      <input type="text" id="regFotoUrl" placeholder="O pega URL de la imagen..." style="width:100%; padding:8px; margin-bottom:12px; background:#161920; border:1px solid #3a4150; color:#fff; border-radius:4px;">
+      
+      <button onclick="guardarPerfil()" style="background:#28a745; color:#fff; border:none; padding:8px; width:100%; border-radius:4px; cursor:pointer; font-weight:bold;">Guardar y Continuar</button>
+      <button onclick="cerrarModalRegistro()" style="background:#dc3545; color:#fff; border:none; padding:6px; width:100%; border-radius:4px; cursor:pointer; margin-top:6px;">Cancelar</button>
+    </div>
+  </div>
 
   <script>
     let listaAplicaciones = JSON.parse(localStorage.getItem('mmhp_apps')) || [];
@@ -261,6 +410,10 @@
         descripcion: "Aquí podrás ver todas las novedades y anuncios importantes de la página."
       }
     ];
+    let listaComentarios = JSON.parse(localStorage.getItem('mmhp_comments')) || [];
+    let listaUsuariosBloqueados = JSON.parse(localStorage.getItem('mmhp_blocked_users')) || [];
+    let usuarioActual = JSON.parse(localStorage.getItem('mmhp_current_user')) || null;
+    let filtroComentarios = 'reciente';
 
     let contadorVisitas = parseInt(localStorage.getItem('mmhp_visitas') || "0") + 1;
     let contadorDescargas = parseInt(localStorage.getItem('mmhp_descargas') || "0");
@@ -272,6 +425,8 @@
 
       renderizarAplicaciones(listaAplicaciones);
       renderizarNoticias(listaNoticias);
+      actualizarBarraUsuario();
+      renderizarComentarios();
     };
 
     function registrarDescarga() {
@@ -333,6 +488,117 @@
     function buscarAplicacion() {
       let t = document.getElementById('searchInput').value.toLowerCase();
       renderizarAplicaciones(listaAplicaciones.filter(app => app.nombre.toLowerCase().includes(t) || app.categoria.toLowerCase().includes(t)));
+    }
+
+    /* SISTEMA DE CHAT/COMENTARIOS Y USUARIOS */
+    function abrirModalRegistro() { document.getElementById('regModal').style.display = 'flex'; }
+    function cerrarModalRegistro() { document.getElementById('regModal').style.display = 'none'; }
+
+    async function guardarPerfil() {
+      let nom = document.getElementById('regNombre').value.trim();
+      let ape = document.getElementById('regApellido').value.trim();
+      let fileInput = document.getElementById('regFotoFile');
+      let urlInput = document.getElementById('regFotoUrl').value.trim();
+      let foto = 'V2/apps.png';
+
+      if (!nom || !ape) { alert("Ingresa tu Nombre y Apellido."); return; }
+
+      if (fileInput.files && fileInput.files[0]) {
+        foto = await new Promise((res) => {
+          let reader = new FileReader();
+          reader.onload = e => res(e.target.result);
+          reader.readAsDataURL(fileInput.files[0]);
+        });
+      } else if (urlInput) {
+        foto = urlInput;
+      }
+
+      usuarioActual = { id: 'usr_' + Date.now(), nombre: nom, apellido: ape, foto: foto };
+      localStorage.setItem('mmhp_current_user', JSON.stringify(usuarioActual));
+      actualizarBarraUsuario();
+      cerrarModalRegistro();
+    }
+
+    function actualizarBarraUsuario() {
+      if (usuarioActual) {
+        document.getElementById('userBarAvatar').src = usuarioActual.foto;
+        document.getElementById('userBarName').innerText = usuarioActual.nombre + " " + usuarioActual.apellido;
+        document.getElementById('btnAuth').innerText = "Cambiar Perfil";
+      }
+    }
+
+    function publicarComentario() {
+      if (!usuarioActual) { alert("Debes registrarte o identificarte para poder comentar."); abrirModalRegistro(); return; }
+      
+      // Verificar si el usuario está bloqueado por el Admin
+      let bloqueado = listaUsuariosBloqueados.some(u => u.nombre.toLowerCase() === usuarioActual.nombre.toLowerCase() && u.apellido.toLowerCase() === usuarioActual.apellido.toLowerCase());
+      if (bloqueado) { alert("⚠️ Tu cuenta ha sido bloqueada por el Administrador. No puedes enviar comentarios."); return; }
+
+      let asunto = document.getElementById('commentSubject').value.trim();
+      let msj = document.getElementById('commentMessage').value.trim();
+
+      if (!asunto || !msj) { alert("Por favor completa el Asunto y el Mensaje."); return; }
+
+      listaComentarios.unshift({
+        id: Date.now(),
+        usuario: usuarioActual.nombre + " " + usuarioActual.apellido,
+        foto: usuarioActual.foto,
+        asunto: asunto,
+        mensaje: msj,
+        likes: 0,
+        fecha: new Date().toLocaleString()
+      });
+
+      localStorage.setItem('mmhp_comments', JSON.stringify(listaComentarios));
+      document.getElementById('commentSubject').value = '';
+      document.getElementById('commentMessage').value = '';
+      renderizarComentarios();
+    }
+
+    function cambiarFiltroComentarios(tipo) {
+      filtroComentarios = tipo;
+      document.getElementById('tabRecent').classList.toggle('active', tipo === 'reciente');
+      document.getElementById('tabPopular').classList.toggle('active', tipo === 'popular');
+      renderizarComentarios();
+    }
+
+    function darMeGusta(id) {
+      let com = listaComentarios.find(c => c.id === id);
+      if (com) {
+        com.likes++;
+        localStorage.setItem('mmhp_comments', JSON.stringify(listaComentarios));
+        renderizarComentarios();
+      }
+    }
+
+    function renderizarComentarios() {
+      let c = document.getElementById('commentsList');
+      c.innerHTML = '';
+      let copia = [...listaComentarios];
+
+      if (filtroComentarios === 'popular') {
+        copia.sort((a, b) => b.likes - a.likes);
+      } else {
+        copia.sort((a, b) => b.id - a.id);
+      }
+
+      if (copia.length === 0) { c.innerHTML = '<p style="color:#aaa;">Sé el primero en comentar.</p>'; return; }
+
+      copia.forEach(item => {
+        c.innerHTML += `
+          <div class="comment-card">
+            <img src="${item.foto}" class="user-avatar" onerror="this.src='V2/apps.png'">
+            <div style="width:100%;">
+              <div class="comment-header">
+                <strong style="color:#00a2ff;">${item.usuario}</strong>
+                <small style="color:#aaa;">• ${item.fecha}</small>
+              </div>
+              <h5 style="margin:4px 0; color:#fff; font-size:15px;">📌 ${item.asunto}</h5>
+              <p style="margin:0; color:#ccc; font-size:14px;">${item.mensaje}</p>
+              <button class="btn-like" onclick="darMeGusta(${item.id})">❤️ Me gusta (${item.likes})</button>
+            </div>
+          </div>`;
+      });
     }
   </script>
 </body>
