@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Panel Privado Admin | MundoManuelHenPlay</title>
   <style>
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       padding: 0;
@@ -19,24 +20,23 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
-      background: #0d0f12;
+      padding: 15px;
     }
 
     .login-box {
       background: #1f232d;
-      padding: 30px;
+      padding: 25px;
       border-radius: 8px;
-      width: 320px;
+      width: 100%;
+      max-width: 320px;
       text-align: center;
       border: 2px solid #0070d1;
-      box-shadow: 0 0 20px rgba(0, 112, 209, 0.4);
     }
 
     .login-box input {
       width: 100%;
       padding: 10px;
       margin-bottom: 12px;
-      box-sizing: border-box;
       background: #161920;
       border: 1px solid #3a4150;
       color: #fff;
@@ -47,7 +47,7 @@
       background: #0070d1;
       color: #fff;
       border: none;
-      padding: 10px 20px;
+      padding: 10px;
       border-radius: 4px;
       font-weight: bold;
       cursor: pointer;
@@ -57,55 +57,40 @@
     #adminContent {
       display: none;
       max-width: 1000px;
-      margin: 30px auto;
-      padding: 20px;
+      margin: 15px auto;
+      padding: 15px;
     }
 
     #adminPanel {
       background: #252a36;
-      padding: 20px;
+      padding: 15px;
       border-radius: 8px;
       border: 2px solid #0070d1;
     }
 
     .admin-subpanel {
       background: #1a1e27;
-      padding: 15px;
+      padding: 12px;
       border-radius: 6px;
       margin-top: 15px;
       border: 1px dashed #00a2ff;
     }
 
-    .form-group {
-      margin-bottom: 12px;
-    }
-
+    .form-group { margin-bottom: 12px; }
     .form-group label {
       display: block;
       margin-bottom: 5px;
       color: #00a2ff;
-      font-size: 14px;
+      font-size: 13px;
     }
 
-    .form-group input[type="text"], 
-    .form-group select, 
-    .form-group textarea,
-    .form-group input[type="file"] {
+    .form-group input, .form-group select, .form-group textarea {
       width: 100%;
       padding: 8px;
-      box-sizing: border-box;
       background: #161920;
       border: 1px solid #3a4150;
       color: #fff;
       border-radius: 4px;
-    }
-
-    .sub-option-box {
-      background: #12151c;
-      padding: 10px;
-      border-radius: 6px;
-      border: 1px solid #2a2f3d;
-      margin-top: 5px;
     }
 
     .item-list-row {
@@ -117,6 +102,8 @@
       justify-content: space-between;
       align-items: center;
       border-left: 3px solid #0070d1;
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
     .btn-delete {
@@ -135,7 +122,18 @@
       padding: 6px 12px;
       border-radius: 4px;
       cursor: pointer;
-      margin-right: 5px;
+    }
+
+    @media (max-width: 600px) {
+      .item-list-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .item-list-row > div {
+        width: 100%;
+        display: flex;
+        gap: 5px;
+      }
     }
   </style>
 </head>
@@ -152,18 +150,16 @@
 
   <div id="adminContent">
     <div id="adminPanel">
-      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3a4150; padding-bottom: 10px;">
-        <h3 style="margin: 0; color: #00a2ff;">Panel Privado de Control General</h3>
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3a4150; padding-bottom: 10px; flex-wrap: wrap; gap: 10px;">
+        <h3 style="margin: 0; color: #00a2ff; font-size: 18px;">Panel Privado Admin</h3>
         <div>
-          <a href="index.html" style="background:#0070d1; color:#fff; text-decoration:none; padding:6px 12px; border-radius:4px; margin-right:8px; font-size:14px;">🌐 Ver Sitio Web</a>
+          <a href="index.html" style="background:#0070d1; color:#fff; text-decoration:none; padding:6px 12px; border-radius:4px; margin-right:5px; font-size:13px;">🌐 Sitio Web</a>
           <button onclick="cerrarSesion()" style="background:#dc3545; color:#fff; border:none; padding:6px 12px; border-radius:4px; cursor:pointer;">🚪 Salir</button>
         </div>
       </div>
 
-      <!-- 1. AGREGAR APLICACIÓN -->
       <div class="admin-subpanel">
         <h4 style="margin-top:0; color:#28a745;">📦 1. Agregar Nueva Aplicación / Archivo</h4>
-        
         <div class="form-group">
           <label>Nombre y Versión:</label>
           <input type="text" id="appName" placeholder="Ej: HEN 4.93 Installer v1.0">
@@ -184,63 +180,49 @@
         <div class="form-group">
           <label>Método para el Logo/Imagen:</label>
           <select id="logoMethod" onchange="cambiarMetodoLogo()">
-            <option value="v2">📁 Ruta local de la carpeta V2 (Ej: V2/apps.png)</option>
-            <option value="url">🌐 Enlace Web / URL externa (Ej: https://...)</option>
-            <option value="file">💻 Subir archivo desde Escritorio</option>
+            <option value="v2">📁 Ruta local V2 (Ej: V2/apps.png)</option>
+            <option value="url">🌐 URL externa</option>
+            <option value="file">💻 Subir desde Escritorio</option>
           </select>
-          
-          <div class="sub-option-box">
-            <div id="optV2">
-              <input type="text" id="appLogoV2" placeholder="Ej: V2/apps.png o V2/mi-logo.png">
-            </div>
-            <div id="optUrl" style="display:none;">
-              <input type="text" id="appLogoUrl" placeholder="Ej: https://sitio.com/imagen.png">
-            </div>
-            <div id="optFile" style="display:none;">
-              <input type="file" id="appLogoFile" accept="image/*">
-            </div>
+          <div style="margin-top:5px;">
+            <div id="optV2"><input type="text" id="appLogoV2" placeholder="Ej: V2/apps.png"></div>
+            <div id="optUrl" style="display:none;"><input type="text" id="appLogoUrl" placeholder="Ej: https://..."></div>
+            <div id="optFile" style="display:none;"><input type="file" id="appLogoFile" accept="image/*"></div>
           </div>
         </div>
 
         <div class="form-group">
-          <label>Ruta o Link de Descarga (URL/Servidor local):</label>
-          <input type="text" id="appLink" placeholder="Ej: Ps3/Hen/4.93/SETUP.P3T o https://megaupload.com/archivo">
+          <label>Ruta o Link de Descarga:</label>
+          <input type="text" id="appLink" placeholder="Ej: Ps3/Hen/4.93/SETUP.P3T">
         </div>
 
         <button onclick="agregarItem()" style="background:#28a745; color:#fff; border:none; padding:10px; width:100%; border-radius:4px; font-weight:bold; cursor:pointer;">＋ Publicar Aplicación</button>
       </div>
 
-      <!-- 2. AGREGAR NOVEDAD -->
       <div class="admin-subpanel">
         <h4 style="margin-top:0; color:#00a2ff;">📢 2. Publicar Novedad o Noticia</h4>
         <div class="form-group">
-          <label>Título de la Novedad:</label>
-          <input type="text" id="newsTitleInput" placeholder="Ej: ¡Actualización HEN 4.93 disponible!">
+          <input type="text" id="newsTitleInput" placeholder="Título...">
         </div>
         <div class="form-group">
-          <label>Imagen del Anuncio (Ruta V2 o URL web):</label>
-          <input type="text" id="newsImgInput" placeholder="Ej: V2/banner.png o https://...">
+          <input type="text" id="newsImgInput" placeholder="Imagen (Ruta V2 o URL)...">
         </div>
         <div class="form-group">
-          <label>Descripción / Detalle del Anuncio:</label>
-          <textarea id="newsDescInput" rows="3" placeholder="Escribe la información aquí..."></textarea>
+          <textarea id="newsDescInput" rows="3" placeholder="Descripción..."></textarea>
         </div>
         <button onclick="agregarNovedad()" style="background:#0070d1; color:#fff; border:none; padding:10px; width:100%; border-radius:4px; font-weight:bold; cursor:pointer;">📢 Publicar Novedad</button>
       </div>
 
-      <!-- 3. GESTIÓN DE COMENTARIOS Y MODERACIÓN -->
       <div class="admin-subpanel">
         <h4 style="margin-top:0; color:#e67e22;">💬 3. Moderar Comentarios del Chat</h4>
         <div id="adminCommentsList"></div>
       </div>
 
-      <!-- 4. GESTIÓN DE USUARIOS BLOQUEADOS -->
       <div class="admin-subpanel">
         <h4 style="margin-top:0; color:#e74c3c;">🚫 4. Usuarios Bloqueados</h4>
         <div id="adminBlockedList"></div>
       </div>
 
-      <!-- 5. LISTAS DE GESTIÓN CONTENIDOS -->
       <div class="admin-subpanel">
         <h4 style="margin-top:0; color:#ffc107;">🗑️ 5. Administrar Aplicaciones Publicadas</h4>
         <div id="adminAppsList"></div>
@@ -271,7 +253,7 @@
       let u = document.getElementById('userInput').value.trim();
       let p = document.getElementById('passInput').value.trim();
 
-      const hashGuardado = "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"; // Contraseña: 1234
+      const hashGuardado = "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4";
       let hashIngresado = await calcularSHA256(p);
 
       if (u === "admin" && hashIngresado === hashGuardado) {
@@ -310,7 +292,7 @@
       let metodo = document.getElementById('logoMethod').value;
       let logoFinal = 'V2/apps.png';
 
-      if (!name || !link) { alert("Ingresa el Nombre y el Enlace/URL de descarga."); return; }
+      if (!name || !link) { alert("Ingresa el Nombre y el Enlace."); return; }
 
       if (metodo === 'v2') {
         let v2Val = document.getElementById('appLogoV2').value.trim();
@@ -343,7 +325,6 @@
       }
     }
 
-    /* MODERACIÓN DE CHAT Y BLOQUEO DE USUARIOS */
     function eliminarComentario(id) {
       listaComentarios = listaComentarios.filter(c => c.id !== id);
       localStorage.setItem('mmhp_comments', JSON.stringify(listaComentarios));
@@ -382,25 +363,23 @@
     }
 
     function cargarListasAdmin() {
-      // Cargar Comentarios
       let comContainer = document.getElementById('adminCommentsList');
       comContainer.innerHTML = '';
-      if(listaComentarios.length === 0) comContainer.innerHTML = '<small style="color:#aaa;">No hay comentarios registrados.</small>';
+      if(listaComentarios.length === 0) comContainer.innerHTML = '<small style="color:#aaa;">No hay comentarios.</small>';
       listaComentarios.forEach(c => {
         comContainer.innerHTML += `
           <div class="item-list-row">
-            <span><strong>${c.usuario}</strong>: "${c.asunto}" - ${c.mensaje}</span>
+            <span><strong>${c.usuario}</strong>: "${c.asunto}"</span>
             <div>
-              <button class="btn-block" onclick="bloquearUsuario('${c.usuario}')">🚫 Bloquear Usuario</button>
+              <button class="btn-block" onclick="bloquearUsuario('${c.usuario}')">🚫 Bloquear</button>
               <button class="btn-delete" onclick="eliminarComentario(${c.id})">🗑️ Borrar</button>
             </div>
           </div>`;
       });
 
-      // Cargar Usuarios Bloqueados
       let blockedContainer = document.getElementById('adminBlockedList');
       blockedContainer.innerHTML = '';
-      if(listaUsuariosBloqueados.length === 0) blockedContainer.innerHTML = '<small style="color:#aaa;">No hay usuarios bloqueados.</small>';
+      if(listaUsuariosBloqueados.length === 0) blockedContainer.innerHTML = '<small style="color:#aaa;">No hay bloqueados.</small>';
       listaUsuariosBloqueados.forEach((u, index) => {
         blockedContainer.innerHTML += `
           <div class="item-list-row">
@@ -409,7 +388,6 @@
           </div>`;
       });
 
-      // Cargar Aplicaciones
       let appContainer = document.getElementById('adminAppsList');
       appContainer.innerHTML = '';
       if(listaAplicaciones.length === 0) appContainer.innerHTML = '<small style="color:#aaa;">No hay aplicaciones.</small>';
@@ -421,14 +399,13 @@
           </div>`;
       });
 
-      // Cargar Noticias
       let newsContainer = document.getElementById('adminNewsList');
       newsContainer.innerHTML = '';
       if(listaNoticias.length === 0) newsContainer.innerHTML = '<small style="color:#aaa;">No hay novedades.</small>';
       listaNoticias.forEach(n => {
         newsContainer.innerHTML += `
           <div class="item-list-row">
-            <span><strong>${n.titulo}</strong> (${n.fecha})</span>
+            <span><strong>${n.titulo}</strong></span>
             <button class="btn-delete" onclick="eliminarNovedad(${n.id})">🗑️ Borrar</button>
           </div>`;
       });
