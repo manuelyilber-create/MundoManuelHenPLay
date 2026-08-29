@@ -163,7 +163,7 @@
       background: #161920;
     }
 
-    #newsSection {
+    #newsSection, #commentsSection {
       background: #161920;
       border: 1px solid #00a2ff;
       border-radius: 8px;
@@ -171,7 +171,7 @@
       margin-top: 35px;
     }
 
-    .news-title {
+    .news-title, .section-title-sub {
       margin-top: 0;
       color: #00a2ff;
       border-bottom: 2px solid #0070d1;
@@ -195,6 +195,66 @@
       border-radius: 6px;
       border: 1px solid #0070d1;
       background: #000;
+    }
+
+    .user-box, .comment-form-box {
+      background: #1f232d;
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      border: 1px solid #2a2f3d;
+    }
+
+    .form-control-custom {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      margin-bottom: 12px;
+      background: #161920;
+      border: 1px solid #3a4150;
+      color: #fff;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    .comment-card {
+      background: #1f232d;
+      border-radius: 6px;
+      padding: 12px;
+      margin-bottom: 12px;
+      border-left: 4px solid #00a2ff;
+    }
+
+    /* Estilo especial para comentarios oficiales del Administrador */
+    .comment-card.admin-reply {
+      background: #142233;
+      border-left: 4px solid #28a745;
+      border-right: 2px solid #00a2ff;
+    }
+
+    .comment-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .comment-avatar {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1px solid #0070d1;
+    }
+
+    .admin-badge {
+      background: #28a745;
+      color: #fff;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: bold;
+      margin-left: 5px;
     }
   </style>
 </head>
@@ -248,14 +308,56 @@
       <h3 class="news-title">📢 Novedades y Anuncios Recientes</h3>
       <div id="newsContainer"></div>
     </section>
+
+    <!-- SECCIÓN DE COMENTARIOS -->
+    <section id="commentsSection">
+      <h3 class="section-title-sub">💬 Foro de Comentarios y Dudas</h3>
+      
+      <div class="user-box" id="userRegistrationBox">
+        <h4 style="margin-top:0; color:#28a745;">👤 Identifícate para poder comentar</h4>
+        <p style="font-size:13px; color:#aaa;">Registra tu nombre y foto de perfil una sola vez.</p>
+        <label style="font-size:14px; color:#00a2ff;">Tu Nombre de Usuario:</label>
+        <input type="text" id="regUsername" class="form-control-custom" placeholder="Ej: ManuelGamer">
+        
+        <label style="font-size:14px; color:#00a2ff;">Foto de Perfil (Opcional):</label>
+        <input type="file" id="regAvatarFile" accept="image/*" class="form-control-custom">
+
+        <button onclick="registrarUsuario()" style="background:#28a745; color:#fff; border:none; padding:10px 15px; border-radius:4px; font-weight:bold; cursor:pointer; width:100%;">Registrarme y Bloquear Nombre</button>
+      </div>
+
+      <div class="user-box" id="userLoggedBox" style="display:none;">
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <img id="loggedUserAvatar" src="V2/apps.png" class="comment-avatar">
+            <span>Conectado como: <strong id="loggedUserName" style="color:#00a2ff;"></strong> 🔒</span>
+          </div>
+          <button onclick="cambiarUsuario()" style="background:#dc3545; color:#fff; border:none; padding:5px 10px; border-radius:4px; font-size:12px; cursor:pointer;">Cambiar Registro</button>
+        </div>
+      </div>
+
+      <div class="comment-form-box" id="commentFormBox" style="opacity: 0.5; pointer-events: none;">
+        <h4 style="margin-top:0; color:#00a2ff;">✍️ Escribe tu Comentario o Pregunta</h4>
+        <label style="font-size:14px;">Asunto:</label>
+        <input type="text" id="commentSubject" class="form-control-custom" placeholder="Ej: Duda con HEN">
+
+        <label style="font-size:14px;">Mensaje:</label>
+        <textarea id="commentText" rows="3" class="form-control-custom" placeholder="Escribe aquí..."></textarea>
+
+        <label style="font-size:14px;">Archivo adjunto opcional:</label>
+        <input type="file" id="commentAttachFile" class="form-control-custom">
+
+        <button onclick="enviarComentario()" style="background:#0070d1; color:#fff; border:none; padding:10px 15px; border-radius:4px; font-weight:bold; cursor:pointer; width:100%;">Publicar Comentario</button>
+      </div>
+
+      <h4 style="color:#00a2ff; margin-top:25px;">Comentarios de la Comunidad:</h4>
+      <div id="commentsListContainer"></div>
+    </section>
   </main>
 
-  <!-- SDKs de Firebase Firestore -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
   <script>
-    // Configuración oficial de Firebase Firestore para tu proyecto
     const firebaseConfig = {
       apiKey: "AIzaSyCv-qeex1pBV7pfi2UD0iUio46-OX2MCiI",
       authDomain: "mundomanuelhenplay.firebaseapp.com",
@@ -280,46 +382,160 @@
       document.getElementById('cntVisitas').innerText = contadorVisitas;
       document.getElementById('cntDescargas').innerText = contadorDescargas;
 
-      // Carga en tiempo real de tu base de datos Firestore
+      verificarEstadoUsuario();
+
       db.collection("aplicaciones").onSnapshot((snapshot) => {
         listaAplicaciones = [];
-        snapshot.forEach((doc) => {
-          let data = doc.data();
-          listaAplicaciones.push({
-            id: doc.id,
-            nombre: data.nombre,
-            categoria: data.categoria,
-            logo: data.logo,
-            enlace: data.enlace
-          });
-        });
+        snapshot.forEach((doc) => { listaAplicaciones.push({ id: doc.id, ...doc.data() }); });
         renderizarAplicaciones(listaAplicaciones);
       });
 
       db.collection("noticias").onSnapshot((snapshot) => {
         listaNoticias = [];
-        snapshot.forEach((doc) => {
-          let data = doc.data();
-          listaNoticias.push({
-            id: doc.id,
-            titulo: data.titulo,
-            fecha: data.fecha,
-            imagen: data.imagen,
-            descripcion: data.descripcion
-          });
-        });
+        snapshot.forEach((doc) => { listaNoticias.push({ id: doc.id, ...doc.data() }); });
         if(listaNoticias.length === 0) {
-          listaNoticias = [{
-            id: 1,
-            titulo: "¡Bienvenido a MundoManuelHenPlay!",
-            fecha: new Date().toLocaleDateString(),
-            imagen: "V2/banner.png",
-            descripcion: "Aquí podrás ver todas las novedades y anuncios importantes de la página."
-          }];
+          listaNoticias = [{ id: 1, titulo: "¡Bienvenido a MundoManuelHenPlay!", fecha: new Date().toLocaleDateString(), imagen: "V2/banner.png", descripcion: "Novedades recientes." }];
         }
         renderizarNoticias(listaNoticias);
       });
+
+      // Cargar comentarios en tiempo real y validar bloqueados
+      db.collection("comentarios").orderBy("creado", "desc").onSnapshot(async (snapshot) => {
+        let usernameActual = localStorage.getItem('mmhp_user_name');
+        
+        // Verificar si el usuario actual fue bloqueado por el administrador
+        if (usernameActual) {
+          let blockCheck = await db.collection("bloqueados").doc(usernameActual.toLowerCase()).get();
+          if (blockCheck.exists) {
+            alert("Tu cuenta ha sido bloqueada por el Administrador.");
+            localStorage.removeItem('mmhp_user_name');
+            localStorage.removeItem('mmhp_user_avatar');
+            location.reload();
+            return;
+          }
+        }
+
+        let container = document.getElementById('commentsListContainer');
+        container.innerHTML = '';
+        if(snapshot.empty) {
+          container.innerHTML = '<p style="color:#aaa;">Aún no hay comentarios.</p>';
+          return;
+        }
+
+        snapshot.forEach((doc) => {
+          let c = doc.data();
+          let archivoHTML = c.archivo ? `<div style="margin-top:8px;"><a href="${c.archivo}" download="archivo_adjunto" style="color:#00a2ff; font-size:13px; text-decoration:underline;">📎 Descargar archivo adjunto</a></div>` : '';
+          
+          let cardClass = c.esAdmin ? "comment-card admin-reply" : "comment-card";
+          let adminBadge = c.esAdmin ? '<span class="admin-badge">🛠️ OFICIAL ADMIN</span>' : '';
+
+          container.innerHTML += `
+            <div class="${cardClass}">
+              <div class="comment-header">
+                <img src="${c.avatar || 'V2/apps.png'}" class="comment-avatar" onerror="this.src='V2/apps.png'">
+                <div>
+                  <strong style="color:#fff; font-size:15px;">${c.usuario}</strong> ${adminBadge}
+                  <div style="font-size:11px; color:#aaa;">📅 ${c.fecha || 'Reciente'}</div>
+                </div>
+              </div>
+              <h5 style="margin:5px 0; color:#00a2ff; font-size:14px;">Asunto: ${c.asunto}</h5>
+              <p style="margin:5px 0 0 0; color:#ccc; font-size:14px; line-height:1.4; word-break:break-word;">${c.mensaje}</p>
+              ${archivoHTML}
+            </div>`;
+        });
+      });
     };
+
+    function leerArchivoBase64(inputElement) {
+      return new Promise((resolve) => {
+        const file = inputElement.files[0];
+        if(!file) { resolve(''); return; }
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function registrarUsuario() {
+      let nombreInput = document.getElementById('regUsername').value.trim();
+      if(!nombreInput) { alert("Ingresa tu nombre."); return; }
+
+      // Validar si el nombre está bloqueado
+      let check = await db.collection("bloqueados").doc(nombreInput.toLowerCase()).get();
+      if(check.exists) {
+        alert("Este nombre de usuario está bloqueado por el administrador.");
+        return;
+      }
+      
+      let avatarBase64 = await leerArchivoBase64(document.getElementById('regAvatarFile'));
+      if(!avatarBase64) avatarBase64 = 'V2/apps.png';
+
+      localStorage.setItem('mmhp_user_name', nombreInput);
+      localStorage.setItem('mmhp_user_avatar', avatarBase64);
+
+      verificarEstadoUsuario();
+      alert("¡Registrado correctamente!");
+    }
+
+    function verificarEstadoUsuario() {
+      let savedName = localStorage.getItem('mmhp_user_name');
+      let savedAvatar = localStorage.getItem('mmhp_user_avatar');
+
+      if(savedName) {
+        document.getElementById('userRegistrationBox').style.display = 'none';
+        document.getElementById('userLoggedBox').style.display = 'block';
+        document.getElementById('loggedUserName').innerText = savedName;
+        document.getElementById('loggedUserAvatar').src = savedAvatar || 'V2/apps.png';
+
+        let formBox = document.getElementById('commentFormBox');
+        formBox.style.opacity = '1';
+        formBox.style.pointerEvents = 'auto';
+      } else {
+        document.getElementById('userRegistrationBox').style.display = 'block';
+        document.getElementById('userLoggedBox').style.display = 'none';
+
+        let formBox = document.getElementById('commentFormBox');
+        formBox.style.opacity = '0.5';
+        formBox.style.pointerEvents = 'none';
+      }
+    }
+
+    function cambiarUsuario() {
+      if(confirm("¿Deseas cambiar tu registro de usuario?")) {
+        localStorage.removeItem('mmhp_user_name');
+        localStorage.removeItem('mmhp_user_avatar');
+        verificarEstadoUsuario();
+      }
+    }
+
+    async function enviarComentario() {
+      let asunto = document.getElementById('commentSubject').value.trim();
+      let mensaje = document.getElementById('commentText').value.trim();
+      let usuario = localStorage.getItem('mmhp_user_name');
+      let avatar = localStorage.getItem('mmhp_user_avatar');
+
+      if(!asunto || !mensaje) { alert("Completa el asunto y el mensaje."); return; }
+
+      let archivoAdjunto = await leerArchivoBase64(document.getElementById('commentAttachFile'));
+
+      try {
+        await db.collection("comentarios").add({
+          usuario: usuario,
+          avatar: avatar,
+          asunto: asunto,
+          mensaje: mensaje,
+          archivo: archivoAdjunto,
+          esAdmin: false,
+          fecha: new Date().toLocaleDateString(),
+          creado: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        document.getElementById('commentSubject').value = '';
+        document.getElementById('commentText').value = '';
+        document.getElementById('commentAttachFile').value = '';
+        alert("Comentario publicado.");
+      } catch(e) { console.error(e); }
+    }
 
     function registrarDescarga() {
       contadorDescargas++;
@@ -330,20 +546,15 @@
     function renderizarAplicaciones(lista) {
       let c = document.getElementById('listaContenido');
       c.innerHTML = '';
-      if (lista.length === 0) { c.innerHTML = '<p style="color:#aaa;">No hay aplicaciones disponibles en esta sección.</p>'; return; }
-
+      if (lista.length === 0) { c.innerHTML = '<p style="color:#aaa;">No hay aplicaciones.</p>'; return; }
       lista.forEach(app => {
         c.innerHTML += `
           <div class="app-card">
             <div class="app-info">
               <img src="${app.logo}" class="app-logo" onerror="this.src='V2/apps.png'">
-              <div>
-                <strong style="font-size:16px;">[${app.categoria}] ${app.nombre}</strong>
-              </div>
+              <div><strong style="font-size:16px;">[${app.categoria}] ${app.nombre}</strong></div>
             </div>
-            <div>
-              <a href="${app.enlace}" download onclick="registrarDescarga()" style="background:#0070d1; color:#fff; padding:8px 14px; text-decoration:none; border-radius:4px; font-size:14px; display:inline-block; font-weight:bold;">Descargar</a>
-            </div>
+            <div><a href="${app.enlace}" download onclick="registrarDescarga()" style="background:#0070d1; color:#fff; padding:8px 14px; text-decoration:none; border-radius:4px; font-size:14px; font-weight:bold;">Descargar</a></div>
           </div>`;
       });
     }
@@ -351,8 +562,6 @@
     function renderizarNoticias(lista) {
       let c = document.getElementById('newsContainer');
       c.innerHTML = '';
-      if(lista.length === 0) { c.innerHTML = '<p style="color:#aaa;">No hay novedades publicadas por ahora.</p>'; return; }
-
       lista.forEach(n => {
         c.innerHTML += `
           <div class="news-card">
@@ -360,7 +569,7 @@
             <div>
               <h4 style="margin:0 0 5px 0; color:#00a2ff;">${n.titulo}</h4>
               <small style="color:#aaa;">📅 Fecha: ${n.fecha}</small>
-              <p style="margin:8px 0 0 0; color:#ccc; font-size:14px; line-height:1.4;">${n.descripcion}</p>
+              <p style="margin:8px 0 0 0; color:#ccc; font-size:14px;">${n.descripcion}</p>
             </div>
           </div>`;
       });
@@ -379,8 +588,4 @@
 
     function buscarAplicacion() {
       let t = document.getElementById('searchInput').value.toLowerCase();
-      renderizarAplicaciones(listaAplicaciones.filter(app => app.nombre.toLowerCase().includes(t) || app.categoria.toLowerCase().includes(t)));
-    }
-  </script>
-</body>
-</html>
+      renderizarAplicaciones(listaAplicaciones.filter(app => app.nombre.toLowerCase().includes(t) || app.categoria.toLowerCase
