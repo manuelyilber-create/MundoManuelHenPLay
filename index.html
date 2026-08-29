@@ -3,270 +3,246 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MundoManuelHenPlay</title>
+  <title>Panel Privado Admin | MundoManuelHenPlay</title>
   <style>
     body {
       margin: 0;
       padding: 0;
       font-family: Arial, sans-serif;
-      background: #0d0f12 url('V2/fondo.jpg') no-repeat center center fixed;
-      background-size: cover;
+      background: #0d0f12;
       color: #ffffff;
     }
-    header {
-      width: 100%;
-      background: rgba(0, 0, 0, 0.85);
-      border-bottom: 2px solid #0070d1;
-    }
-    .banner {
-      width: 100%;
-      max-height: 180px;
-      object-fit: cover;
-      display: block;
-    }
-    nav {
-      background: #161920;
+
+    /* PANTALLA DE ACCESO/LOGIN INICIAL */
+    #lockScreen {
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
+      justify-content: center;
       align-items: center;
-      padding: 10px 20px;
-      flex-wrap: wrap;
+      height: 100vh;
+      background: #0d0f12;
     }
-    .nav-links {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-wrap: wrap;
-    }
-    .nav-item {
-      position: relative;
-    }
-    .nav-item > a {
-      display: block;
-      padding: 12px 18px;
-      color: #fff;
-      text-decoration: none;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .nav-item:hover > a {
-      background: #0070d1;
-    }
-    .dropdown {
-      display: none;
-      position: absolute;
-      top: 100%;
-      left: 0;
+
+    .login-box {
       background: #1f232d;
-      min-width: 180px;
-      box-shadow: 0px 8px 16px rgba(0,0,0,0.5);
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      z-index: 1000;
-    }
-    .dropdown li a {
-      color: #ccc;
-      padding: 12px 16px;
-      text-decoration: none;
-      display: block;
-      border-bottom: 1px solid #2a2f3d;
-      cursor: pointer;
-    }
-    .dropdown li a:hover {
-      background: #0070d1;
-      color: #fff;
-    }
-    .nav-item:hover .dropdown {
-      display: block;
-    }
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .counter-badge {
-      background: #1f232d;
-      border: 1px solid #0070d1;
-      border-radius: 15px;
-      padding: 5px 12px;
-      font-size: 13px;
-      color: #00a2ff;
-      font-weight: bold;
-    }
-    main {
-      padding: 25px;
-      max-width: 1000px;
-      margin: 20px auto;
-      background: rgba(15, 18, 24, 0.9);
+      padding: 30px;
       border-radius: 8px;
+      width: 320px;
+      text-align: center;
+      border: 2px solid #0070d1;
+      box-shadow: 0 0 20px rgba(0, 112, 209, 0.4);
     }
-    .search-box {
-      display: flex;
-      align-items: center;
-      background: #1f232d;
-      border: 1px solid #0070d1;
-      border-radius: 25px;
-      padding: 5px 15px;
-      margin-bottom: 20px;
-    }
-    .search-box input {
-      background: transparent;
-      border: none;
-      color: #fff;
-      padding: 8px;
+
+    .login-box input {
       width: 100%;
-      outline: none;
-      font-size: 15px;
-    }
-    .app-card {
-      background: #1f232d;
-      padding: 15px;
+      padding: 10px;
       margin-bottom: 12px;
-      border-left: 4px solid #0070d1;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-radius: 4px;
-    }
-    .app-info {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-    .app-logo {
-      width: 50px;
-      height: 50px;
-      object-fit: cover;
-      border-radius: 6px;
-      border: 1px solid #0070d1;
+      box-sizing: border-box;
       background: #161920;
-    }
-    #newsSection {
-      background: #161920;
-      border: 1px solid #00a2ff;
-      border-radius: 8px;
-      padding: 20px;
-      margin-top: 35px;
-    }
-    .news-title {
-      margin-top: 0;
-      color: #00a2ff;
-      border-bottom: 2px solid #0070d1;
-      padding-bottom: 8px;
-    }
-    .news-card {
-      background: #1f232d;
-      border-radius: 6px;
-      padding: 15px;
-      margin-bottom: 15px;
-      display: flex;
-      gap: 15px;
-      border-left: 4px solid #28a745;
-    }
-    .news-img {
-      width: 100px;
-      height: 100px;
-      object-fit: cover;
-      border-radius: 6px;
-      border: 1px solid #0070d1;
-      background: #000;
-    }
-    /* Estilos para comentarios */
-    .comments-section {
-      margin-top: 35px;
-      background: #161920;
-      border: 1px solid #0070d1;
-      border-radius: 8px;
-      padding: 20px;
-    }
-    .comment-box input, .comment-box textarea {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 10px;
-      background: #1f232d;
       border: 1px solid #3a4150;
       color: #fff;
       border-radius: 4px;
-      box-sizing: border-box;
     }
-    .comment-item {
-      background: #1f232d;
-      padding: 10px;
+
+    .login-box button {
+      background: #0070d1;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
       border-radius: 4px;
-      margin-bottom: 8px;
-      border-left: 3px solid #00a2ff;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    /* CONTENEDOR DEL PANEL PRIVADO */
+    #adminContent {
+      display: none;
+      max-width: 1000px;
+      margin: 30px auto;
+      padding: 20px;
+    }
+
+    #adminPanel {
+      background: #252a36;
+      padding: 20px;
+      border-radius: 8px;
+      border: 2px solid #0070d1;
+    }
+
+    .admin-subpanel {
+      background: #1a1e27;
+      padding: 15px;
+      border-radius: 6px;
+      margin-top: 15px;
+      border: 1px dashed #00a2ff;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      color: #00a2ff;
+      font-size: 14px;
+    }
+
+    .form-group input[type="text"], 
+    .form-group select, 
+    .form-group textarea,
+    .form-group input[type="file"] {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+      background: #161920;
+      border: 1px solid #3a4150;
+      color: #fff;
+      border-radius: 4px;
+    }
+
+    .sub-option-box {
+      background: #12151c;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #2a2f3d;
+      margin-top: 5px;
+    }
+
+    .item-list-row {
+      background: #161920;
+      padding: 10px;
+      margin-top: 8px;
+      border-radius: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-left: 3px solid #0070d1;
+    }
+
+    .btn-delete {
+      background: #dc3545;
+      color: #fff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <img src="V2/banner.png" alt="Banner MundoManuelHenPlay" class="banner" onerror="this.style.display='none'">
-    <nav>
-      <ul class="nav-links">
-        <li class="nav-item"><a onclick="filtrarCategoria('TODOS')">🏠 Inicio</a></li>
-        <li class="nav-item">
-          <a onclick="filtrarCategoria('PS2')">PS2</a>
-          <ul class="dropdown"><li><a onclick="filtrarCategoria('PS2')">Ver Todo PS2</a></li></ul>
-        </li>
-        <li class="nav-item">
-          <a onclick="filtrarCategoria('PS3')">PS3</a>
-          <ul class="dropdown">
-            <li><a onclick="filtrarCategoria('PS3')">Ver Todo PS3</a></li>
-            <li><a href="Ps3/Hen/4.91/index.html">HEN 4.91</a></li>
-            <li><a href="Ps3/Hen/4.92/index.html">HEN 4.92</a></li>
-            <li><a href="Ps3/Hen/4.93/index.html">HEN 4.93</a></li>
-          </ul>
-        </li>
-        <li class="nav-item">
-          <a onclick="filtrarCategoria('PS4')">PS4</a>
-          <ul class="dropdown"><li><a onclick="filtrarCategoria('PS4')">Ver Todo PS4</a></li></ul>
-        </li>
-        <li class="nav-item"><a onclick="filtrarCategoria('Herramientas')">🛠️ Herramientas</a></li>
-        <li class="nav-item"><a onclick="filtrarCategoria('Utilidades')">⚙️ Utilidades</a></li>
-        <li class="nav-item"><a onclick="filtrarCategoria('Android')">🤖 Android</a></li>
-      </ul>
-      <div class="header-right">
-        <div class="counter-badge">👥 Visitas: <span id="cntVisitas">0</span></div>
-        <div class="counter-badge">📥 Descargas: <span id="cntDescargas">0</span></div>
-      </div>
-    </nav>
-  </header>
-
-  <main>
-    <div class="search-box">
-      <span>🔍</span>
-      <input type="text" id="searchInput" onkeyup="buscarAplicacion()" placeholder="Buscar archivo, herramientas o categorías...">
+  <!-- PANTALLA DE DESBLOQUEO -->
+  <div id="lockScreen">
+    <div class="login-box">
+      <h3 style="margin-top:0; color:#00a2ff;">🔒 Acceso Exclusivo Admin</h3>
+      <input type="text" id="userInput" placeholder="Usuario">
+      <input type="password" id="passInput" placeholder="Contraseña">
+      <button onclick="validarAcceso()">Ingresar al Panel</button>
     </div>
+  </div>
 
-    <h2 id="tituloSeccion" style="color: #00a2ff;">Contenido Disponible</h2>
-    <div id="listaContenido"></div>
-
-    <section id="newsSection">
-      <h3 class="news-title">📢 Novedades y Anuncios Recientes</h3>
-      <div id="newsContainer"></div>
-    </section>
-
-    <!-- SECCIÓN DE COMENTARIOS CORREGIDA -->
-    <section class="comments-section">
-      <h3 style="color:#00a2ff; margin-top:0;">💬 Conversación y Comentarios</h3>
-      <div class="comment-box">
-        <input type="text" id="nombreComentario" placeholder="Tu nombre">
-        <textarea id="textoComentario" rows="3" placeholder="Escribe tu comentario o conversación aquí..."></textarea>
-        <button onclick="enviarComentario()" style="background:#0070d1; color:#fff; border:none; padding:8px 15px; border-radius:4px; font-weight:bold; cursor:pointer;">Publicar Comentario</button>
+  <!-- PANEL DE ADMINISTRACIÓN -->
+  <div id="adminContent">
+    <div id="adminPanel">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3a4150; padding-bottom: 10px;">
+        <h3 style="margin: 0; color: #00a2ff;">Panel Privado de Control General</h3>
+        <div>
+          <a href="index.html" style="background:#0070d1; color:#fff; text-decoration:none; padding:6px 12px; border-radius:4px; margin-right:8px; font-size:14px;">🌐 Ver Sitio Web</a>
+          <button onclick="cerrarSesion()" style="background:#dc3545; color:#fff; border:none; padding:6px 12px; border-radius:4px; cursor:pointer;">🚪 Salir</button>
+        </div>
       </div>
-      <div id="listaComentarios" style="margin-top: 15px;"></div>
-    </section>
-  </main>
 
-  <!-- SDKs de Firebase (Compat version para fácil integración) -->
+      <!-- 1. AGREGAR APLICACIÓN -->
+      <div class="admin-subpanel">
+        <h4 style="margin-top:0; color:#28a745;">📦 1. Agregar Nueva Aplicación / Archivo</h4>
+        
+        <div class="form-group">
+          <label>Nombre y Versión:</label>
+          <input type="text" id="appName" placeholder="Ej: HEN 4.93 Installer v1.0">
+        </div>
+
+        <div class="form-group">
+          <label>Categoría:</label>
+          <select id="appCategory">
+            <option value="PS2">PS2</option>
+            <option value="PS3">PS3</option>
+            <option value="PS4">PS4</option>
+            <option value="Herramientas">Herramientas</option>
+            <option value="Utilidades">Utilidades</option>
+            <option value="Android">Android</option>
+          </select>
+        </div>
+
+        <!-- 3 OPCIONES PARA EL LOGO -->
+        <div class="form-group">
+          <label>Método para el Logo/Imagen:</label>
+          <select id="logoMethod" onchange="cambiarMetodoLogo()">
+            <option value="v2">📁 Ruta local de la carpeta V2 (Ej: V2/apps.png)</option>
+            <option value="url">🌐 Enlace Web / URL externa (Ej: https://...)</option>
+            <option value="file">💻 Subir archivo desde Escritorio</option>
+          </select>
+          
+          <div class="sub-option-box">
+            <div id="optV2">
+              <input type="text" id="appLogoV2" placeholder="Ej: V2/apps.png o V2/mi-logo.png">
+            </div>
+            <div id="optUrl" style="display:none;">
+              <input type="text" id="appLogoUrl" placeholder="Ej: https://sitio.com/imagen.png">
+            </div>
+            <div id="optFile" style="display:none;">
+              <input type="file" id="appLogoFile" accept="image/*">
+            </div>
+          </div>
+        </div>
+
+        <!-- URL/RUTA DE DESCARGA -->
+        <div class="form-group">
+          <label>Ruta o Link de Descarga (URL/Servidor local):</label>
+          <input type="text" id="appLink" placeholder="Ej: Ps3/Hen/4.93/SETUP.P3T o https://megaupload.com/archivo">
+        </div>
+
+        <button onclick="agregarItem()" style="background:#28a745; color:#fff; border:none; padding:10px; width:100%; border-radius:4px; font-weight:bold; cursor:pointer;">＋ Publicar Aplicación</button>
+      </div>
+
+      <!-- 2. AGREGAR NOVEDAD -->
+      <div class="admin-subpanel">
+        <h4 style="margin-top:0; color:#00a2ff;">📢 2. Publicar Novedad o Noticia</h4>
+        <div class="form-group">
+          <label>Título de la Novedad:</label>
+          <input type="text" id="newsTitleInput" placeholder="Ej: ¡Actualización HEN 4.93 disponible!">
+        </div>
+        <div class="form-group">
+          <label>Imagen del Anuncio (Ruta V2 o URL web):</label>
+          <input type="text" id="newsImgInput" placeholder="Ej: V2/banner.png o https://...">
+        </div>
+        <div class="form-group">
+          <label>Descripción / Detalle del Anuncio:</label>
+          <textarea id="newsDescInput" rows="3" placeholder="Escribe la información aquí..."></textarea>
+        </div>
+        <button onclick="agregarNovedad()" style="background:#0070d1; color:#fff; border:none; padding:10px; width:100%; border-radius:4px; font-weight:bold; cursor:pointer;">📢 Publicar Novedad</button>
+      </div>
+
+      <!-- 3. LISTAS DE GESTIÓN -->
+      <div class="admin-subpanel">
+        <h4 style="margin-top:0; color:#ffc107;">🗑️ 3. Administrar Aplicaciones Publicadas</h4>
+        <div id="adminAppsList"></div>
+      </div>
+
+      <div class="admin-subpanel">
+        <h4 style="margin-top:0; color:#ffc107;">🗑️ 4. Administrar Noticias Publicadas</h4>
+        <div id="adminNewsList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SDKs de Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
   <script>
-    // CONFIGURACIÓN DE FIREBASE (¡REEMPLAZA ESTOS DATOS CON LOS DE TU PROYECTO DE FIREBASE!)
+    // CONFIGURACIÓN DE FIREBASE (Usa los mismos datos de tu proyecto)
     const firebaseConfig = {
       apiKey: "TU_API_KEY",
       authDomain: "TU_AUTH_DOMAIN",
@@ -279,152 +255,181 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    let listaAplicaciones = [];
-    let listaNoticias = [];
-    let categoriaActual = 'TODOS';
+    async function calcularSHA256(texto) {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(texto);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
 
-    window.onload = function() {
-      // Contador de visitas local básico
-      let contadorVisitas = parseInt(localStorage.getItem('mmhp_visitas') || "0") + 1;
-      localStorage.setItem('mmhp_visitas', contadorVisitas);
-      document.getElementById('cntVisitas').innerText = contadorVisitas;
-      
-      let contadorDescargas = localStorage.getItem('mmhp_descargas') || "0";
-      document.getElementById('cntDescargas').innerText = contadorDescargas;
+    async function validarAcceso() {
+      let u = document.getElementById('userInput').value.trim();
+      let p = document.getElementById('passInput').value.trim();
 
-      // Cargar datos en tiempo real desde Firestore
-      escucharFirestore();
-    };
+      const hashGuardado = "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"; // Contraseña: 1234
+      let hashIngresado = await calcularSHA256(p);
 
-    function escucharFirestore() {
-      // 1. Escuchar Aplicaciones en tiempo real
-      db.collection("aplicaciones").onSnapshot((snapshot) => {
-        listaAplicaciones = [];
-        snapshot.forEach((doc) => {
-          listaAplicaciones.push({ id: doc.id, ...doc.data() });
-        });
-        filtrarCategoria(categoriaActual);
-      });
+      if (u === "admin" && hashIngresado === hashGuardado) {
+        document.getElementById('lockScreen').style.display = 'none';
+        document.getElementById('adminContent').style.display = 'block';
+        cargarListasAdminEnTiempoReal();
+      } else {
+        alert("Credenciales incorrectas.");
+      }
+    }
 
-      // 2. Escuchar Noticias en tiempo real
-      db.collection("noticias").onSnapshot((snapshot) => {
-        listaNoticias = [];
-        snapshot.forEach((doc) => {
-          listaNoticias.push({ id: doc.id, ...doc.data() });
-        });
-        renderizarNoticias(listaNoticias);
-      });
+    function cerrarSesion() {
+      location.reload();
+    }
 
-      // 3. Escuchar Comentarios en tiempo real
-      db.collection("comentarios").orderBy("fechaCreacion", "desc").onSnapshot((snapshot) => {
-        let c = document.getElementById('listaComentarios');
-        c.innerHTML = '';
-        if (snapshot.empty) {
-          c.innerHTML = '<p style="color:#aaa;">No hay comentarios aún. ¡Sé el primero en hablar!</p>';
-          return;
-        }
-        snapshot.forEach((doc) => {
-          let com = doc.data();
-          c.innerHTML += `
-            <div class="comment-item">
-              <strong style="color:#00a2ff;">${com.nombre}</strong> <small style="color:#888;">(${com.fecha || 'Reciente'})</small>
-              <p style="margin:5px 0 0 0; color:#ddd; font-size:14px;">${com.texto}</p>
-            </div>`;
-        });
+    function cambiarMetodoLogo() {
+      let metodo = document.getElementById('logoMethod').value;
+      document.getElementById('optV2').style.display = (metodo === 'v2') ? 'block' : 'none';
+      document.getElementById('optUrl').style.display = (metodo === 'url') ? 'block' : 'none';
+      document.getElementById('optFile').style.display = (metodo === 'file') ? 'block' : 'none';
+    }
+
+    function leerArchivoComoDataURL(fileInput) {
+      return new Promise((resolve, reject) => {
+        const file = fileInput.files[0];
+        if (!file) { resolve(null); return; }
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = (error) => reject(error);
+        reader.readAsDataURL(file);
       });
     }
 
-    async function enviarComentario() {
-      let nombre = document.getElementById('nombreComentario').value.trim();
-      let texto = document.getElementById('textoComentario').value.trim();
+    async function agregarItem() {
+      let name = document.getElementById('appName').value.trim();
+      let category = document.getElementById('appCategory').value;
+      let link = document.getElementById('appLink').value.trim();
+      let metodo = document.getElementById('logoMethod').value;
+      let logoFinal = 'V2/apps.png';
 
-      if (!nombre || !texto) {
-        alert("Por favor escribe tu nombre y el comentario.");
+      if (!name || !link) {
+        alert("Ingresa el Nombre y el Enlace/URL de descarga.");
         return;
       }
 
+      if (metodo === 'v2') {
+        let v2Val = document.getElementById('appLogoV2').value.trim();
+        if (v2Val) logoFinal = v2Val;
+      } else if (metodo === 'url') {
+        let urlVal = document.getElementById('appLogoUrl').value.trim();
+        if (urlVal) logoFinal = urlVal;
+      } else if (metodo === 'file') {
+        let fileInput = document.getElementById('appLogoFile');
+        let fileData = await leerArchivoComoDataURL(fileInput);
+        if (fileData) logoFinal = fileData;
+      }
+
       try {
-        await db.collection("comentarios").add({
-          nombre: nombre,
-          texto: texto,
-          fecha: new Date().toLocaleDateString(),
-          fechaCreacion: firebase.firestore.FieldValue.serverTimestamp()
+        await db.collection("aplicaciones").add({
+          nombre: name,
+          categoria: category,
+          logo: logoFinal,
+          enlace: link,
+          creado: firebase.firestore.FieldValue.serverTimestamp()
         });
-        document.getElementById('nombreComentario').value = '';
-        document.getElementById('textoComentario').value = '';
-      } catch (error) {
-        console.error("Error al enviar comentario: ", error);
-        alert("Hubo un error al publicar el comentario.");
+
+        alert("Aplicación publicada con éxito en Firestore.");
+        document.getElementById('appName').value = '';
+        document.getElementById('appLink').value = '';
+        document.getElementById('appLogoV2').value = '';
+        document.getElementById('appLogoUrl').value = '';
+        document.getElementById('appLogoFile').value = '';
+      } catch (e) {
+        console.error("Error al guardar aplicación: ", e);
+        alert("Error al publicar la aplicación.");
       }
     }
 
-    function registrarDescarga() {
-      let contadorDescargas = parseInt(localStorage.getItem('mmhp_descargas') || "0") + 1;
-      localStorage.setItem('mmhp_descargas', contadorDescargas);
-      document.getElementById('cntDescargas').innerText = contadorDescargas;
-    }
+    async function agregarNovedad() {
+      let title = document.getElementById('newsTitleInput').value.trim();
+      let img = document.getElementById('newsImgInput').value.trim() || 'V2/banner.png';
+      let desc = document.getElementById('newsDescInput').value.trim();
 
-    function renderizarAplicaciones(lista) {
-      let c = document.getElementById('listaContenido');
-      c.innerHTML = '';
-      if (lista.length === 0) { 
-        c.innerHTML = '<p style="color:#aaa;">No hay aplicaciones disponibles en esta sección.</p>'; 
-        return; 
-      }
+      if(title && desc) {
+        try {
+          await db.collection("noticias").add({
+            titulo: title,
+            fecha: new Date().toLocaleDateString(),
+            imagen: img,
+            descripcion: desc,
+            creado: firebase.firestore.FieldValue.serverTimestamp()
+          });
 
-      lista.forEach(app => {
-        c.innerHTML += `
-          <div class="app-card">
-            <div class="app-info">
-              <img src="${app.logo}" class="app-logo" onerror="this.src='V2/apps.png'">
-              <div>
-                <strong style="font-size:16px;">[${app.categoria}] ${app.nombre}</strong>
-              </div>
-            </div>
-            <div>
-              <a href="${app.enlace}" download onclick="registrarDescarga()" style="background:#0070d1; color:#fff; padding:8px 14px; text-decoration:none; border-radius:4px; font-size:14px; display:inline-block; font-weight:bold;">Descargar</a>
-            </div>
-          </div>`;
-      });
-    }
-
-    function renderizarNoticias(lista) {
-      let c = document.getElementById('newsContainer');
-      c.innerHTML = '';
-      if(lista.length === 0) { 
-        c.innerHTML = '<p style="color:#aaa;">No hay novedades publicadas por ahora.</p>'; 
-        return; 
-      }
-
-      lista.forEach(n => {
-        c.innerHTML += `
-          <div class="news-card">
-            <img src="${n.imagen}" class="news-img" onerror="this.src='V2/banner.png'">
-            <div>
-              <h4 style="margin:0 0 5px 0; color:#00a2ff;">${n.titulo}</h4>
-              <small style="color:#aaa;">📅 Fecha: ${n.fecha}</small>
-              <p style="margin:8px 0 0 0; color:#ccc; font-size:14px; line-height:1.4;">${n.descripcion}</p>
-            </div>
-          </div>`;
-      });
-    }
-
-    function filtrarCategoria(cat) {
-      categoriaActual = cat;
-      document.getElementById('searchInput').value = '';
-      if(cat === 'TODOS') {
-        document.getElementById('tituloSeccion').innerText = 'Contenido Disponible';
-        renderizarAplicaciones(listaAplicaciones);
+          alert("Novedad publicada con éxito en Firestore.");
+          document.getElementById('newsTitleInput').value = '';
+          document.getElementById('newsImgInput').value = '';
+          document.getElementById('newsDescInput').value = '';
+        } catch (e) {
+          console.error("Error al guardar novedad: ", e);
+          alert("Error al publicar la novedad.");
+        }
       } else {
-        document.getElementById('tituloSeccion').innerText = 'Sección: ' + cat;
-        renderizarAplicaciones(listaAplicaciones.filter(app => app.categoria === cat));
+        alert("Ingresa el Título y la Descripción.");
       }
     }
 
-    function buscarAplicacion() {
-      let t = document.getElementById('searchInput').value.toLowerCase();
-      let fuente = categoriaActual === 'TODOS' ? listaAplicaciones : listaAplicaciones.filter(app => app.categoria === categoriaActual);
-      renderizarAplicaciones(fuente.filter(app => app.nombre.toLowerCase().includes(t) || app.categoria.toLowerCase().includes(t)));
+    async function eliminarItem(id) {
+      if(confirm("¿Estás seguro de borrar esta aplicación?")) {
+        try {
+          await db.collection("aplicaciones").doc(id).delete();
+        } catch (e) {
+          console.error("Error al borrar: ", e);
+        }
+      }
+    }
+
+    async function eliminarNovedad(id) {
+      if(confirm("¿Estás seguro de borrar esta novedad?")) {
+        try {
+          await db.collection("noticias").doc(id).delete();
+        } catch (e) {
+          console.error("Error al borrar: ", e);
+        }
+      }
+    }
+
+    function cargarListasAdminEnTiempoReal() {
+      // Listado de Aplicaciones en tiempo real
+      db.collection("aplicaciones").onSnapshot((snapshot) => {
+        let appContainer = document.getElementById('adminAppsList');
+        appContainer.innerHTML = '';
+        if(snapshot.empty) {
+          appContainer.innerHTML = '<small style="color:#aaa;">No hay aplicaciones.</small>';
+          return;
+        }
+        snapshot.forEach((doc) => {
+          let app = doc.data();
+          appContainer.innerHTML += `
+            <div class="item-list-row">
+              <span>[${app.categoria}] <strong>${app.nombre}</strong></span>
+              <button class="btn-delete" onclick="eliminarItem('${doc.id}')">🗑️ Borrar</button>
+            </div>`;
+        });
+      });
+
+      // Listado de Noticias en tiempo real
+      db.collection("noticias").onSnapshot((snapshot) => {
+        let newsContainer = document.getElementById('adminNewsList');
+        newsContainer.innerHTML = '';
+        if(snapshot.empty) {
+          newsContainer.innerHTML = '<small style="color:#aaa;">No hay novedades.</small>';
+          return;
+        }
+        snapshot.forEach((doc) => {
+          let n = doc.data();
+          newsContainer.innerHTML += `
+            <div class="item-list-row">
+              <span><strong>${n.titulo}</strong> (${n.fecha})</span>
+              <button class="btn-delete" onclick="eliminarNovedad('${doc.id}')">🗑️ Borrar</button>
+            </div>`;
+        });
+      });
     }
   </script>
 </body>
