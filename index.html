@@ -4,371 +4,107 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MundoManuelHenPlay</title>
+  
+  <!-- SDKs de Firebase (Versión Modular 10) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, addDoc, updateDoc, doc, increment, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // PEGA AQUÍ TUS CREDENCIALES DE FIREBASE
+    const firebaseConfig = {
+      apiKey: "TU_API_KEY",
+      authDomain: "TU_AUTH_DOMAIN",
+      projectId: "TU_PROJECT_ID",
+      storageBucket: "TU_STORAGE_BUCKET",
+      messagingSenderId: "TU_MESSAGING_SENDER_ID",
+      appId: "TU_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Exponer funciones globales para que funcionen con los botones del HTML
+    window.db = db;
+    window.colApps = collection(db, "apps");
+    window.colNews = collection(db, "news");
+    window.colComments = collection(db, "comments");
+    window.colBlocked = collection(db, "blocked_users");
+    
+    // Escuchar datos en tiempo real de Firestore
+    import { onMountedFirebase } from "./firebase-app-logic.js";
+    if(window.iniciarAppWeb) window.iniciarAppWeb(db);
+  </script>
+
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
+    * { box-sizing: border-box; }
     body {
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
+      margin: 0; padding: 0; font-family: Arial, sans-serif;
       background: #0d0f12 url('V2/fondo.jpg') no-repeat center center fixed;
-      background-size: cover;
-      color: #ffffff;
+      background-size: cover; color: #ffffff;
     }
-
-    header {
-      width: 100%;
-      background: rgba(0, 0, 0, 0.85);
-      border-bottom: 2px solid #0070d1;
-    }
-
-    .banner {
-      width: 100%;
-      max-height: 180px;
-      object-fit: cover;
-      display: block;
-    }
-
-    nav {
-      background: #161920;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 15px;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .nav-links {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-    }
-
-    .nav-item {
-      position: relative;
-    }
-
-    .nav-item > a {
-      display: block;
-      padding: 10px 14px;
-      color: #fff;
-      text-decoration: none;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 14px;
-    }
-
-    .nav-item:hover > a {
-      background: #0070d1;
-      border-radius: 4px;
-    }
-
-    .dropdown {
-      display: none;
-      position: absolute;
-      top: 100%;
-      left: 0;
-      background: #1f232d;
-      min-width: 160px;
-      box-shadow: 0px 8px 16px rgba(0,0,0,0.5);
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      z-index: 1000;
-      border-radius: 0 0 4px 4px;
-    }
-
-    .dropdown li a {
-      color: #ccc;
-      padding: 10px 14px;
-      text-decoration: none;
-      display: block;
-      border-bottom: 1px solid #2a2f3d;
-      cursor: pointer;
-      font-size: 13px;
-    }
-
-    .dropdown li a:hover {
-      background: #0070d1;
-      color: #fff;
-    }
-
-    .nav-item:hover .dropdown {
-      display: block;
-    }
-
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .counter-badge {
-      background: #1f232d;
-      border: 1px solid #0070d1;
-      border-radius: 15px;
-      padding: 5px 10px;
-      font-size: 12px;
-      color: #00a2ff;
-      font-weight: bold;
-    }
-
-    main {
-      padding: 15px;
-      max-width: 1000px;
-      margin: 15px auto;
-      background: rgba(15, 18, 24, 0.92);
-      border-radius: 8px;
-    }
-
-    .search-box {
-      display: flex;
-      align-items: center;
-      background: #1f232d;
-      border: 1px solid #0070d1;
-      border-radius: 25px;
-      padding: 5px 15px;
-      margin-bottom: 20px;
-    }
-
-    .search-box input {
-      background: transparent;
-      border: none;
-      color: #fff;
-      padding: 8px;
-      width: 100%;
-      outline: none;
-      font-size: 15px;
-    }
-
-    .app-card {
-      background: #1f232d;
-      padding: 12px 15px;
-      margin-bottom: 12px;
-      border-left: 4px solid #0070d1;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-radius: 4px;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .app-info {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .app-logo {
-      width: 45px;
-      height: 45px;
-      object-fit: cover;
-      border-radius: 6px;
-      border: 1px solid #0070d1;
-      background: #161920;
-    }
-
-    #newsSection, #chatSection {
-      background: #161920;
-      border: 1px solid #0070d1;
-      border-radius: 8px;
-      padding: 15px;
-      margin-top: 25px;
-    }
-
-    .news-title {
-      margin-top: 0;
-      color: #00a2ff;
-      border-bottom: 2px solid #0070d1;
-      padding-bottom: 8px;
-    }
-
-    .news-card {
-      background: #1f232d;
-      border-radius: 6px;
-      padding: 12px;
-      margin-bottom: 12px;
-      display: flex;
-      gap: 12px;
-      border-left: 4px solid #28a745;
-      flex-wrap: wrap;
-    }
-
-    .news-img {
-      width: 90px;
-      height: 90px;
-      object-fit: cover;
-      border-radius: 6px;
-      border: 1px solid #0070d1;
-      background: #000;
-    }
-
-    /* SISTEMA DE CHAT RESPONSIVO */
-    .user-profile-bar {
-      background: #1f232d;
-      padding: 10px 12px;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .user-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 1px solid #00a2ff;
-    }
-
-    .comment-form input, .comment-form textarea {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 8px;
-      background: #1f232d;
-      border: 1px solid #3a4150;
-      color: #fff;
-      border-radius: 4px;
-    }
-
-    .comment-tabs {
-      display: flex;
-      gap: 8px;
-      margin: 12px 0;
-      border-bottom: 1px solid #3a4150;
-      padding-bottom: 8px;
-    }
-
-    .tab-btn {
-      background: #1f232d;
-      color: #ccc;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 13px;
-    }
-
-    .tab-btn.active {
-      background: #0070d1;
-      color: #fff;
-      font-weight: bold;
-    }
-
-    .comment-card {
-      background: #1f232d;
-      padding: 12px;
-      border-radius: 6px;
-      margin-bottom: 10px;
-      display: flex;
-      gap: 10px;
-      border-left: 3px solid #00a2ff;
-    }
-
-    .btn-like {
-      background: transparent;
-      border: 1px solid #ff4757;
-      color: #ff4757;
-      padding: 4px 8px;
-      border-radius: 12px;
-      cursor: pointer;
-      font-size: 12px;
-      margin-top: 5px;
-    }
-
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.8);
-      justify-content: center;
-      align-items: center;
-      z-index: 2000;
-      padding: 15px;
-    }
-
-    .modal-content {
-      background: #1f232d;
-      padding: 20px;
-      border-radius: 8px;
-      width: 100%;
-      max-width: 350px;
-      border: 2px solid #0070d1;
-    }
-
-    /* AJUSTES ESPECÍFICOS PARA ANDROID Y PANTALLAS PEQUEÑAS */
+    header { width: 100%; background: rgba(0, 0, 0, 0.85); border-bottom: 2px solid #0070d1; }
+    .banner { width: 100%; max-height: 180px; object-fit: cover; display: block; }
+    nav { background: #161920; display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; flex-wrap: wrap; gap: 10px; }
+    .nav-links { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 5px; }
+    .nav-item { position: relative; }
+    .nav-item > a { display: block; padding: 10px 14px; color: #fff; text-decoration: none; font-weight: bold; cursor: pointer; font-size: 14px; }
+    .nav-item:hover > a { background: #0070d1; border-radius: 4px; }
+    .dropdown { display: none; position: absolute; top: 100%; left: 0; background: #1f232d; min-width: 160px; box-shadow: 0px 8px 16px rgba(0,0,0,0.5); list-style: none; padding: 0; margin: 0; z-index: 1000; border-radius: 0 0 4px 4px; }
+    .dropdown li a { color: #ccc; padding: 10px 14px; text-decoration: none; display: block; border-bottom: 1px solid #2a2f3d; cursor: pointer; font-size: 13px; }
+    .dropdown li a:hover { background: #0070d1; color: #fff; }
+    .nav-item:hover .dropdown { display: block; }
+    .header-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .counter-badge { background: #1f232d; border: 1px solid #0070d1; border-radius: 15px; padding: 5px 10px; font-size: 12px; color: #00a2ff; font-weight: bold; }
+    main { padding: 15px; max-width: 1000px; margin: 15px auto; background: rgba(15, 18, 24, 0.92); border-radius: 8px; }
+    .search-box { display: flex; align-items: center; background: #1f232d; border: 1px solid #0070d1; border-radius: 25px; padding: 5px 15px; margin-bottom: 20px; }
+    .search-box input { background: transparent; border: none; color: #fff; padding: 8px; width: 100%; outline: none; font-size: 15px; }
+    .app-card { background: #1f232d; padding: 12px 15px; margin-bottom: 12px; border-left: 4px solid #0070d1; display: flex; align-items: center; justify-content: space-between; border-radius: 4px; flex-wrap: wrap; gap: 10px; }
+    .app-info { display: flex; align-items: center; gap: 12px; }
+    .app-logo { width: 45px; height: 45px; object-fit: cover; border-radius: 6px; border: 1px solid #0070d1; background: #161920; }
+    #newsSection, #chatSection { background: #161920; border: 1px solid #0070d1; border-radius: 8px; padding: 15px; margin-top: 25px; }
+    .news-title { margin-top: 0; color: #00a2ff; border-bottom: 2px solid #0070d1; padding-bottom: 8px; }
+    .news-card { background: #1f232d; border-radius: 6px; padding: 12px; margin-bottom: 12px; display: flex; gap: 12px; border-left: 4px solid #28a745; flex-wrap: wrap; }
+    .news-img { width: 90px; height: 90px; object-fit: cover; border-radius: 6px; border: 1px solid #0070d1; background: #000; }
+    .user-profile-bar { background: #1f232d; padding: 10px 12px; border-radius: 6px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
+    .user-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 1px solid #00a2ff; }
+    .comment-form input, .comment-form textarea { width: 100%; padding: 10px; margin-bottom: 8px; background: #1f232d; border: 1px solid #3a4150; color: #fff; border-radius: 4px; }
+    .comment-tabs { display: flex; gap: 8px; margin: 12px 0; border-bottom: 1px solid #3a4150; padding-bottom: 8px; }
+    .tab-btn { background: #1f232d; color: #ccc; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; }
+    .tab-btn.active { background: #0070d1; color: #fff; font-weight: bold; }
+    .comment-card { background: #1f232d; padding: 12px; border-radius: 6px; margin-bottom: 10px; display: flex; gap: 10px; border-left: 3px solid #00a2ff; }
+    .btn-like { background: transparent; border: 1px solid #ff4757; color: #ff4757; padding: 4px 8px; border-radius: 12px; cursor: pointer; font-size: 12px; margin-top: 5px; }
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 2000; padding: 15px; }
+    .modal-content { background: #1f232d; padding: 20px; border-radius: 8px; width: 100%; max-width: 350px; border: 2px solid #0070d1; }
     @media (max-width: 600px) {
-      nav {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .header-right {
-        width: 100%;
-        justify-content: space-between;
-      }
-      .app-card {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .app-card > div:last-child {
-        width: 100%;
-      }
-      .app-card a {
-        display: block;
-        text-align: center;
-        width: 100%;
-      }
-      .news-card {
-        flex-direction: column;
-      }
-      .news-img {
-        width: 100%;
-        height: 140px;
-      }
+      nav { flex-direction: column; align-items: flex-start; }
+      .header-right { width: 100%; justify-content: space-between; }
+      .app-card { flex-direction: column; align-items: flex-start; }
+      .news-card { flex-direction: column; }
+      .news-img { width: 100%; height: 140px; }
     }
   </style>
 </head>
 <body>
 
   <header>
-    <img src="V2/banner.png" alt="Banner MundoManuelHenPlay" class="banner" onerror="this.style.display='none'">
-    
+    <img src="V2/banner.png" alt="Banner" class="banner" onerror="this.style.display='none'">
     <nav>
       <ul class="nav-links">
         <li class="nav-item"><a onclick="filtrarCategoria('TODOS')">🏠 Inicio</a></li>
-        <li class="nav-item">
-          <a onclick="filtrarCategoria('PS2')">PS2</a>
-          <ul class="dropdown"><li><a onclick="filtrarCategoria('PS2')">Ver Todo PS2</a></li></ul>
-        </li>
+        <li class="nav-item"><a onclick="filtrarCategoria('PS2')">PS2</a></li>
         <li class="nav-item">
           <a onclick="filtrarCategoria('PS3')">PS3</a>
           <ul class="dropdown">
             <li><a onclick="filtrarCategoria('PS3')">Ver Todo PS3</a></li>
             <li><a href="Ps3/Hen/4.91/index.html">HEN 4.91</a></li>
             <li><a href="Ps3/Hen/4.92/index.html">HEN 4.92</a></li>
-            <li><a href="Ps3/Hen/4.93/index.html">HEN 4.93</a></li>
           </ul>
         </li>
-        <li class="nav-item">
-          <a onclick="filtrarCategoria('PS4')">PS4</a>
-          <ul class="dropdown"><li><a onclick="filtrarCategoria('PS4')">Ver Todo PS4</a></li></ul>
-        </li>
+        <li class="nav-item"><a onclick="filtrarCategoria('PS4')">PS4</a></li>
         <li class="nav-item"><a onclick="filtrarCategoria('Aplicaciones')">📱 Aplicaciones</a></li>
         <li class="nav-item"><a onclick="filtrarCategoria('Utilidades')">⚙️ Utilidades</a></li>
         <li class="nav-item"><a onclick="filtrarCategoria('Android')">🤖 Android</a></li>
       </ul>
-
       <div class="header-right">
         <div class="counter-badge">👥 Visitas: <span id="cntVisitas">0</span></div>
         <div class="counter-badge">📥 Descargas: <span id="cntDescargas">0</span></div>
@@ -392,7 +128,6 @@
 
     <section id="chatSection">
       <h3 style="color: #00a2ff; margin-top:0; border-bottom: 2px solid #0070d1; padding-bottom: 8px;">💬 Chat de la Comunidad</h3>
-      
       <div id="userBar" class="user-profile-bar">
         <div style="display:flex; align-items:center; gap:10px;">
           <img id="userBarAvatar" src="V2/apps.png" class="user-avatar">
@@ -411,7 +146,6 @@
         <button id="tabRecent" class="tab-btn active" onclick="cambiarFiltroComentarios('reciente')">🕒 Más Recientes</button>
         <button id="tabPopular" class="tab-btn" onclick="cambiarFiltroComentarios('popular')">🔥 Más Populares</button>
       </div>
-
       <div id="commentsList"></div>
     </section>
   </main>
@@ -421,78 +155,70 @@
       <h3 style="margin-top:0; color:#00a2ff;">👤 Registrar Perfil</h3>
       <input type="text" id="regNombre" placeholder="Nombre" style="width:100%; padding:8px; margin-bottom:8px; background:#161920; border:1px solid #3a4150; color:#fff; border-radius:4px;">
       <input type="text" id="regApellido" placeholder="Apellido" style="width:100%; padding:8px; margin-bottom:8px; background:#161920; border:1px solid #3a4150; color:#fff; border-radius:4px;">
-      
-      <label style="font-size:12px; color:#aaa;">Foto de Perfil (Subir o URL):</label>
-      <input type="file" id="regFotoFile" accept="image/*" style="width:100%; margin-bottom:6px; color:#ccc;">
-      <input type="text" id="regFotoUrl" placeholder="O pega URL de la imagen..." style="width:100%; padding:8px; margin-bottom:12px; background:#161920; border:1px solid #3a4150; color:#fff; border-radius:4px;">
-      
+      <label style="font-size:12px; color:#aaa;">Foto de Perfil (URL):</label>
+      <input type="text" id="regFotoUrl" placeholder="Pega URL de la imagen..." style="width:100%; padding:8px; margin-bottom:12px; background:#161920; border:1px solid #3a4150; color:#fff; border-radius:4px;">
       <button onclick="guardarPerfil()" style="background:#28a745; color:#fff; border:none; padding:8px; width:100%; border-radius:4px; cursor:pointer; font-weight:bold;">Guardar y Continuar</button>
       <button onclick="cerrarModalRegistro()" style="background:#dc3545; color:#fff; border:none; padding:6px; width:100%; border-radius:4px; cursor:pointer; margin-top:6px;">Cancelar</button>
     </div>
   </div>
 
-  <script>
-    let listaAplicaciones = JSON.parse(localStorage.getItem('mmhp_apps')) || [];
-    let listaNoticias = JSON.parse(localStorage.getItem('mmhp_news')) || [
-      {
-        id: 1,
-        titulo: "¡Bienvenido a MundoManuelHenPlay!",
-        fecha: new Date().toLocaleDateString(),
-        imagen: "V2/banner.png",
-        descripcion: "Aquí podrás ver todas las novedades y anuncios importantes de la página."
-      }
-    ];
-    let listaComentarios = JSON.parse(localStorage.getItem('mmhp_comments')) || [];
-    let listaUsuariosBloqueados = JSON.parse(localStorage.getItem('mmhp_blocked_users')) || [];
+  <script type="module">
+    import { getDocs, addDoc, updateDoc, doc, increment, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    let listaAplicaciones = [];
+    let listaNoticias = [];
+    let listaComentarios = [];
+    let listaUsuariosBloqueados = [];
     let usuarioActual = JSON.parse(localStorage.getItem('mmhp_current_user')) || null;
     let filtroComentarios = 'reciente';
 
-    let contadorVisitas = parseInt(localStorage.getItem('mmhp_visitas') || "0") + 1;
-    let contadorDescargas = parseInt(localStorage.getItem('mmhp_descargas') || "0");
-    localStorage.setItem('mmhp_visitas', contadorVisitas);
+    window.iniciarAppWeb = function(db) {
+      // Sincronizar Apps en tiempo real
+      onSnapshot(collection(db, "apps"), (snapshot) => {
+        listaAplicaciones = snapshot.docs.map(doc => ({ idDoc: doc.id, ...doc.data() }));
+        renderizarAplicaciones(listaAplicaciones);
+      });
 
-    window.onload = function() {
-      document.getElementById('cntVisitas').innerText = contadorVisitas;
-      document.getElementById('cntDescargas').innerText = contadorDescargas;
+      // Sincronizar Noticias en tiempo real
+      onSnapshot(collection(db, "news"), (snapshot) => {
+        listaNoticias = snapshot.docs.map(doc => ({ idDoc: doc.id, ...doc.data() }));
+        renderizarNoticias(listaNoticias);
+      });
 
-      renderizarAplicaciones(listaAplicaciones);
-      renderizarNoticias(listaNoticias);
+      // Sincronizar Comentarios en tiempo real
+      onSnapshot(collection(db, "comments"), (snapshot) => {
+        listaComentarios = snapshot.docs.map(doc => ({ idDoc: doc.id, ...doc.data() }));
+        renderizarComentarios();
+      });
+
+      // Sincronizar Usuarios Bloqueados
+      onSnapshot(collection(db, "blocked_users"), (snapshot) => {
+        listaUsuariosBloqueados = snapshot.docs.map(doc => doc.data());
+      });
+
       actualizarBarraUsuario();
-      renderizarComentarios();
-    };
-
-    function registrarDescarga() {
-      contadorDescargas++;
-      localStorage.setItem('mmhp_descargas', contadorDescargas);
-      document.getElementById('cntDescargas').innerText = contadorDescargas;
     }
 
-    function renderizarAplicaciones(lista) {
+    window.renderizarAplicaciones = function(lista) {
       let c = document.getElementById('listaContenido');
       c.innerHTML = '';
-      if (lista.length === 0) { c.innerHTML = '<p style="color:#aaa;">No hay aplicaciones disponibles en esta sección.</p>'; return; }
-
+      if (lista.length === 0) { c.innerHTML = '<p style="color:#aaa;">No hay aplicaciones disponibles.</p>'; return; }
       lista.forEach(app => {
         c.innerHTML += `
           <div class="app-card">
             <div class="app-info">
               <img src="${app.logo}" class="app-logo" onerror="this.src='V2/apps.png'">
-              <div>
-                <strong style="font-size:15px;">[${app.categoria}] ${app.nombre}</strong>
-              </div>
+              <div><strong style="font-size:15px;">[${app.categoria}] ${app.nombre}</strong></div>
             </div>
-            <div>
-              <a href="${app.enlace}" download onclick="registrarDescarga()" style="background:#0070d1; color:#fff; padding:8px 14px; text-decoration:none; border-radius:4px; font-size:14px; display:inline-block; font-weight:bold;">Descargar</a>
-            </div>
+            <div><a href="${app.enlace}" download style="background:#0070d1; color:#fff; padding:8px 14px; text-decoration:none; border-radius:4px; font-size:14px; display:inline-block; font-weight:bold;">Descargar</a></div>
           </div>`;
       });
     }
 
-    function renderizarNoticias(lista) {
+    window.renderizarNoticias = function(lista) {
       let c = document.getElementById('newsContainer');
       c.innerHTML = '';
-      if(lista.length === 0) { c.innerHTML = '<p style="color:#aaa;">No hay novedades publicadas por ahora.</p>'; return; }
-
+      if(lista.length === 0) { c.innerHTML = '<p style="color:#aaa;">No hay novedades.</p>'; return; }
       lista.forEach(n => {
         c.innerHTML += `
           <div class="news-card">
@@ -500,13 +226,68 @@
             <div>
               <h4 style="margin:0 0 5px 0; color:#00a2ff;">${n.titulo}</h4>
               <small style="color:#aaa;">📅 Fecha: ${n.fecha}</small>
-              <p style="margin:8px 0 0 0; color:#ccc; font-size:14px; line-height:1.4;">${n.descripcion}</p>
+              <p style="margin:8px 0 0 0; color:#ccc; font-size:14px;">${n.descripcion}</p>
             </div>
           </div>`;
       });
     }
 
-    function filtrarCategoria(cat) {
+    window.renderizarComentarios = function() {
+      let c = document.getElementById('commentsList');
+      c.innerHTML = '';
+      let copia = [...listaComentarios];
+      if (filtroComentarios === 'popular') {
+        copia.sort((a, b) => (b.likes || 0) - (a.likes || 0));
+      } else {
+        copia.sort((a, b) => b.id - a.id);
+      }
+      if (copia.length === 0) { c.innerHTML = '<p style="color:#aaa;">Sé el primero en comentar.</p>'; return; }
+      copia.forEach(item => {
+        c.innerHTML += `
+          <div class="comment-card">
+            <img src="${item.foto}" class="user-avatar" onerror="this.src='V2/apps.png'">
+            <div style="width:100%;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <strong style="color:#00a2ff;">${item.usuario}</strong>
+                <small style="color:#aaa;">• ${item.fecha}</small>
+              </div>
+              <h5 style="margin:4px 0; color:#fff; font-size:14px;">📌 ${item.asunto}</h5>
+              <p style="margin:0; color:#ccc; font-size:13px;">${item.mensaje}</p>
+              <button class="btn-like" onclick="darMeGusta('${item.idDoc}', ${item.likes || 0})">❤️ Me gusta (${item.likes || 0})</button>
+            </div>
+          </div>`;
+      });
+    }
+
+    window.publicarComentario = async function() {
+      if (!usuarioActual) { alert("Debes registrarte para comentar."); abrirModalRegistro(); return; }
+      let bloqueado = listaUsuariosBloqueados.some(u => u.nombre.toLowerCase() === usuarioActual.nombre.toLowerCase());
+      if (bloqueado) { alert("⚠️ Tu cuenta ha sido bloqueada."); return; }
+
+      let asunto = document.getElementById('commentSubject').value.trim();
+      let msj = document.getElementById('commentMessage').value.trim();
+      if (!asunto || !msj) { alert("Completa Asunto y Mensaje."); return; }
+
+      await addDoc(window.colComments, {
+        id: Date.now(),
+        usuario: usuarioActual.nombre + " " + usuarioActual.apellido,
+        foto: usuarioActual.foto,
+        asunto: asunto,
+        mensaje: msj,
+        likes: 0,
+        fecha: new Date().toLocaleString()
+      });
+
+      document.getElementById('commentSubject').value = '';
+      document.getElementById('commentMessage').value = '';
+    }
+
+    window.darMeGusta = async function(idDoc, likesActuales) {
+      const refDoc = doc(window.db, "comments", idDoc);
+      await updateDoc(refDoc, { likes: likesActuales + 1 });
+    }
+
+    window.filtrarCategoria = function(cat) {
       document.getElementById('searchInput').value = '';
       if(cat === 'TODOS') {
         document.getElementById('tituloSeccion').innerText = 'Contenido Disponible';
@@ -517,34 +298,20 @@
       }
     }
 
-    function buscarAplicacion() {
+    window.buscarAplicacion = function() {
       let t = document.getElementById('searchInput').value.toLowerCase();
       renderizarAplicaciones(listaAplicaciones.filter(app => app.nombre.toLowerCase().includes(t) || app.categoria.toLowerCase().includes(t)));
     }
 
-    function abrirModalRegistro() { document.getElementById('regModal').style.display = 'flex'; }
-    function cerrarModalRegistro() { document.getElementById('regModal').style.display = 'none'; }
+    window.abrirModalRegistro = () => document.getElementById('regModal').style.display = 'flex';
+    window.cerrarModalRegistro = () => document.getElementById('regModal').style.display = 'none';
 
-    async function guardarPerfil() {
+    window.guardarPerfil = function() {
       let nom = document.getElementById('regNombre').value.trim();
       let ape = document.getElementById('regApellido').value.trim();
-      let fileInput = document.getElementById('regFotoFile');
-      let urlInput = document.getElementById('regFotoUrl').value.trim();
-      let foto = 'V2/apps.png';
-
-      if (!nom || !ape) { alert("Ingresa tu Nombre y Apellido."); return; }
-
-      if (fileInput.files && fileInput.files[0]) {
-        foto = await new Promise((res) => {
-          let reader = new FileReader();
-          reader.onload = e => res(e.target.result);
-          reader.readAsDataURL(fileInput.files[0]);
-        });
-      } else if (urlInput) {
-        foto = urlInput;
-      }
-
-      usuarioActual = { id: 'usr_' + Date.now(), nombre: nom, apellido: ape, foto: foto };
+      let foto = document.getElementById('regFotoUrl').value.trim() || 'V2/apps.png';
+      if (!nom || !ape) { alert("Ingresa Nombre y Apellido."); return; }
+      usuarioActual = { nombre: nom, apellido: ape, foto: foto };
       localStorage.setItem('mmhp_current_user', JSON.stringify(usuarioActual));
       actualizarBarraUsuario();
       cerrarModalRegistro();
@@ -557,78 +324,12 @@
         document.getElementById('btnAuth').innerText = "Cambiar Perfil";
       }
     }
-
-    function publicarComentario() {
-      if (!usuarioActual) { alert("Debes registrarte o identificarte para comentar."); abrirModalRegistro(); return; }
-      
-      let bloqueado = listaUsuariosBloqueados.some(u => u.nombre.toLowerCase() === usuarioActual.nombre.toLowerCase() && u.apellido.toLowerCase() === usuarioActual.apellido.toLowerCase());
-      if (bloqueado) { alert("⚠️ Tu cuenta ha sido bloqueada por el Administrador."); return; }
-
-      let asunto = document.getElementById('commentSubject').value.trim();
-      let msj = document.getElementById('commentMessage').value.trim();
-
-      if (!asunto || !msj) { alert("Por favor completa el Asunto y el Mensaje."); return; }
-
-      listaComentarios.unshift({
-        id: Date.now(),
-        usuario: usuarioActual.nombre + " " + usuarioActual.apellido,
-        foto: usuarioActual.foto,
-        asunto: asunto,
-        mensaje: msj,
-        likes: 0,
-        fecha: new Date().toLocaleString()
-      });
-
-      localStorage.setItem('mmhp_comments', JSON.stringify(listaComentarios));
-      document.getElementById('commentSubject').value = '';
-      document.getElementById('commentMessage').value = '';
-      renderizarComentarios();
-    }
-
-    function cambiarFiltroComentarios(tipo) {
+    
+    window.cambiarFiltroComentarios = function(tipo) {
       filtroComentarios = tipo;
       document.getElementById('tabRecent').classList.toggle('active', tipo === 'reciente');
       document.getElementById('tabPopular').classList.toggle('active', tipo === 'popular');
       renderizarComentarios();
-    }
-
-    function darMeGusta(id) {
-      let com = listaComentarios.find(c => c.id === id);
-      if (com) {
-        com.likes++;
-        localStorage.setItem('mmhp_comments', JSON.stringify(listaComentarios));
-        renderizarComentarios();
-      }
-    }
-
-    function renderizarComentarios() {
-      let c = document.getElementById('commentsList');
-      c.innerHTML = '';
-      let copia = [...listaComentarios];
-
-      if (filtroComentarios === 'popular') {
-        copia.sort((a, b) => b.likes - a.likes);
-      } else {
-        copia.sort((a, b) => b.id - a.id);
-      }
-
-      if (copia.length === 0) { c.innerHTML = '<p style="color:#aaa;">Sé el primero en comentar.</p>'; return; }
-
-      copia.forEach(item => {
-        c.innerHTML += `
-          <div class="comment-card">
-            <img src="${item.foto}" class="user-avatar" onerror="this.src='V2/apps.png'">
-            <div style="width:100%;">
-              <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-                <strong style="color:#00a2ff;">${item.usuario}</strong>
-                <small style="color:#aaa;">• ${item.fecha}</small>
-              </div>
-              <h5 style="margin:4px 0; color:#fff; font-size:14px;">📌 ${item.asunto}</h5>
-              <p style="margin:0; color:#ccc; font-size:13px; word-break:break-word;">${item.mensaje}</p>
-              <button class="btn-like" onclick="darMeGusta(${item.id})">❤️ Me gusta (${item.likes})</button>
-            </div>
-          </div>`;
-      });
     }
   </script>
 </body>
