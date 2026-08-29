@@ -300,6 +300,7 @@
         </li>
         <li class="nav-item"><a onclick="filtrarCategoria('Herramientas')">🛠️ Herramientas</a></li>
         <li class="nav-item"><a onclick="filtrarCategoria('Utilidades')">⚙️ Utilidades</a></li>
+        <!-- NUEVA CATEGORÍA AÑADIDA -->
         <li class="nav-item"><a onclick="filtrarCategoria('Android')">🤖 Android</a></li>
       </ul>
 
@@ -365,20 +366,6 @@
         </div>
         <button onclick="agregarNovedad()" style="background:#0070d1; color:#fff; border:none; padding:10px; width:100%; border-radius:4px; font-weight:bold; cursor:pointer;">📢 Publicar Novedad en el Inicio</button>
       </div>
-
-      <!-- PARTE 3 ADMIN: CAMBIAR CONTRASEÑA -->
-      <div class="admin-subpanel" style="border-color: #ffc107;">
-        <h4 style="margin-top:0; color:#ffc107;">🔑 3. Cambiar Contraseña de Administrador</h4>
-        <div class="form-group">
-          <label>Nueva Contraseña:</label>
-          <input type="password" id="newPassInput" placeholder="Escribe la nueva contraseña">
-        </div>
-        <div class="form-group">
-          <label>Repite la Nueva Contraseña:</label>
-          <input type="password" id="confirmPassInput" placeholder="Repite la nueva contraseña">
-        </div>
-        <button onclick="cambiarPasswordAdmin()" style="background:#ffc107; color:#1f232d; border:none; padding:10px; width:100%; border-radius:4px; font-weight:bold; cursor:pointer;">💾 Guardar Cambios</button>
-      </div>
     </section>
 
     <!-- BARRA DE BÚSQUEDA Y LUPITA -->
@@ -422,9 +409,6 @@
       }
     ];
 
-    // GESTIÓN DE CONTRASEÑA ADMIN (Valor por defecto: 1234)
-    let adminPass = localStorage.getItem('mmhp_admin_pass') || "1234";
-
     let contadorVisitas = parseInt(localStorage.getItem('mmhp_visitas') || "0") + 1;
     let contadorDescargas = parseInt(localStorage.getItem('mmhp_descargas') || "0");
     localStorage.setItem('mmhp_visitas', contadorVisitas);
@@ -455,8 +439,7 @@
       let u = document.getElementById('userInput').value.trim();
       let p = document.getElementById('passInput').value.trim();
 
-      // Compara contra la contraseña guardada en localStorage
-      if (u === "admin" && p === adminPass) {
+      if (u === "admin" && p === "1234") {
         alert("¡Acceso Correcto!");
         esAdmin = true;
         document.getElementById('adminPanel').style.display = 'block';
@@ -467,30 +450,6 @@
       } else {
         alert("Usuario o Contraseña incorrectos.");
       }
-    }
-
-    function cambiarPasswordAdmin() {
-      let newP = document.getElementById('newPassInput').value.trim();
-      let confP = document.getElementById('confirmPassInput').value.trim();
-
-      if (!newP || !confP) {
-        alert("Por favor completa ambos campos para cambiar la contraseña.");
-        return;
-      }
-
-      if (newP !== confP) {
-        alert("Las contraseñas no coinciden. Inténtalo de nuevo.");
-        return;
-      }
-
-      // Guardar nueva contraseña en localStorage
-      adminPass = newP;
-      localStorage.setItem('mmhp_admin_pass', newP);
-
-      document.getElementById('newPassInput').value = '';
-      document.getElementById('confirmPassInput').value = '';
-
-      alert("¡Contraseña actualizada con éxito!");
     }
 
     function cerrarSesionAdmin() {
@@ -568,6 +527,7 @@
       lista.forEach(app => {
         let btnDel = esAdmin ? `<button onclick="eliminarItem(${app.id})" style="background:#dc3545; color:#fff; border:none; padding:6px 10px; border-radius:4px; cursor:pointer; margin-left:5px;">🗑️</button>` : '';
         
+        // AQUÍ SE REMOVIÓ LA LÍNEA DE RUTA PARA QUE SOLO SE VEA CATEGORÍA Y NOMBRE/VERSIÓN
         c.innerHTML += `
           <div class="app-card">
             <div class="app-info">
@@ -590,4 +550,36 @@
       if(lista.length === 0) { c.innerHTML = '<p style="color:#aaa;">No hay novedades publicadas por ahora.</p>'; return; }
 
       lista.forEach(n => {
-        let btn = esAdmin ? `<button onclick="eliminarNovedad(${n.id})" style="background:#dc3545; color:#fff; border:none; padding:4px 8px; border-radius:4px; cur
+        let btn = esAdmin ? `<button onclick="eliminarNovedad(${n.id})" style="background:#dc3545; color:#fff; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:12px; margin-top:8px;">🗑️ Borrar Novedad</button>` : '';
+        c.innerHTML += `
+          <div class="news-card">
+            <img src="${n.imagen}" class="news-img" onerror="this.src='V2/banner.png'">
+            <div>
+              <h4 style="margin:0 0 5px 0; color:#00a2ff;">${n.titulo}</h4>
+              <small style="color:#aaa;">📅 Fecha: ${n.fecha}</small>
+              <p style="margin:8px 0 0 0; color:#ccc; font-size:14px; line-height:1.4;">${n.descripcion}</p>
+              ${btn}
+            </div>
+          </div>`;
+      });
+    }
+
+    /* FILTROS Y BÚSQUEDA CON LUPITA */
+    function filtrarCategoria(cat) {
+      document.getElementById('searchInput').value = '';
+      if(cat === 'TODOS') {
+        document.getElementById('tituloSeccion').innerText = 'Contenido Disponible';
+        renderizarAplicaciones(listaAplicaciones);
+      } else {
+        document.getElementById('tituloSeccion').innerText = 'Sección: ' + cat;
+        renderizarAplicaciones(listaAplicaciones.filter(app => app.categoria === cat));
+      }
+    }
+
+    function buscarAplicacion() {
+      let t = document.getElementById('searchInput').value.toLowerCase();
+      renderizarAplicaciones(listaAplicaciones.filter(app => app.nombre.toLowerCase().includes(t) || app.categoria.toLowerCase().includes(t)));
+    }
+  </script>
+</body>
+</html>
