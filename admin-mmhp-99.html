@@ -4,144 +4,54 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Panel Privado Admin | MundoManuelHenPlay</title>
+  
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, deleteDoc, doc, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // PEGA AQUÍ TUS MISMAS CREDENCIALES DE FIREBASE
+    const firebaseConfig = {
+      apiKey: "TU_API_KEY",
+      authDomain: "TU_AUTH_DOMAIN",
+      projectId: "TU_PROJECT_ID",
+      storageBucket: "TU_STORAGE_BUCKET",
+      messagingSenderId: "TU_MESSAGING_SENDER_ID",
+      appId: "TU_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    window.db = db;
+    window.colApps = collection(db, "apps");
+    window.colNews = collection(db, "news");
+    window.colComments = collection(db, "comments");
+    window.colBlocked = collection(db, "blocked_users");
+  </script>
+
   <style>
     * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-      background: #0d0f12;
-      color: #ffffff;
-    }
-
-    #lockScreen {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      padding: 15px;
-    }
-
-    .login-box {
-      background: #1f232d;
-      padding: 25px;
-      border-radius: 8px;
-      width: 100%;
-      max-width: 320px;
-      text-align: center;
-      border: 2px solid #0070d1;
-    }
-
-    .login-box input {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 12px;
-      background: #161920;
-      border: 1px solid #3a4150;
-      color: #fff;
-      border-radius: 4px;
-    }
-
-    .login-box button {
-      background: #0070d1;
-      color: #fff;
-      border: none;
-      padding: 10px;
-      border-radius: 4px;
-      font-weight: bold;
-      cursor: pointer;
-      width: 100%;
-    }
-
-    #adminContent {
-      display: none;
-      max-width: 1000px;
-      margin: 15px auto;
-      padding: 15px;
-    }
-
-    #adminPanel {
-      background: #252a36;
-      padding: 15px;
-      border-radius: 8px;
-      border: 2px solid #0070d1;
-    }
-
-    .admin-subpanel {
-      background: #1a1e27;
-      padding: 12px;
-      border-radius: 6px;
-      margin-top: 15px;
-      border: 1px dashed #00a2ff;
-    }
-
+    body { margin: 0; padding: 0; font-family: Arial, sans-serif; background: #0d0f12; color: #ffffff; }
+    #lockScreen { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; padding: 15px; }
+    .login-box { background: #1f232d; padding: 25px; border-radius: 8px; width: 100%; max-width: 320px; text-align: center; border: 2px solid #0070d1; }
+    .login-box input { width: 100%; padding: 10px; margin-bottom: 12px; background: #161920; border: 1px solid #3a4150; color: #fff; border-radius: 4px; }
+    .login-box button { background: #0070d1; color: #fff; border: none; padding: 10px; border-radius: 4px; font-weight: bold; cursor: pointer; width: 100%; }
+    #adminContent { display: none; max-width: 1000px; margin: 15px auto; padding: 15px; }
+    #adminPanel { background: #252a36; padding: 15px; border-radius: 8px; border: 2px solid #0070d1; }
+    .admin-subpanel { background: #1a1e27; padding: 12px; border-radius: 6px; margin-top: 15px; border: 1px dashed #00a2ff; }
     .form-group { margin-bottom: 12px; }
-    .form-group label {
-      display: block;
-      margin-bottom: 5px;
-      color: #00a2ff;
-      font-size: 13px;
-    }
-
-    .form-group input, .form-group select, .form-group textarea {
-      width: 100%;
-      padding: 8px;
-      background: #161920;
-      border: 1px solid #3a4150;
-      color: #fff;
-      border-radius: 4px;
-    }
-
-    .item-list-row {
-      background: #161920;
-      padding: 10px;
-      margin-top: 8px;
-      border-radius: 4px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-left: 3px solid #0070d1;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .btn-delete {
-      background: #dc3545;
-      color: #fff;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    .btn-block {
-      background: #ff9800;
-      color: #fff;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    @media (max-width: 600px) {
-      .item-list-row {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .item-list-row > div {
-        width: 100%;
-        display: flex;
-        gap: 5px;
-      }
-    }
+    .form-group label { display: block; margin-bottom: 5px; color: #00a2ff; font-size: 13px; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 8px; background: #161920; border: 1px solid #3a4150; color: #fff; border-radius: 4px; }
+    .item-list-row { background: #161920; padding: 10px; margin-top: 8px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; border-left: 3px solid #0070d1; flex-wrap: wrap; gap: 10px; }
+    .btn-delete { background: #dc3545; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
+    .btn-block { background: #ff9800; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
   </style>
 </head>
 <body>
 
   <div id="lockScreen">
     <div class="login-box">
-      <h3 style="margin-top:0; color:#00a2ff;">🔒 Acceso Exclusivo Admin</h3>
+      <h3 style="margin-top:0; color:#00a2ff;">🔒 Acceso Admin Cloud</h3>
       <input type="text" id="userInput" placeholder="Usuario">
       <input type="password" id="passInput" placeholder="Contraseña">
       <button onclick="validarAcceso()">Ingresar al Panel</button>
@@ -150,264 +60,113 @@
 
   <div id="adminContent">
     <div id="adminPanel">
-      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3a4150; padding-bottom: 10px; flex-wrap: wrap; gap: 10px;">
-        <h3 style="margin: 0; color: #00a2ff; font-size: 18px;">Panel Privado Admin</h3>
-        <div>
-          <a href="index.html" style="background:#0070d1; color:#fff; text-decoration:none; padding:6px 12px; border-radius:4px; margin-right:5px; font-size:13px;">🌐 Sitio Web</a>
-          <button onclick="cerrarSesion()" style="background:#dc3545; color:#fff; border:none; padding:6px 12px; border-radius:4px; cursor:pointer;">🚪 Salir</button>
-        </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3a4150; padding-bottom: 10px;">
+        <h3 style="margin: 0; color: #00a2ff;">Panel de Administración Cloud</h3>
+        <a href="index.html" style="background:#0070d1; color:#fff; text-decoration:none; padding:6px 12px; border-radius:4px; font-size:13px;">🌐 Sitio Web</a>
       </div>
 
       <div class="admin-subpanel">
-        <h4 style="margin-top:0; color:#28a745;">📦 1. Agregar Nueva Aplicación / Archivo</h4>
-        <div class="form-group">
-          <label>Nombre y Versión:</label>
-          <input type="text" id="appName" placeholder="Ej: HEN 4.93 Installer v1.0">
-        </div>
-
+        <h4 style="margin-top:0; color:#28a745;">📦 1. Agregar Aplicación / Archivo</h4>
+        <div class="form-group"><label>Nombre:</label><input type="text" id="appName" placeholder="Ej: HEN 4.93"></div>
         <div class="form-group">
           <label>Categoría:</label>
           <select id="appCategory">
-            <option value="PS2">PS2</option>
-            <option value="PS3">PS3</option>
-            <option value="PS4">PS4</option>
-            <option value="Aplicaciones">Aplicaciones</option>
-            <option value="Utilidades">Utilidades</option>
-            <option value="Android">Android</option>
+            <option value="PS2">PS2</option><option value="PS3">PS3</option><option value="PS4">PS4</option>
+            <option value="Aplicaciones">Aplicaciones</option><option value="Utilidades">Utilidades</option><option value="Android">Android</option>
           </select>
         </div>
-
-        <div class="form-group">
-          <label>Método para el Logo/Imagen:</label>
-          <select id="logoMethod" onchange="cambiarMetodoLogo()">
-            <option value="v2">📁 Ruta local V2 (Ej: V2/apps.png)</option>
-            <option value="url">🌐 URL externa</option>
-            <option value="file">💻 Subir desde Escritorio</option>
-          </select>
-          <div style="margin-top:5px;">
-            <div id="optV2"><input type="text" id="appLogoV2" placeholder="Ej: V2/apps.png"></div>
-            <div id="optUrl" style="display:none;"><input type="text" id="appLogoUrl" placeholder="Ej: https://..."></div>
-            <div id="optFile" style="display:none;"><input type="file" id="appLogoFile" accept="image/*"></div>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>Ruta o Link de Descarga:</label>
-          <input type="text" id="appLink" placeholder="Ej: Ps3/Hen/4.93/SETUP.P3T">
-        </div>
-
-        <button onclick="agregarItem()" style="background:#28a745; color:#fff; border:none; padding:10px; width:100%; border-radius:4px; font-weight:bold; cursor:pointer;">＋ Publicar Aplicación</button>
+        <div class="form-group"><label>Logo (URL o Ruta V2):</label><input type="text" id="appLogo" placeholder="V2/apps.png"></div>
+        <div class="form-group"><label>Enlace de Descarga:</label><input type="text" id="appLink" placeholder="Ps3/Hen/4.93/..."></div>
+        <button onclick="agregarItem()" style="background:#28a745; color:#fff; border:none; padding:10px; width:100%; border-radius:4px; font-weight:bold; cursor:pointer;">＋ Publicar en la Nube</button>
       </div>
 
       <div class="admin-subpanel">
-        <h4 style="margin-top:0; color:#00a2ff;">📢 2. Publicar Novedad o Noticia</h4>
-        <div class="form-group">
-          <input type="text" id="newsTitleInput" placeholder="Título...">
-        </div>
-        <div class="form-group">
-          <input type="text" id="newsImgInput" placeholder="Imagen (Ruta V2 o URL)...">
-        </div>
-        <div class="form-group">
-          <textarea id="newsDescInput" rows="3" placeholder="Descripción..."></textarea>
-        </div>
-        <button onclick="agregarNovedad()" style="background:#0070d1; color:#fff; border:none; padding:10px; width:100%; border-radius:4px; font-weight:bold; cursor:pointer;">📢 Publicar Novedad</button>
+        <h4 style="margin-top:0; color:#00a2ff;">📢 2. Publicar Novedad</h4>
+        <div class="form-group"><input type="text" id="newsTitleInput" placeholder="Título..."></div>
+        <div class="form-group"><input type="text" id="newsImgInput" placeholder="Imagen URL..."></div>
+        <div class="form-group"><textarea id="newsDescInput" rows="2" placeholder="Descripción..."></textarea></div>
+        <button onclick="agregarNovedad()" style="background:#0070d1; color:#fff; border:none; padding:10px; width:100%; border-radius:4px; font-weight:bold; cursor:pointer;">Publicar Novedad</button>
       </div>
 
       <div class="admin-subpanel">
-        <h4 style="margin-top:0; color:#e67e22;">💬 3. Moderar Comentarios del Chat</h4>
+        <h4 style="margin-top:0; color:#e67e22;">💬 3. Moderar Comentarios</h4>
         <div id="adminCommentsList"></div>
       </div>
 
       <div class="admin-subpanel">
-        <h4 style="margin-top:0; color:#e74c3c;">🚫 4. Usuarios Bloqueados</h4>
-        <div id="adminBlockedList"></div>
-      </div>
-
-      <div class="admin-subpanel">
-        <h4 style="margin-top:0; color:#ffc107;">🗑️ 5. Administrar Aplicaciones Publicadas</h4>
+        <h4 style="margin-top:0; color:#ffc107;">🗑️ 4. Administrar Aplicaciones</h4>
         <div id="adminAppsList"></div>
-      </div>
-
-      <div class="admin-subpanel">
-        <h4 style="margin-top:0; color:#ffc107;">🗑️ 6. Administrar Noticias Publicadas</h4>
-        <div id="adminNewsList"></div>
       </div>
     </div>
   </div>
 
-  <script>
-    let listaAplicaciones = JSON.parse(localStorage.getItem('mmhp_apps')) || [];
-    let listaNoticias = JSON.parse(localStorage.getItem('mmhp_news')) || [];
-    let listaComentarios = JSON.parse(localStorage.getItem('mmhp_comments')) || [];
-    let listaUsuariosBloqueados = JSON.parse(localStorage.getItem('mmhp_blocked_users')) || [];
+  <script type="module">
+    import { addDoc, deleteDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    async function calcularSHA256(texto) {
-      const encoder = new TextEncoder();
-      const data = encoder.encode(texto);
-      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-      const hashArray = Array.from(new Uint8Array(hashBuffer));
-      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-
-    async function validarAcceso() {
+    window.validarAcceso = async function() {
       let u = document.getElementById('userInput').value.trim();
       let p = document.getElementById('passInput').value.trim();
-
-      const hashGuardado = "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4";
-      let hashIngresado = await calcularSHA256(p);
-
-      if (u === "admin" && hashIngresado === hashGuardado) {
+      // Usuario: admin / Clave: 1234 (puedes cambiarlo)
+      if (u === "admin" && p === "1234") {
         document.getElementById('lockScreen').style.display = 'none';
         document.getElementById('adminContent').style.display = 'block';
-        cargarListasAdmin();
+        cargarListasAdminRealtime();
       } else {
         alert("Credenciales incorrectas.");
       }
     }
 
-    function cerrarSesion() { location.reload(); }
-
-    function cambiarMetodoLogo() {
-      let metodo = document.getElementById('logoMethod').value;
-      document.getElementById('optV2').style.display = (metodo === 'v2') ? 'block' : 'none';
-      document.getElementById('optUrl').style.display = (metodo === 'url') ? 'block' : 'none';
-      document.getElementById('optFile').style.display = (metodo === 'file') ? 'block' : 'none';
-    }
-
-    function leerArchivoComoDataURL(fileInput) {
-      return new Promise((resolve, reject) => {
-        const file = fileInput.files[0];
-        if (!file) { resolve(null); return; }
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = (error) => reject(error);
-        reader.readAsDataURL(file);
-      });
-    }
-
-    async function agregarItem() {
+    window.agregarItem = async function() {
       let name = document.getElementById('appName').value.trim();
       let category = document.getElementById('appCategory').value;
+      let logo = document.getElementById('appLogo').value.trim() || 'V2/apps.png';
       let link = document.getElementById('appLink').value.trim();
-      let metodo = document.getElementById('logoMethod').value;
-      let logoFinal = 'V2/apps.png';
 
-      if (!name || !link) { alert("Ingresa el Nombre y el Enlace."); return; }
-
-      if (metodo === 'v2') {
-        let v2Val = document.getElementById('appLogoV2').value.trim();
-        if (v2Val) logoFinal = v2Val;
-      } else if (metodo === 'url') {
-        let urlVal = document.getElementById('appLogoUrl').value.trim();
-        if (urlVal) logoFinal = urlVal;
-      } else if (metodo === 'file') {
-        let fileInput = document.getElementById('appLogoFile');
-        let fileData = await leerArchivoComoDataURL(fileInput);
-        if (fileData) logoFinal = fileData;
-      }
-
-      listaAplicaciones.push({ id: Date.now(), nombre: name, categoria: category, logo: logoFinal, enlace: link });
-      localStorage.setItem('mmhp_apps', JSON.stringify(listaAplicaciones));
-      cargarListasAdmin();
-      alert("Aplicación publicada con éxito.");
+      if (!name || !link) { alert("Faltan datos."); return; }
+      await addDoc(window.colApps, { id: Date.now(), nombre: name, categoria: category, logo: logo, enlace: link });
+      alert("¡Subido a la nube con éxito!");
+      document.getElementById('appName').value = '';
+      document.getElementById('appLink').value = '';
     }
 
-    function agregarNovedad() {
+    window.agregarNovedad = async function() {
       let title = document.getElementById('newsTitleInput').value.trim();
       let img = document.getElementById('newsImgInput').value.trim() || 'V2/banner.png';
       let desc = document.getElementById('newsDescInput').value.trim();
-
-      if(title && desc) {
-        listaNoticias.unshift({ id: Date.now(), titulo: title, fecha: new Date().toLocaleDateString(), imagen: img, descripcion: desc });
-        localStorage.setItem('mmhp_news', JSON.stringify(listaNoticias));
-        cargarListasAdmin();
-        alert("Novedad publicada con éxito.");
-      }
+      if (!title || !desc) return;
+      await addDoc(window.colNews, { id: Date.now(), titulo: title, fecha: new Date().toLocaleDateString(), imagen: img, descripcion: desc });
+      alert("Novedad publicada.");
     }
 
-    function eliminarComentario(id) {
-      listaComentarios = listaComentarios.filter(c => c.id !== id);
-      localStorage.setItem('mmhp_comments', JSON.stringify(listaComentarios));
-      cargarListasAdmin();
+    window.eliminarDocumento = async function(coleccion, idDoc) {
+      await deleteDoc(doc(window.db, coleccion, idDoc));
     }
 
-    function bloquearUsuario(nombreUsuario) {
-      let partes = nombreUsuario.split(" ");
-      let nombre = partes[0] || "";
-      let apellido = partes.slice(1).join(" ") || "";
-
-      if (!listaUsuariosBloqueados.some(u => u.nombre.toLowerCase() === nombre.toLowerCase() && u.apellido.toLowerCase() === apellido.toLowerCase())) {
-        listaUsuariosBloqueados.push({ nombre: nombre, apellido: apellido });
-        localStorage.setItem('mmhp_blocked_users', JSON.stringify(listaUsuariosBloqueados));
-        alert("Usuario " + nombreUsuario + " bloqueado.");
-        cargarListasAdmin();
-      }
-    }
-
-    function desbloquearUsuario(index) {
-      listaUsuariosBloqueados.splice(index, 1);
-      localStorage.setItem('mmhp_blocked_users', JSON.stringify(listaUsuariosBloqueados));
-      cargarListasAdmin();
-    }
-
-    function eliminarItem(id) {
-      listaAplicaciones = listaAplicaciones.filter(a => a.id !== id);
-      localStorage.setItem('mmhp_apps', JSON.stringify(listaAplicaciones));
-      cargarListasAdmin();
-    }
-
-    function eliminarNovedad(id) {
-      listaNoticias = listaNoticias.filter(n => n.id !== id);
-      localStorage.setItem('mmhp_news', JSON.stringify(listaNoticias));
-      cargarListasAdmin();
-    }
-
-    function cargarListasAdmin() {
-      let comContainer = document.getElementById('adminCommentsList');
-      comContainer.innerHTML = '';
-      if(listaComentarios.length === 0) comContainer.innerHTML = '<small style="color:#aaa;">No hay comentarios.</small>';
-      listaComentarios.forEach(c => {
-        comContainer.innerHTML += `
-          <div class="item-list-row">
-            <span><strong>${c.usuario}</strong>: "${c.asunto}"</span>
-            <div>
-              <button class="btn-block" onclick="bloquearUsuario('${c.usuario}')">🚫 Bloquear</button>
-              <button class="btn-delete" onclick="eliminarComentario(${c.id})">🗑️ Borrar</button>
-            </div>
-          </div>`;
+    function cargarListasAdminRealtime() {
+      onSnapshot(window.colApps, (snapshot) => {
+        let container = document.getElementById('adminAppsList');
+        container.innerHTML = '';
+        snapshot.forEach(docSnap => {
+          let app = docSnap.data();
+          container.innerHTML += `
+            <div class="item-list-row">
+              <span>[${app.categoria}] <strong>${app.nombre}</strong></span>
+              <button class="btn-delete" onclick="eliminarDocumento('apps', '${docSnap.id}')">🗑️ Borrar</button>
+            </div>`;
+        });
       });
 
-      let blockedContainer = document.getElementById('adminBlockedList');
-      blockedContainer.innerHTML = '';
-      if(listaUsuariosBloqueados.length === 0) blockedContainer.innerHTML = '<small style="color:#aaa;">No hay bloqueados.</small>';
-      listaUsuariosBloqueados.forEach((u, index) => {
-        blockedContainer.innerHTML += `
-          <div class="item-list-row">
-            <span>🚫 <strong>${u.nombre} ${u.apellido}</strong></span>
-            <button class="btn-delete" style="background:#28a745;" onclick="desbloquearUsuario(${index})">🔓 Desbloquear</button>
-          </div>`;
-      });
-
-      let appContainer = document.getElementById('adminAppsList');
-      appContainer.innerHTML = '';
-      if(listaAplicaciones.length === 0) appContainer.innerHTML = '<small style="color:#aaa;">No hay aplicaciones.</small>';
-      listaAplicaciones.forEach(app => {
-        appContainer.innerHTML += `
-          <div class="item-list-row">
-            <span>[${app.categoria}] <strong>${app.nombre}</strong></span>
-            <button class="btn-delete" onclick="eliminarItem(${app.id})">🗑️ Borrar</button>
-          </div>`;
-      });
-
-      let newsContainer = document.getElementById('adminNewsList');
-      newsContainer.innerHTML = '';
-      if(listaNoticias.length === 0) newsContainer.innerHTML = '<small style="color:#aaa;">No hay novedades.</small>';
-      listaNoticias.forEach(n => {
-        newsContainer.innerHTML += `
-          <div class="item-list-row">
-            <span><strong>${n.titulo}</strong></span>
-            <button class="btn-delete" onclick="eliminarNovedad(${n.id})">🗑️ Borrar</button>
-          </div>`;
+      onSnapshot(window.colComments, (snapshot) => {
+        let container = document.getElementById('adminCommentsList');
+        container.innerHTML = '';
+        snapshot.forEach(docSnap => {
+          let c = docSnap.data();
+          container.innerHTML += `
+            <div class="item-list-row">
+              <span><strong>${c.usuario}</strong>: "${c.asunto}"</span>
+              <button class="btn-delete" onclick="eliminarDocumento('comments', '${docSnap.id}')">🗑️ Borrar</button>
+            </div>`;
+        });
       });
     }
   </script>
