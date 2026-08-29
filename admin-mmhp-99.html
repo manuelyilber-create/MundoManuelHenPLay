@@ -237,9 +237,24 @@
     </div>
   </div>
 
+  <!-- SDKs de Firebase Firestore -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
   <script>
-    let listaAplicaciones = JSON.parse(localStorage.getItem('mmhp_apps')) || [];
-    let listaNoticias = JSON.parse(localStorage.getItem('mmhp_news')) || [];
+    // Configuración oficial de Firebase Firestore
+    const firebaseConfig = {
+      apiKey: "AIzaSyCv-qeex1pBV7pfi2UD0iUio46-OX2MCiI",
+      authDomain: "mundomanuelhenplay.firebaseapp.com",
+      projectId: "mundomanuelhenplay",
+      storageBucket: "mundomanuelhenplay.firebasestorage.app",
+      messagingSenderId: "1072751644369",
+      appId: "1:1072751644369:web:9ce6b8ad4b115b2e643ff0",
+      measurementId: "G-QZ4RSWGEJL"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
     async function calcularSHA256(texto) {
       const encoder = new TextEncoder();
@@ -259,7 +274,7 @@
       if (u === "admin" && hashIngresado === hashGuardado) {
         document.getElementById('lockScreen').style.display = 'none';
         document.getElementById('adminContent').style.display = 'block';
-        cargarListasAdmin();
+        cargarListasAdminEnTiempoReal();
       } else {
         alert("Credenciales incorrectas.");
       }
@@ -269,7 +284,6 @@
       location.reload();
     }
 
-    // ALTERNAR VISIBILIDAD DE LAS 3 OPCIONES DEL LOGO
     function cambiarMetodoLogo() {
       let metodo = document.getElementById('logoMethod').value;
       document.getElementById('optV2').style.display = (metodo === 'v2') ? 'block' : 'none';
@@ -300,7 +314,6 @@
         return;
       }
 
-      // DETERMINAR QUÉ LOGO USAR
       if (metodo === 'v2') {
         let v2Val = document.getElementById('appLogoV2').value.trim();
         if (v2Val) logoFinal = v2Val;
@@ -313,84 +326,110 @@
         if (fileData) logoFinal = fileData;
       }
 
-      listaAplicaciones.push({ 
-        id: Date.now(), 
-        nombre: name, 
-        categoria: category, 
-        logo: logoFinal, 
-        enlace: link 
-      });
+      try {
+        await db.collection("aplicaciones").add({
+          nombre: name,
+          categoria: category,
+          logo: logoFinal,
+          enlace: link,
+          creado: firebase.firestore.FieldValue.serverTimestamp()
+        });
 
-      localStorage.setItem('mmhp_apps', JSON.stringify(listaAplicaciones));
-      cargarListasAdmin();
-
-      // Limpiar campos
-      document.getElementById('appName').value = '';
-      document.getElementById('appLink').value = '';
-      document.getElementById('appLogoV2').value = '';
-      document.getElementById('appLogoUrl').value = '';
-      document.getElementById('appLogoFile').value = '';
-      alert("Aplicación publicada con éxito.");
+        alert("Aplicación publicada con éxito en Firestore.");
+        document.getElementById('appName').value = '';
+        document.getElementById('appLink').value = '';
+        document.getElementById('appLogoV2').value = '';
+        document.getElementById('appLogoUrl').value = '';
+        document.getElementById('appLogoFile').value = '';
+      } catch (e) {
+        console.error("Error al guardar aplicación: ", e);
+        alert("Error al publicar la aplicación.");
+      }
     }
 
-    function agregarNovedad() {
+    async function agregarNovedad() {
       let title = document.getElementById('newsTitleInput').value.trim();
       let img = document.getElementById('newsImgInput').value.trim() || 'V2/banner.png';
       let desc = document.getElementById('newsDescInput').value.trim();
 
       if(title && desc) {
-        listaNoticias.unshift({ 
-          id: Date.now(), 
-          titulo: title, 
-          fecha: new Date().toLocaleDateString(), 
-          imagen: img, 
-          descripcion: desc 
-        });
-        localStorage.setItem('mmhp_news', JSON.stringify(listaNoticias));
-        cargarListasAdmin();
+        try {
+          await db.collection("noticias").add({
+            titulo: title,
+            fecha: new Date().toLocaleDateString(),
+            imagen: img,
+            descripcion: desc,
+            creado: firebase.firestore.FieldValue.serverTimestamp()
+          });
 
-        document.getElementById('newsTitleInput').value = '';
-        document.getElementById('newsImgInput').value = '';
-        document.getElementById('newsDescInput').value = '';
-        alert("Novedad publicada con éxito.");
+          alert("Novedad publicada con éxito en Firestore.");
+          document.getElementById('newsTitleInput').value = '';
+          document.getElementById('newsImgInput').value = '';
+          document.getElementById('newsDescInput').value = '';
+        } catch (e) {
+          console.error("Error al guardar novedad: ", e);
+          alert("Error al publicar la novedad.");
+        }
       } else {
         alert("Ingresa el Título y la Descripción.");
       }
     }
 
-    function eliminarItem(id) {
-      listaAplicaciones = listaAplicaciones.filter(a => a.id !== id);
-      localStorage.setItem('mmhp_apps', JSON.stringify(listaAplicaciones));
-      cargarListasAdmin();
+    async function eliminarItem(id) {
+      if(confirm("¿Estás seguro de borrar esta aplicación?")) {
+        try {
+          await db.collection("aplicaciones").doc(id).delete();
+        } catch (e) {
+          console.error("Error al borrar: ", e);
+        }
+      }
     }
 
-    function eliminarNovedad(id) {
-      listaNoticias = listaNoticias.filter(n => n.id !== id);
-      localStorage.setItem('mmhp_news', JSON.stringify(listaNoticias));
-      cargarListasAdmin();
+    async function eliminarNovedad(id) {
+      if(confirm("¿Estás seguro de borrar esta novedad?")) {
+        try {
+          await db.collection("noticias").doc(id).delete();
+        } catch (e) {
+          console.error("Error al borrar: ", e);
+        }
+      }
     }
 
-    function cargarListasAdmin() {
-      let appContainer = document.getElementById('adminAppsList');
-      appContainer.innerHTML = '';
-      if(listaAplicaciones.length === 0) appContainer.innerHTML = '<small style="color:#aaa;">No hay aplicaciones.</small>';
-      listaAplicaciones.forEach(app => {
-        appContainer.innerHTML += `
-          <div class="item-list-row">
-            <span>[${app.categoria}] <strong>${app.nombre}</strong></span>
-            <button class="btn-delete" onclick="eliminarItem(${app.id})">🗑️ Borrar</button>
-          </div>`;
+    function cargarListasAdminEnTiempoReal() {
+      // Sincronizar aplicaciones en tiempo real dentro del panel
+      db.collection("aplicaciones").onSnapshot((snapshot) => {
+        let appContainer = document.getElementById('adminAppsList');
+        appContainer.innerHTML = '';
+        if(snapshot.empty) {
+          appContainer.innerHTML = '<small style="color:#aaa;">No hay aplicaciones.</small>';
+          return;
+        }
+        snapshot.forEach((doc) => {
+          let app = doc.data();
+          appContainer.innerHTML += `
+            <div class="item-list-row">
+              <span>[${app.categoria}] <strong>${app.nombre}</strong></span>
+              <button class="btn-delete" onclick="eliminarItem('${doc.id}')">🗑️ Borrar</button>
+            </div>`;
+        });
       });
 
-      let newsContainer = document.getElementById('adminNewsList');
-      newsContainer.innerHTML = '';
-      if(listaNoticias.length === 0) newsContainer.innerHTML = '<small style="color:#aaa;">No hay novedades.</small>';
-      listaNoticias.forEach(n => {
-        newsContainer.innerHTML += `
-          <div class="item-list-row">
-            <span><strong>${n.titulo}</strong> (${n.fecha})</span>
-            <button class="btn-delete" onclick="eliminarNovedad(${n.id})">🗑️ Borrar</button>
-          </div>`;
+      // Sincronizar noticias en tiempo real dentro del panel
+      db.collection("noticias").onSnapshot((snapshot) => {
+        let newsContainer = document.getElementById('adminNewsList');
+        newsContainer.innerHTML = '';
+        if(snapshot.empty) {
+          newsContainer.innerHTML = '<small style="color:#aaa;">No hay novedades.</small>';
+          return;
+        }
+        snapshot.forEach((doc) => {
+          let n = doc.data();
+          newsContainer.innerHTML += `
+            <div class="item-list-row">
+              <span><strong>${n.titulo}</strong> (${n.fecha})</span>
+              <button class="btn-delete" onclick="eliminarNovedad('${doc.id}')">🗑️ Borrar</button>
+            </div>`;
+        });
       });
     }
   </script>
