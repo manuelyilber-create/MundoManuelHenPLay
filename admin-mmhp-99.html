@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel Privado Admin | MundoManuelHenPlay</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: #0d0f12;
+      color: #ffffff;
+    }
+
+    /* PANTALLA DE ACCESO/LOGIN INICIAL */
+    #lockScreen {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #0d0f12;
+    }
+
+    .login-box {
+      background: #1f232d;
+      padding: 30px;
+      border-radius: 8px;
+      width: 320px;
+      text-align: center;
+      border: 2px solid #0070d1;
+      box-shadow: 0 0 20px rgba(0, 112, 209, 0.4);
+    }
+
+    .login-box input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 12px;
+      box-sizing: border-box;
+      background: #161920;
+      border: 1px solid #3a4150;
+      color: #fff;
+      border-radius: 4px;
+    }
+
+    .login-box button {
+      background: #0070d1;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    /* CONTENEDOR DEL PANEL PRIVADO */
+    #adminContent {
+      display: none;
+      max-width: 1000px;
+      margin: 30px auto;
+      padding: 20px;
+    }
+
+    #adminPanel {
+      background: #252a36;
+      padding: 20px;
+      border-radius: 8px;
+      border: 2px solid #0070d1;
+    }
+
+    .admin-subpanel {
+      background: #1a1e27;
+      padding: 15px;
+      border-radius: 6px;
+      margin-top: 15px;
+      border: 1px dashed #00a2ff;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      color: #00a2ff;
+      font-size: 14px;
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+      background: #161920;
+      border: 1px solid #3a4150;
+      color: #fff;
+      border-radius: 4px;
+    }
+
+    .item-list-row {
+      background: #161920;
+      padding: 10px;
+      margin-top: 8px;
+      border-radius: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-left: 3px solid #0070d1;
+    }
+
+    .btn-delete {
+      background: #dc3545;
+      color: #fff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PANTALLA DE DESBLOQUEO (SE MUESTRA PRIMERO) -->
+  <div id="lockScreen">
+    <div class="login-box">
+      <h3 style="margin-top:0; color:#00a2ff;">🔒 Acceso Exclusivo Admin</h3>
+      <input type="text" id="userInput" placeholder="Usuario">
+      <input type="password" id="passInput" placeholder="Contraseña">
+      <button onclick="validarAcceso()">Ingresar al Panel</button>
+    </div>
+  </div>
+
+  <!-- PANEL DE ADMINISTRACIÓN (SOLO SE REVELA TRAS LA CLAVE) -->
+  <div id="adminContent">
+    <div id="adminPanel">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3a4150; padding-bottom: 10px;">
+        <h3 style="margin: 0; color: #00a2ff;">Panel Privado de Control General</h3>
+        <div>
+          <a href="index.html" style="background:#0070d1; color:#fff; text-decoration:none; padding:6px 12px; border-radius:4px; margin-right:8px; font-size:14px;">🌐 Ver Sitio Web</a>
+          <button onclick="cerrarSesion()" style="background:#dc3545; color:#fff; border:none; padding:6px 12px; border-radius:4px; cursor:pointer;">🚪 Salir</button>
+        </div>
+      </div>
+
+      <!-- 1. AGREGAR APLICACIÓN -->
+      <div class="admin-subpanel">
+        <h4 style="margin-top:0; color:#28a745;">📦 1. Agregar Nueva Aplicación / Archivo</h4>
+        <div class="form-group">
+          <label>Nombre y Versión:</label>
+          <input type="text" id="appName" placeholder="Ej: HEN 4.93 Installer v1.0">
+        </div>
+        <div class="form-group">
+          <label>Categoría:</label>
+          <select id="appCategory">
+            <option value="PS2">PS2</option>
+            <option value="PS3">PS3</option>
+            <option value="PS4">PS4</option>
+            <option value="Herramientas">Herramientas</option>
+            <option value="Utilidades">Utilidades</option>
+            <option value="Android">Android</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Imagen/Logo (Ruta Local o Enlace Web):</label>
+          <input type="text" id="appLogo" placeholder="Ej: V2/apps.png o https://...">
+        </div>
+        <div class="form-group">
+          <label>Ruta o Link de Descarga:</label>
+          <input type="text" id="appLink" placeholder="Ej: Ps3/Hen/4.93/SETUP.P3T o enlace web">
+        </div>
+        <button onclick="agregarItem()" style="background:#28a745; color:#fff; border:none; padding:10px; width:100%; border-radius:4px; font-weight:bold; cursor:pointer;">＋ Publicar Aplicación</button>
+      </div>
+
+      <!-- 2. AGREGAR NOVEDAD -->
+      <div class="admin-subpanel">
+        <h4 style="margin-top:0; color:#00a2ff;">📢 2. Publicar Novedad o Noticia</h4>
+        <div class="form-group">
+          <label>Título de la Novedad:</label>
+          <input type="text" id="newsTitleInput" placeholder="Ej: ¡Actualización HEN 4.93 disponible!">
+        </div>
+        <div class="form-group">
+          <label>Imagen de Novedad (Ruta o URL):</label>
+          <input type="text" id="newsImgInput" placeholder="Ej: V2/banner.png o https://...">
+        </div>
+        <div class="form-group">
+          <label>Descripción / Detalle del Anuncio:</label>
+          <textarea id="newsDescInput" rows="3" placeholder="Escribe la información aquí..."></textarea>
+        </div>
+        <button onclick="agregarNovedad()" style="background:#0070d1; color:#fff; border:none; padding:10px; width:100%; border-radius:4px; font-weight:bold; cursor:pointer;">📢 Publicar Novedad</button>
+      </div>
+
+      <!-- 3. GESTIONAR Y BORRAR LO PUBLICADO -->
+      <div class="admin-subpanel">
+        <h4 style="margin-top:0; color:#ffc107;">🗑️ 3. Administrar Aplicaciones Publicadas</h4>
+        <div id="adminAppsList"></div>
+      </div>
+
+      <div class="admin-subpanel">
+        <h4 style="margin-top:0; color:#ffc107;">🗑️ 4. Administrar Noticias Publicadas</h4>
+        <div id="adminNewsList"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let listaAplicaciones = JSON.parse(localStorage.getItem('mmhp_apps')) || [];
+    let listaNoticias = JSON.parse(localStorage.getItem('mmhp_news')) || [];
+
+    // HASH SHA-256 PARA VALIDACIÓN SEGURA
+    async function calcularSHA256(texto) {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(texto);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function validarAcceso() {
+      let u = document.getElementById('userInput').value.trim();
+      let p = document.getElementById('passInput').value.trim();
+
+      // Contraseña actual configurada: 1234
+      const hashGuardado = "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4";
+      let hashIngresado = await calcularSHA256(p);
+
+      if (u === "admin" && hashIngresado === hashGuardado) {
+        document.getElementById('lockScreen').style.display = 'none';
+        document.getElementById('adminContent').style.display = 'block';
+        cargarListasAdmin();
+      } else {
+        alert("Credenciales incorrectas.");
+      }
+    }
+
+    function cerrarSesion() {
+      location.reload();
+    }
+
+    function agregarItem() {
+      let name = document.getElementById('appName').value.trim();
+      let category = document.getElementById('appCategory').value;
+      let logo = document.getElementById('appLogo').value.trim() || 'V2/apps.png';
+      let link = document.getElementById('appLink').value.trim();
+
+      if(name && link) {
+        listaAplicaciones.push({ id: Date.now(), nombre: name, categoria: category, logo: logo, enlace: link });
+        localStorage.setItem('mmhp_apps', JSON.stringify(listaAplicaciones));
+        cargarListasAdmin();
+
+        document.getElementById('appName').value = '';
+        document.getElementById('appLogo').value = '';
+        document.getElementById('appLink').value = '';
+        alert("Aplicación publicada con éxito.");
+      } else {
+        alert("Ingresa el Nombre y el Enlace.");
+      }
+    }
+
+    function agregarNovedad() {
+      let title = document.getElementById('newsTitleInput').value.trim();
+      let img = document.getElementById('newsImgInput').value.trim() || 'V2/banner.png';
+      let desc = document.getElementById('newsDescInput').value.trim();
+
+      if(title && desc) {
+        listaNoticias.unshift({ id: Date.now(), titulo: title, fecha: new Date().toLocaleDateString(), imagen: img, descripcion: desc });
+        localStorage.setItem('mmhp_news', JSON.stringify(listaNoticias));
+        cargarListasAdmin();
+
+        document.getElementById('newsTitleInput').value = '';
+        document.getElementById('newsImgInput').value = '';
+        document.getElementById('newsDescInput').value = '';
+        alert("Novedad publicada con éxito.");
+      } else {
+        alert("Ingresa el Título y la Descripción.");
+      }
+    }
+
+    function eliminarItem(id) {
+      listaAplicaciones = listaAplicaciones.filter(a => a.id !== id);
+      localStorage.setItem('mmhp_apps', JSON.stringify(listaAplicaciones));
+      cargarListasAdmin();
+    }
+
+    function eliminarNovedad(id) {
+      listaNoticias = listaNoticias.filter(n => n.id !== id);
+      localStorage.setItem('mmhp_news', JSON.stringify(listaNoticias));
+      cargarListasAdmin();
+    }
+
+    function cargarListasAdmin() {
+      let appContainer = document.getElementById('adminAppsList');
+      appContainer.innerHTML = '';
+      if(listaAplicaciones.length === 0) appContainer.innerHTML = '<small style="color:#aaa;">No hay aplicaciones.</small>';
+      listaAplicaciones.forEach(app => {
+        appContainer.innerHTML += `
+          <div class="item-list-row">
+            <span>[${app.categoria}] <strong>${app.nombre}</strong></span>
+            <button class="btn-delete" onclick="eliminarItem(${app.id})">🗑️ Borrar</button>
+          </div>`;
+      });
+
+      let newsContainer = document.getElementById('adminNewsList');
+      newsContainer.innerHTML = '';
+      if(listaNoticias.length === 0) newsContainer.innerHTML = '<small style="color:#aaa;">No hay novedades.</small>';
+      listaNoticias.forEach(n => {
+        newsContainer.innerHTML += `
+          <div class="item-list-row">
+            <span><strong>${n.titulo}</strong> (${n.fecha})</span>
+            <button class="btn-delete" onclick="eliminarNovedad(${n.id})">🗑️ Borrar</button>
+          </div>`;
+      });
+    }
+  </script>
+</body>
+</html>
